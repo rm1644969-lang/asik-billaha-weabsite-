@@ -31,8 +31,8 @@ export function useNexusStore() {
   const [smsDevices, setSmsDevices] = useState<SmsDevice[]>(sampleSmsDevices);
   const [smsRecords, setSmsRecords] = useState<SmsRecord[]>(sampleSmsRecords);
   const [reviews] = useState<Review[]>(sampleReviews);
-  const [tutorials] = useState<Tutorial[]>(sampleTutorials);
-  const [faqs] = useState<FaqItem[]>(sampleFaqs);
+  const [tutorials, setTutorials] = useState<Tutorial[]>(sampleTutorials);
+  const [faqs, setFaqs] = useState<FaqItem[]>(sampleFaqs);
   const [walletBalanceUSD, setWalletBalanceUSD] = useState<number>(10); // Demo starting wallet balance ($10) so user can test instantly, or add more via bKash/Rocket
   const [deposits, setDeposits] = useState<WalletDeposit[]>([
     {
@@ -62,15 +62,17 @@ export function useNexusStore() {
   // Load from localStorage if present
   useEffect(() => {
     try {
-      const storedTools = localStorage.getItem("toolsbd_v3_tools");
-      const storedPlans = localStorage.getItem("toolsbd_v3_plans");
-      const storedOrders = localStorage.getItem("toolsbd_v3_orders");
-      const storedLicenses = localStorage.getItem("toolsbd_v3_licenses");
-      const storedSettings = localStorage.getItem("toolsbd_v3_settings");
-      const storedSmsRecords = localStorage.getItem("toolsbd_v3_sms_records");
-      const storedDevices = localStorage.getItem("toolsbd_v3_sms_devices");
-      const storedWallet = localStorage.getItem("toolsbd_v3_wallet_usd");
-      const storedDeposits = localStorage.getItem("toolsbd_v3_deposits");
+      const storedTools = localStorage.getItem("toolsbd_v4_tools");
+      const storedPlans = localStorage.getItem("toolsbd_v4_plans");
+      const storedOrders = localStorage.getItem("toolsbd_v4_orders");
+      const storedLicenses = localStorage.getItem("toolsbd_v4_licenses");
+      const storedSettings = localStorage.getItem("toolsbd_v4_settings");
+      const storedSmsRecords = localStorage.getItem("toolsbd_v4_sms_records");
+      const storedDevices = localStorage.getItem("toolsbd_v4_sms_devices");
+      const storedWallet = localStorage.getItem("toolsbd_v4_wallet_usd");
+      const storedDeposits = localStorage.getItem("toolsbd_v4_deposits");
+      const storedTutorials = localStorage.getItem("toolsbd_v4_tutorials");
+      const storedFaqs = localStorage.getItem("toolsbd_v4_faqs");
 
       if (storedTools) setTools(JSON.parse(storedTools));
       if (storedPlans) setPlans(JSON.parse(storedPlans));
@@ -81,6 +83,8 @@ export function useNexusStore() {
       if (storedDevices) setSmsDevices(JSON.parse(storedDevices));
       if (storedWallet) setWalletBalanceUSD(JSON.parse(storedWallet));
       if (storedDeposits) setDeposits(JSON.parse(storedDeposits));
+      if (storedTutorials) setTutorials(JSON.parse(storedTutorials));
+      if (storedFaqs) setFaqs(JSON.parse(storedFaqs));
     } catch {
       // Fallback to memory
     }
@@ -90,43 +94,53 @@ export function useNexusStore() {
   // Sync helpers
   const saveTools = (newTools: Tool[]) => {
     setTools(newTools);
-    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v3_tools", JSON.stringify(newTools));
+    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_tools", JSON.stringify(newTools));
   };
 
   const savePlans = (newPlans: PricePlan[]) => {
     setPlans(newPlans);
-    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v3_plans", JSON.stringify(newPlans));
+    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_plans", JSON.stringify(newPlans));
   };
 
   const saveOrders = (newOrders: Order[]) => {
     setOrders(newOrders);
-    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v3_orders", JSON.stringify(newOrders));
+    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_orders", JSON.stringify(newOrders));
   };
 
   const saveLicenses = (newLicenses: License[]) => {
     setLicenses(newLicenses);
-    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v3_licenses", JSON.stringify(newLicenses));
+    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_licenses", JSON.stringify(newLicenses));
   };
 
   const saveSettings = (newSettings: SiteSettings) => {
     setSettings(newSettings);
-    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v3_settings", JSON.stringify(newSettings));
+    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_settings", JSON.stringify(newSettings));
   };
 
   const saveSmsRecords = (newRecords: SmsRecord[]) => {
     setSmsRecords(newRecords);
-    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v3_sms_records", JSON.stringify(newRecords));
+    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_sms_records", JSON.stringify(newRecords));
   };
 
   const saveWalletBalance = (newBalanceUSD: number) => {
     setWalletBalanceUSD(newBalanceUSD);
-    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v3_wallet_usd", JSON.stringify(newBalanceUSD));
+    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_wallet_usd", JSON.stringify(newBalanceUSD));
     syncWalletBalanceToFirestore(currentUser.id, currentUser.email, newBalanceUSD, newBalanceUSD * 120);
   };
 
   const saveDeposits = (newDeposits: WalletDeposit[]) => {
     setDeposits(newDeposits);
-    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v3_deposits", JSON.stringify(newDeposits));
+    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_deposits", JSON.stringify(newDeposits));
+  };
+
+  const saveTutorials = (newTutorials: Tutorial[]) => {
+    setTutorials(newTutorials);
+    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_tutorials", JSON.stringify(newTutorials));
+  };
+
+  const saveFaqs = (newFaqs: FaqItem[]) => {
+    setFaqs(newFaqs);
+    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_faqs", JSON.stringify(newFaqs));
   };
 
   // ==============================================================
@@ -580,6 +594,8 @@ export function useNexusStore() {
     saveOrders,
     saveLicenses,
     saveSettings,
+    saveTutorials,
+    saveFaqs,
     submitWalletDeposit,
     approveWalletDeposit,
     purchaseOfferWithWallet,

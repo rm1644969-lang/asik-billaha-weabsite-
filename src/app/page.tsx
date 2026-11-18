@@ -8,6 +8,7 @@ import ToolCard from "@/components/ToolCard";
 import PricingCard from "@/components/PricingCard";
 import StatsSection from "@/components/StatsSection";
 import { useNexusStore } from "@/lib/store";
+import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
 import { 
   Send, 
   ArrowRight, 
@@ -333,10 +334,14 @@ export default function HomePage() {
             >
               <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black border border-white/10 group">
                 <iframe
-                  src={tut.videoUrl}
+                  width="560"
+                  height="315"
+                  src={normalizeYouTubeEmbedUrl(tut.videoUrl)}
                   title={tut.title}
                   className="w-full h-full pointer-events-auto"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
                 />
               </div>

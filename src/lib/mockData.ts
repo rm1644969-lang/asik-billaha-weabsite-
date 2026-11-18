@@ -100,7 +100,7 @@ export const sampleTools: Tool[] = [
     bannerUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200&auto=format&fit=crop",
     status: "active",
     isFeatured: true,
-    setupVideoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    setupVideoUrl: "https://www.youtube.com/embed/U2JBcFAO7mE?si=9Pxpka_XfFtBmDGF",
     downloadFilePath: "/releases/Toolsbd_Utility_v3.4.2_Setup.zip",
     downloadFileName: "Toolsbd_Utility_v3.4.2_Setup.zip",
     fileSize: "28.4 MB",
@@ -322,32 +322,32 @@ export const sampleReviews: Review[] = [
 export const sampleTutorials: Tutorial[] = [
   {
     id: "tut-1",
-    title: "How to Download, Install & Activate HWID License",
+    title: "Complete Tool Setup, Download & HWID Activation Guide",
     toolSlug: "otp-testing-utility",
     toolName: "OTP Testing Utility",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    duration: "4 mins 30 secs",
-    description: "Step-by-step walkthrough covering extraction of the zip file, obtaining your HWID, and activating your license key from Toolsbd.com.",
+    videoUrl: "https://www.youtube.com/embed/U2JBcFAO7mE?si=9Pxpka_XfFtBmDGF",
+    duration: "Full Setup Guide",
+    description: "Step-by-step walkthrough covering downloading the tool, extracting the zip file, obtaining your HWID, and activating your license key from Toolsbd.com.",
     steps: [
       "Extract the downloaded ZIP archive using 7-Zip or WinRAR.",
       "Right click the executable and select 'Run as Administrator'.",
-      "Copy your generated Hardware ID (HWID) or paste the license key from your Toolsbd dashboard.",
-      "Click 'Verify & Launch' to begin real-time operations."
+      "Copy your generated Hardware ID (HWID) and paste it inside your Toolsbd.com dashboard.",
+      "Click 'Bind HWID & Activate' to unlock the software immediately."
     ]
   },
   {
     id: "tut-2",
-    title: "How to Reset HWID When Changing PCs",
+    title: "How to Add Money, Buy Offer & Reset HWID",
     toolSlug: "general",
     toolName: "Toolsbd.com Account",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    duration: "2 mins 15 secs",
-    description: "Learn how to use your 1-click HWID reset button in your user dashboard when upgrading your computer or reinstalling Windows.",
+    videoUrl: "https://www.youtube.com/embed/U2JBcFAO7mE?si=9Pxpka_XfFtBmDGF",
+    duration: "Quick Guide",
+    description: "Learn how to add balance via bKash/Rocket, buy the 7/15/30-day offer, and use your 1-click HWID reset button when switching PCs.",
     steps: [
-      "Navigate to your User Dashboard -> My Licenses.",
-      "Locate your active license card and click 'Reset HWID Lock'.",
-      "Confirm the device unbind. Your license is instantly freed up for your new hardware.",
-      "Launch the software on your new PC and activate normally."
+      "Open My Dashboard -> Add Money via bKash (01967922602) or Rocket (01731328169).",
+      "Buy your preferred offer (7 Days $2, 15 Days $4, or 30 Days $8).",
+      "Go to My Licenses -> paste your PC HWID and activate.",
+      "To change PCs later, click 'Reset HWID' with 1 click."
     ]
   }
 ];

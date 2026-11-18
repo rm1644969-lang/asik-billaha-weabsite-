@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useNexusStore } from "@/lib/store";
+import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
 import { Tool } from "@/lib/types";
 import { Plus, Edit2, Trash2, Eye, ExternalLink, Check, X, Sparkles } from "lucide-react";
 
@@ -77,9 +78,11 @@ export default function AdminToolsPage() {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanVideoUrl = normalizeYouTubeEmbedUrl(formData.setupVideoUrl);
     if (isCreating) {
       const newTool = {
         ...formData,
+        setupVideoUrl: cleanVideoUrl,
         id: `tool-${Date.now()}`,
         slug: formData.slug || formData.name?.toLowerCase().replace(/\s+/g, "-") || `tool-${Date.now()}`,
         createdAt: new Date().toISOString(),
@@ -93,6 +96,7 @@ export default function AdminToolsPage() {
           return {
             ...t,
             ...formData,
+            setupVideoUrl: cleanVideoUrl,
             updatedAt: new Date().toISOString()
           } as Tool;
         }
@@ -313,11 +317,12 @@ export default function AdminToolsPage() {
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-slate-300 block mb-1">Setup Video URL (YouTube)</label>
+                  <label className="font-bold text-slate-300 block mb-1">Setup Video URL or &lt;iframe&gt; Embed Code</label>
                   <input
                     type="text"
                     value={formData.setupVideoUrl}
                     onChange={(e) => setFormData({ ...formData, setupVideoUrl: e.target.value })}
+                    placeholder="Paste YouTube link or full <iframe> embed code"
                     className="w-full p-2.5 rounded-xl glass-input text-white font-mono"
                   />
                 </div>

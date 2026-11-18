@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useNexusStore } from "@/lib/store";
+import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
 import PricingCard from "@/components/PricingCard";
 import { 
   Cpu, 
@@ -227,13 +228,18 @@ export default function ToolDetailsPage() {
 
         {/* Tab 2: Setup Video */}
         {activeTab === "setup" && (
-          <div className="glass-panel rounded-2xl p-6 sm:p-8 space-y-6 border border-white/5">
-            <h3 className="text-xl font-bold text-white">Video Installation Guide</h3>
-            <div className="relative aspect-video max-w-3xl rounded-2xl overflow-hidden border border-white/10">
+          <div className="glass-panel rounded-2xl p-6 sm:p-8 space-y-6 border border-white/10">
+            <h3 className="text-xl font-black text-white">Video Installation Guide</h3>
+            <div className="relative aspect-video max-w-3xl rounded-2xl overflow-hidden border border-yellow-400/30 shadow-xl">
               <iframe
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                width="560"
+                height="315"
+                src={normalizeYouTubeEmbedUrl(tool.setupVideoUrl)}
                 title={`${tool.name} setup guide`}
                 className="w-full h-full"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               />
             </div>
