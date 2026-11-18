@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import Hero3D from "@/components/Hero3D";
 import ToolCard from "@/components/ToolCard";
-import PricingCard from "@/components/PricingCard";
 import StatsSection from "@/components/StatsSection";
 import { useNexusStore } from "@/lib/store";
 import { 
@@ -13,7 +12,10 @@ import {
   ShieldCheck, 
   CheckCircle2, 
   Layers,
-  Activity
+  Activity,
+  Zap,
+  Sparkles,
+  Check
 } from "lucide-react";
 
 export default function HomePage() {
@@ -111,61 +113,157 @@ export default function HomePage() {
       <StatsSection />
 
       {/* ============================================================== */}
-      {/* SECTION 3: FLAGSHIP TOOL & TOOLS OFFER PRICE                    */}
+      {/* SECTION 3: TOOL ON LEFT + PRICE LIST ON RIGHT (SIDE BY SIDE)    */}
       {/* ============================================================== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-20">
+      <section id="offer-prices" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-24">
         
-        {/* Flagship Tool Showcase */}
-        <div>
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-yellow-400 mb-2">
-                <Layers className="w-4 h-4 text-red-500" />
-                <span>Flagship Release</span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-white">
-                Our Official Software Tool
-              </h2>
-              <p className="text-slate-300 text-sm mt-2 max-w-xl">
-                Independently tested, HWID protected, and delivered instantaneously upon bKash (01967922602) or Rocket (01731328169) confirmation.
-              </p>
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-yellow-400 mb-2">
+              <Layers className="w-4 h-4 text-red-500" />
+              <span>Flagship Release</span>
             </div>
-            <Link
-              href="/tools"
-              className="inline-flex items-center gap-2 text-sm font-black text-yellow-400 hover:text-yellow-300 transition-colors"
-            >
-              <span>Full Specifications</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <h2 className="text-3xl sm:text-4xl font-black text-white">
+              Our Official Software Tool &amp; Offer Price List
+            </h2>
+            <p className="text-slate-300 text-sm mt-2 max-w-xl">
+              Independently tested, HWID protected, and delivered instantaneously upon bKash (01967922602) or Rocket (01731328169) confirmation.
+            </p>
+          </div>
+          <Link
+            href="/tools"
+            className="inline-flex items-center gap-2 text-sm font-black text-yellow-400 hover:text-yellow-300 transition-colors"
+          >
+            <span>Full Specifications</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {/* Side-by-Side Grid: Tool Card (Left) + Price List (Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          {/* LEFT: Official Tool Card */}
+          <div className="lg:col-span-5 flex flex-col">
+            {tools[0] && <ToolCard tool={tools[0]} />}
           </div>
 
-          <div className={tools.length === 1 ? "max-w-lg mx-auto" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"}>
-            {tools.map((tool) => (
+          {/* RIGHT: TOOLS OFFER PRICE List Panel */}
+          <div className="lg:col-span-7 flex flex-col">
+            <div className="relative rounded-2xl p-[1px] bg-gradient-to-b from-yellow-400 via-red-500/70 to-yellow-600/40 shadow-neon-yellow h-full">
+              <div className="rounded-2xl bg-[#0b0b0b]/95 backdrop-blur-xl p-6 sm:p-7 h-full flex flex-col justify-between space-y-6 border border-white/10">
+                
+                {/* Price List Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-600/20 border border-red-500 text-yellow-400 text-[10px] font-black uppercase tracking-widest mb-2">
+                      <Sparkles className="w-3 h-3" />
+                      <span>Limited Time Offer</span>
+                    </div>
+                    <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                      TOOLS OFFER PRICE 🔊
+                    </h3>
+                  </div>
+                  <div className="text-left sm:text-right text-xs font-mono text-slate-300">
+                    <span className="block text-yellow-400 font-black">Instant HWID Key</span>
+                    <span>bKash &bull; Rocket Auto</span>
+                  </div>
+                </div>
+
+                {/* Offer Rows */}
+                <div className="space-y-4 flex-1 flex flex-col justify-center">
+                  {plans.filter(p => p.enabled).map((plan) => (
+                    <div
+                      key={plan.id}
+                      className={`relative rounded-2xl p-4 sm:p-5 border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                        plan.isPopular
+                          ? "bg-gradient-to-r from-yellow-400/15 via-red-600/10 to-black border-yellow-400 shadow-neon-yellow"
+                          : "bg-[#121212] border-white/10 hover:border-yellow-400/50"
+                      }`}
+                    >
+                      {plan.isPopular && (
+                        <span className="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-600 text-white border border-yellow-400 shadow-md">
+                          ★ Most Popular
+                        </span>
+                      )}
+
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base sm:text-lg font-black text-white">
+                            {plan.durationDays} DAYS OFFER 🔥
+                          </span>
+                          {plan.originalPriceUSD && (
+                            <span className="text-xs text-slate-500 line-through font-mono">
+                              ${plan.originalPriceUSD}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-300">
+                          {plan.features.slice(0, 3).map((feat, idx) => (
+                            <span key={idx} className="inline-flex items-center gap-1">
+                              <Check className="w-3 h-3 text-yellow-400 shrink-0" />
+                              <span>{feat}</span>
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/10">
+                        <div className="text-left sm:text-right">
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-3xl font-black text-yellow-400 leading-none">
+                              ${plan.priceUSD}
+                            </span>
+                            <span className="text-xs font-black text-white">🔥</span>
+                          </div>
+                          <span className="text-[11px] font-mono text-slate-400 block mt-0.5">
+                            ৳{plan.priceBDT} BDT
+                          </span>
+                        </div>
+
+                        <Link
+                          href={`/checkout?tool=${plan.toolId}&plan=${plan.id}`}
+                          className={`px-4 py-3 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shrink-0 ${
+                            plan.isPopular
+                              ? "bg-yellow-400 hover:bg-yellow-300 text-black shadow-neon-yellow"
+                              : "bg-red-600 hover:bg-red-500 text-white shadow-neon-red"
+                          }`}
+                        >
+                          <Zap className="w-3.5 h-3.5" />
+                          <span>Buy Now</span>
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bottom Payment Numbers Bar */}
+                <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300 font-mono">
+                  <span>
+                    bKash: <strong className="text-yellow-400">{settings.bkashMerchantNumber}</strong>
+                  </span>
+                  <span>
+                    Rocket: <strong className="text-red-400">{settings.rocketMerchantNumber}</strong>
+                  </span>
+                  <Link href="/dashboard" className="text-yellow-400 hover:underline font-sans font-bold">
+                    Or Buy with Wallet &rarr;
+                  </Link>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* If admin ever adds additional tools, show them cleanly underneath */}
+        {tools.length > 1 && (
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {tools.slice(1).map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
           </div>
-        </div>
-
-        {/* TOOLS OFFER PRICE SECTION */}
-        <div id="offer-prices" className="scroll-mt-24 space-y-10 pt-8 border-t border-white/10">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/20 border border-red-500 text-yellow-400 text-xs font-black uppercase tracking-widest shadow-neon-red">
-              <span>🔊 LIMITED TIME SPECIAL</span>
-            </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-              TOOLS OFFER PRICE 🔊
-            </h2>
-            <p className="text-slate-300 text-sm sm:text-base font-semibold">
-              7 DAYS — <span className="text-yellow-400 font-black">$2 🔥</span> &nbsp;|&nbsp; 15 DAYS — <span className="text-yellow-400 font-black">$4 🔥</span> &nbsp;|&nbsp; 30 DAYS — <span className="text-yellow-400 font-black">$8 🔥</span>
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {plans.filter(p => p.enabled).map((plan) => (
-              <PricingCard key={plan.id} plan={plan} />
-            ))}
-          </div>
-        </div>
+        )}
 
       </section>
 
