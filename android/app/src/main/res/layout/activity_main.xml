@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#070a24">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nexus SMS Gateway"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Merchant Auto-Verification Companion"
+        android:textColor="#9E77ED"
+        android:textSize="12sp"
+        android:layout_marginTop="4dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#2E375B"
+        android:layout_marginVertical="20dp" />
+
+    <TextView
+        android:id="@+id/textStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="STATUS: LISTENING (ONLINE)"
+        android:textColor="#10B981"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Companion Device Secret (HMAC-SHA256):"
+        android:textColor="#E0E7FF"
+        android:textSize="12sp"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:id="@+id/editSecret"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#111840"
+        android:textColor="#00F5FF"
+        android:padding="12dp"
+        android:textSize="13sp"
+        android:fontFamily="monospace"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnSaveSecret"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Device Secret"
+        android:backgroundTint="#7C3AED"
+        android:layout_marginTop="12dp" />
+
+    <Button
+        android:id="@+id/btnTestSync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Heartbeat Test"
+        android:backgroundTint="#0EA5E9"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Security Notice: This companion service parses incoming bKash &amp; Nagad merchant payment receipts only. It never collects personal SMS, passwords, or customer OTPs."
+        android:textColor="#64748B"
+        android:textSize="11sp"
+        android:layout_marginTop="28dp" />
+
+</LinearLayout>
