@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import AppShell from "@/components/AppShell";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,10 +20,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark scroll-smooth">
-      <body className={`${inter.className} min-h-screen bg-[#070707] text-white flex flex-col selection:bg-yellow-400 selection:text-black`}>
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+      <body className={`${inter.className} min-h-screen bg-[#070707] text-white selection:bg-yellow-400 selection:text-black`}>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
