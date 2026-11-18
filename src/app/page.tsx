@@ -12,7 +12,6 @@ import {
   ArrowRight, 
   ShieldCheck, 
   CheckCircle2, 
-  Sparkles,
   Layers,
   Activity
 } from "lucide-react";
@@ -37,8 +36,8 @@ export default function HomePage() {
 
         <div className="max-w-7xl mx-auto w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          {/* Hero Copy (Left 7 Cols) */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+          {/* Hero Copy (Left 8 Cols — Right side stays clean for 3D WebGL scene) */}
+          <div className="lg:col-span-8 space-y-6 text-center lg:text-left">
             
             {/* Pill Tag */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-yellow-400/40 backdrop-blur-md shadow-neon-yellow">
@@ -101,65 +100,6 @@ export default function HomePage() {
               </span>
             </div>
 
-          </div>
-
-          {/* Interactive Floating Card / Live Tool Showcase (Right 5 Cols) */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative mx-auto max-w-md rounded-3xl p-[1px] bg-gradient-to-b from-yellow-400 via-red-500 to-transparent shadow-2xl backdrop-blur-2xl">
-              
-              {/* Card Container */}
-              <div className="rounded-3xl bg-[#0e0e0e]/95 p-6 space-y-5 border border-white/10">
-                
-                {/* Header preview bar */}
-                <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-3 h-3 rounded-full bg-red-600" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                    <div className="w-3 h-3 rounded-full bg-white/60" />
-                    <span className="text-xs font-mono text-white font-bold ml-2">toolsbd-guard.exe</span>
-                  </div>
-                  <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded bg-yellow-400/20 text-yellow-400 border border-yellow-400/40">
-                    STATUS: SECURE
-                  </span>
-                </div>
-
-                {/* Software Live Simulation */}
-                <div className="space-y-3 font-mono text-xs">
-                  <div className="p-3.5 rounded-lg bg-black/80 border border-white/10 space-y-1.5">
-                    <div className="text-slate-300 flex items-center justify-between">
-                      <span>MACHINE HWID:</span>
-                      <span className="text-yellow-400 font-bold">BFEBFBFF-000906EA-F48E</span>
-                    </div>
-                    <div className="text-slate-300 flex items-center justify-between">
-                      <span>LICENSE KEY:</span>
-                      <span className="text-white font-bold">TBD-OTP-30D-88AF-901B</span>
-                    </div>
-                    <div className="text-slate-300 flex items-center justify-between">
-                      <span>VALIDITY:</span>
-                      <span className="text-red-500 font-bold">ACTIVE (28 DAYS REMAINING)</span>
-                    </div>
-                  </div>
-
-                  {/* Terminal simulation log stream */}
-                  <div className="p-3.5 rounded-lg bg-black/90 border border-white/10 text-[11px] space-y-1 text-slate-300">
-                    <p className="text-yellow-400">[TOOLSBD] Connecting to Bangladesh Cloud Gateway...</p>
-                    <p className="text-white">[PAYMENT] bKash TrxID BK992A81KC matched in 32s</p>
-                    <p className="text-red-400">[LICENSE] Cryptographic RSA token generated OK</p>
-                    <p className="text-slate-400">[SYSTEM] HWID locked to client hardware.</p>
-                  </div>
-                </div>
-
-                {/* Quick Action Button inside preview */}
-                <Link
-                  href="/tools/otp-testing-utility"
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-500 text-black text-xs font-black flex items-center justify-center gap-2 hover:opacity-95 shadow-neon-yellow transition-all"
-                >
-                  <Sparkles className="w-4 h-4 text-black" />
-                  <span>Inspect Featured Utility (OTP Testing)</span>
-                </Link>
-
-              </div>
-            </div>
           </div>
 
         </div>
