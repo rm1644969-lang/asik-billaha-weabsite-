@@ -1,40 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import Hero3D from "@/components/Hero3D";
 import ToolCard from "@/components/ToolCard";
 import PricingCard from "@/components/PricingCard";
 import StatsSection from "@/components/StatsSection";
 import { useNexusStore } from "@/lib/store";
-import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
 import { 
   Send, 
   ArrowRight, 
   ShieldCheck, 
-  Zap, 
-  Download, 
   CheckCircle2, 
-  ChevronDown, 
-  Play, 
-  Star, 
-  Terminal, 
-  Cpu, 
-  Smartphone,
   Sparkles,
-  Lock,
   Layers,
   Activity
 } from "lucide-react";
 
 export default function HomePage() {
-  const { tools, plans, settings, reviews, tutorials, faqs } = useNexusStore();
-  const [openFaq, setOpenFaq] = useState<string | null>("faq-1");
-
-  const toggleFaq = (id: string) => {
-    setOpenFaq(openFaq === id ? null : id);
-  };
+  const { tools, plans, settings } = useNexusStore();
 
   return (
     <div className="relative overflow-hidden bg-[#070707]">
@@ -105,11 +89,11 @@ export default function HomePage() {
             <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-slate-300 border-t border-white/10">
               <span className="flex items-center gap-1.5 font-semibold">
                 <CheckCircle2 className="w-4 h-4 text-yellow-400" />
-                <span>bKash (01967922602) & Rocket (01731328169)</span>
+                <span>bKash (01967922602) &amp; Rocket (01731328169)</span>
               </span>
               <span className="flex items-center gap-1.5 font-semibold">
                 <ShieldCheck className="w-4 h-4 text-red-500" />
-                <span>1-Click HWID Lock & Reset</span>
+                <span>1-Click HWID Lock &amp; Reset</span>
               </span>
               <span className="flex items-center gap-1.5 font-semibold">
                 <Activity className="w-4 h-4 text-white" />
@@ -215,7 +199,6 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Responsive Grid: Centered flagship card if 1 tool, multi-col grid if more added from admin */}
           <div className={tools.length === 1 ? "max-w-lg mx-auto" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"}>
             {tools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
@@ -247,242 +230,9 @@ export default function HomePage() {
       </section>
 
       {/* ============================================================== */}
-      {/* SECTION 4: PLATFORM CORE ARCHITECTURE & CAPABILITIES             */}
+      {/* SECTION 4: TELEGRAM VIP CTA                                     */}
       {/* ============================================================== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#090909]/90 border-t border-white/10">
-        <div className="max-w-7xl mx-auto">
-          
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-            <span className="text-xs font-black uppercase tracking-wider text-red-500">
-              Zero Latency Experience
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-white">
-              Built for Scale, Security & Instant Delivery
-            </h2>
-            <p className="text-slate-300 text-sm">
-              We eliminated manual wait times. Everything from bKash / Rocket verification to HWID locking is handled automatically.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            {/* Feature 1 */}
-            <div className="relative rounded-2xl p-7 bg-[#0e0e0e] border border-white/10 hover:border-yellow-400 transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-yellow-950/60 border border-yellow-500/40 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <Smartphone className="w-6 h-6 text-yellow-400" />
-              </div>
-              <h3 className="text-lg font-black text-white mb-2">
-                Automated Companion SMS Gateway
-              </h3>
-              <p className="text-sm text-slate-300 leading-relaxed font-normal">
-                Our companion Android app monitors incoming merchant SMS notifications from bKash (01967922602) and Rocket (01731328169), matching TrxIDs within 45 seconds.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="relative rounded-2xl p-7 bg-[#0e0e0e] border border-white/10 hover:border-red-500 transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-red-950/60 border border-red-500/40 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <Lock className="w-6 h-6 text-red-400" />
-              </div>
-              <h3 className="text-lg font-black text-white mb-2">
-                Hardware ID (HWID) Cryptography
-              </h3>
-              <p className="text-sm text-slate-300 leading-relaxed font-normal">
-                Licenses are cryptographically tied to the user&apos;s machine hardware fingerprint. Switch PCs? Use your 1-click HWID reset inside your dashboard.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="relative rounded-2xl p-7 bg-[#0e0e0e] border border-white/10 hover:border-white transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <Download className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-lg font-black text-white mb-2">
-                Protected Direct Cloud Mirrors
-              </h3>
-              <p className="text-sm text-slate-300 leading-relaxed font-normal">
-                High-speed authorized downloads with cryptographic SHA-256 integrity checksums to guarantee clean, uncorrupted, and untampered software files.
-              </p>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* ============================================================== */}
-      {/* SECTION 5: VIDEO SETUP TUTORIALS & GUIDES                        */}
-      {/* ============================================================== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <span className="text-xs font-black uppercase tracking-wider text-yellow-400">
-            Installation & Setup
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-white">
-            Watch Step-by-Step Video Guides
-          </h2>
-          <p className="text-slate-300 text-sm">
-            Learn how to extract, run as administrator, acquire your machine HWID, and verify your license key.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {tutorials.map((tut) => (
-            <div 
-              key={tut.id}
-              className="rounded-2xl p-6 bg-[#0e0e0e] border border-white/10 hover:border-yellow-400/50 transition-all space-y-4"
-            >
-              <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black border border-white/10 group">
-                <iframe
-                  width="560"
-                  height="315"
-                  src={normalizeYouTubeEmbedUrl(tut.videoUrl)}
-                  title={tut.title}
-                  className="w-full h-full pointer-events-auto"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between text-xs text-yellow-400 font-bold mb-1">
-                  <span>{tut.toolName}</span>
-                  <span className="text-slate-400">{tut.duration}</span>
-                </div>
-                <h3 className="text-lg font-black text-white mb-2">
-                  {tut.title}
-                </h3>
-                <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                  {tut.description}
-                </p>
-
-                <div className="space-y-1.5 text-xs text-slate-200">
-                  <p className="font-bold text-white text-sm">Execution Steps:</p>
-                  {tut.steps.map((st, i) => (
-                    <div key={i} className="flex items-start gap-2">
-                      <span className="w-4 h-4 rounded-full bg-yellow-400/20 text-yellow-400 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
-                        {i + 1}
-                      </span>
-                      <span>{st}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ============================================================== */}
-      {/* SECTION 6: CUSTOMER REVIEWS & FEEDBACK                           */}
-      {/* ============================================================== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#090909]/80 border-y border-white/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-            <span className="text-xs font-black uppercase tracking-wider text-red-500">
-              Community Satisfaction
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-white">
-              Trusted by Hundreds of Power Users
-            </h2>
-            <p className="text-slate-300 text-sm">
-              Read real feedback from verified customers in our Toolsbd.com community.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {reviews.map((rev) => (
-              <div
-                key={rev.id}
-                className="rounded-2xl p-6 bg-[#0e0e0e] border border-white/10 hover:border-yellow-400/40 transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center gap-1 text-yellow-400 mb-3">
-                    {[...Array(rev.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                  <p className="text-sm text-slate-200 italic leading-relaxed mb-6 font-normal">
-                    &ldquo;{rev.comment}&rdquo;
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-yellow-400 text-black flex items-center justify-center text-xs font-black">
-                      {rev.customerName[0]}
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-white">
-                        {rev.customerName}
-                      </h4>
-                      <p className="text-[10px] text-yellow-400 font-semibold">
-                        {rev.toolName}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-[10px] text-slate-400">{rev.date}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================== */}
-      {/* SECTION 7: FREQUENTLY ASKED QUESTIONS                           */}
-      {/* ============================================================== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        <div className="text-center mb-12 space-y-3">
-          <span className="text-xs font-black uppercase tracking-wider text-yellow-400">
-            Got Questions?
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-white">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-slate-300 text-sm">
-            Everything you need to know about purchasing, auto-verification and HWID licensing on Toolsbd.com.
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          {faqs.map((faq) => {
-            const isOpen = openFaq === faq.id;
-            return (
-              <div
-                key={faq.id}
-                className="rounded-2xl bg-[#0e0e0e] border border-white/10 overflow-hidden transition-all"
-              >
-                <button
-                  onClick={() => toggleFaq(faq.id)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4 hover:bg-white/5 transition-colors"
-                >
-                  <span className="text-base font-bold text-white">
-                    {faq.question}
-                  </span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-yellow-400 transition-transform duration-300 shrink-0 ${
-                      isOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 pt-1 text-sm text-slate-300 leading-relaxed border-t border-white/10 font-normal">
-                    {faq.answer}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ============================================================== */}
-      {/* SECTION 8: TELEGRAM VIP CTA                                     */}
-      {/* ============================================================== */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="relative rounded-3xl p-[2px] bg-gradient-to-r from-yellow-400 via-red-600 to-yellow-500 shadow-neon-yellow overflow-hidden">
           <div className="relative rounded-3xl bg-[#090909] px-6 py-14 sm:px-12 sm:py-16 text-center space-y-6">
             
