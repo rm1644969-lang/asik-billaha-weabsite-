@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useNexusStore } from "@/lib/store";
+import { useNexusStore, generateToolLicenseKey } from "@/lib/store";
 import { Tool, PricePlan, Order } from "@/lib/types";
 import { 
   CheckCircle2, 
@@ -209,7 +209,7 @@ function CheckoutContent() {
         setIsSuccess(true);
       } else {
         // If not matched immediately by SMS, auto-verify for smooth customer experience
-        const fallbackKey = result.key || `TBD-${selectedPlan.durationDays}D-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+        const fallbackKey = result.key || generateToolLicenseKey();
         setGeneratedLicense(fallbackKey);
         triggerConfetti();
         setIsSuccess(true);

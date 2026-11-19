@@ -97,16 +97,51 @@ export const IS_DUAL_FIREBASE_ACTIVE = isSeparateLicenseProject;
 // Backwards compatibility alias
 export const FIREBASE_PROJECT_ID = FIREBASE_WEB_PROJECT_ID;
 
+function formatSqlDateTime(d: Date): string {
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function generateAuthSignature(key: string, hwid: string): string {
+  const str = `${key}::${hwid}::fast_otp_pro_signature_2026`;
+  let hex = "";
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+    hex += ((code * 31 + i * 17) % 256).toString(16).padStart(2, "0");
+  }
+  while (hex.length < 64) {
+    hex += hex.split("").reverse().join("");
+  }
+  return hex.substring(0, 64);
+}
+
 /**
- * Syncs a generated License + HWID to the License Firestore (`licenses` collection)
- * Also writes an index document under `hwid_keys/{hwid}` for ultra-fast HWID queries.
+ * Syncs a generated License + HWID to the Secondary License Firestore (fb-resend-otp -> `licenses` collection)
+ * Writes both FAST OTP desktop software schema (license_key, bound_hwid, status) and Web Portal schema.
  */
 export async function syncLicenseToFirestore(license: License): Promise<{ synced: boolean; error?: string }> {
   try {
-    // 1. Write license document by key
+    const cleanHwid = license.hwid?.trim() || "";
+    const createDate = license.createdAt ? new Date(license.createdAt) : new Date();
+    const expireDate = license.expiresAt ? new Date(license.expiresAt) : new Date(Date.now() + (license.durationDays || 30) * 86400000);
+    const sqlCreated = formatSqlDateTime(createDate);
+    const sqlExpires = formatSqlDateTime(expireDate);
+
+    // 1. Write license document by key (FAST OTP Native Desktop Software Schema + Web Portal Schema)
     await setDoc(
       doc(licenseDb, "licenses", license.key),
       {
+        // Native FAST OTP Tool Schema (Exact fields read by desktop software)
+        license_key: license.key,
+        bound_hwid: cleanHwid,
+        status: "active",
+        client_name: license.userEmail || "Member",
+        created_at: sqlCreated,
+        expires_at: sqlExpires,
+        total_checks: 0,
+        auth_sig: generateAuthSignature(license.key, cleanHwid),
+
+        // Toolsbd Web Portal Schema
         id: license.id,
         key: license.key,
         toolId: license.toolId,
@@ -115,8 +150,7 @@ export async function syncLicenseToFirestore(license: License): Promise<{ synced
         userEmail: license.userEmail,
         orderId: license.orderId,
         durationDays: license.durationDays,
-        status: license.status,
-        hwid: license.hwid || null,
+        hwid: cleanHwid || null,
         hwidResetCount: license.hwidResetCount || 0,
         maxDevices: license.maxDevices || 1,
         createdAt: license.createdAt,

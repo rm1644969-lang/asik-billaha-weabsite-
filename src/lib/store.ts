@@ -37,6 +37,12 @@ import {
   FIREBASE_PROJECT_ID
 } from "./firebase";
 
+export function generateToolLicenseKey(): string {
+  const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const seg = () => Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+  return `AT-${seg()}-${seg()}-${seg()}-${seg()}`;
+}
+
 export function useNexusStore() {
   const [tools, setTools] = useState<Tool[]>(sampleTools);
   const [plans, setPlans] = useState<PricePlan[]>(samplePlans);
@@ -353,7 +359,7 @@ export function useNexusStore() {
     }
 
     const orderNumber = `TBD-WALLET-${Math.floor(100000 + Math.random() * 900000)}`;
-    const generatedKey = `TBD-${plan.durationDays}D-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const generatedKey = generateToolLicenseKey();
 
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
@@ -505,7 +511,7 @@ export function useNexusStore() {
     );
 
     const isAutoVerified = !!matchingSms;
-    const generatedKey = `TBD-${targetOrder.planDuration}D-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const generatedKey = generateToolLicenseKey();
 
     let updatedOrder: Order;
     const updatedOrders = orders.map(ord => {
@@ -591,7 +597,7 @@ export function useNexusStore() {
     saveSmsRecords([newRecord, ...smsRecords]);
 
     if (matchingOrder) {
-      const generatedKey = `TBD-${matchingOrder.planDuration}D-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+      const generatedKey = generateToolLicenseKey();
       
       let paidOrd: Order | undefined;
       const updatedOrders = orders.map(ord => {
@@ -640,7 +646,7 @@ export function useNexusStore() {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
 
-    const generatedKey = `TBD-${order.planDuration}D-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const generatedKey = generateToolLicenseKey();
 
     let paidOrd: Order | undefined;
     const updated = orders.map(o => {
