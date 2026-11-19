@@ -43,17 +43,17 @@ const webFirebaseConfig = {
 };
 
 // ----------------------------------------------------------------------------
-// 2. SECONDARY LICENSE & HWID FIREBASE CONFIG (Desktop Tool Verification)
+// 2. SECONDARY DEDICATED LICENSE & HWID FIREBASE CONFIG (fb-resend-otp)
 // ----------------------------------------------------------------------------
-// If the user provides a second Firebase config, it connects to Project B.
-// If not yet provided, it gracefully reuses Project A or local cache.
+// Dedicated project for tool license keys and HWID machine binding.
+// Gives an independent 50,000 free reads/day quota so website visits never deplete tool quotas!
 const licenseFirebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_API_KEY || process.env.LICENSE_FIREBASE_API_KEY || webFirebaseConfig.apiKey,
-  authDomain: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_AUTH_DOMAIN || process.env.LICENSE_FIREBASE_AUTH_DOMAIN || webFirebaseConfig.authDomain,
-  projectId: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_PROJECT_ID || process.env.LICENSE_FIREBASE_PROJECT_ID || webFirebaseConfig.projectId,
-  storageBucket: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_STORAGE_BUCKET || process.env.LICENSE_FIREBASE_STORAGE_BUCKET || webFirebaseConfig.storageBucket,
-  messagingSenderId: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_MESSAGING_SENDER_ID || process.env.LICENSE_FIREBASE_MESSAGING_SENDER_ID || webFirebaseConfig.messagingSenderId,
-  appId: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_APP_ID || process.env.LICENSE_FIREBASE_APP_ID || webFirebaseConfig.appId,
+  apiKey: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_API_KEY || process.env.LICENSE_FIREBASE_API_KEY || "AIzaSyBSRWUOkhV3rt-GmXM7Nm3Tkghn8Qbg1yA",
+  authDomain: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_AUTH_DOMAIN || process.env.LICENSE_FIREBASE_AUTH_DOMAIN || "fb-resend-otp.firebaseapp.com",
+  projectId: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_PROJECT_ID || process.env.LICENSE_FIREBASE_PROJECT_ID || "fb-resend-otp",
+  storageBucket: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_STORAGE_BUCKET || process.env.LICENSE_FIREBASE_STORAGE_BUCKET || "fb-resend-otp.firebasestorage.app",
+  messagingSenderId: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_MESSAGING_SENDER_ID || process.env.LICENSE_FIREBASE_MESSAGING_SENDER_ID || "588215403017",
+  appId: process.env.NEXT_PUBLIC_LICENSE_FIREBASE_APP_ID || process.env.LICENSE_FIREBASE_APP_ID || "1:588215403017:web:59f0686513e4a0d871aed8",
 };
 
 // Initialize Primary Web App
