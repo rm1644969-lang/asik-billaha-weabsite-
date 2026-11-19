@@ -6,33 +6,33 @@ import { Users, Key, Zap, Send } from "lucide-react";
 export default function StatsSection() {
   const stats = [
     {
-      label: "Daily Active Visitors",
-      value: "12,000+",
-      subtext: "High-concurrency infrastructure",
+      label: "Active Members",
+      value: "5,000+",
+      subtext: "Verified Tools Community",
       icon: Users,
       glowColor: "rgba(250, 204, 21, 0.45)",
       textColor: "text-yellow-400"
     },
     {
-      label: "Licenses Generated",
-      value: "4,850+",
-      subtext: "HWID cryptographically locked",
+      label: "Licenses Issued",
+      value: "2,500+",
+      subtext: "HWID Machine Secured",
       icon: Key,
       glowColor: "rgba(239, 68, 68, 0.45)",
       textColor: "text-red-500"
     },
     {
-      label: "Avg. Payment Verification",
-      value: "< 45s",
-      subtext: "bKash & Rocket SMS companion",
+      label: "Payment Verification",
+      value: "< 30s",
+      subtext: "Instant bKash & Rocket",
       icon: Zap,
       glowColor: "rgba(255, 255, 255, 0.4)",
       textColor: "text-white"
     },
     {
-      label: "Telegram VIP Members",
-      value: "15,200+",
-      subtext: "Active tools community",
+      label: "Telegram Members",
+      value: "15,000+",
+      subtext: "24/7 Live Support",
       icon: Send,
       glowColor: "rgba(250, 204, 21, 0.45)",
       textColor: "text-yellow-400"

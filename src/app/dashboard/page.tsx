@@ -251,7 +251,7 @@ export default function UserDashboardPage() {
     triggerConfetti();
     showBanner(
       "success",
-      `Offer purchased! Key ${res.license?.key} generated ${res.firebaseSynced ? `& synced to Firebase (${firebaseProjectId})` : ""}. Now download the tool & enter your HWID below!`
+      `Offer purchased successfully! Key: ${res.license?.key}. Download the tool below and enter your PC HWID to activate.`
     );
     setActiveTab("licenses");
   };
@@ -270,7 +270,7 @@ export default function UserDashboardPage() {
       triggerConfetti();
       showBanner(
         "success",
-        `HWID "${val}" bound to key ${res.license?.key}! ${res.firebaseSynced ? `Live synced to Firebase (${firebaseProjectId} -> hwid_keys & licenses).` : "Saved locally (enable Firestore write rules to sync cloud)."}`
+        `HWID successfully activated for license key: ${res.license?.key}. Software is now unlocked on this PC!`
       );
       setHwidInputs(prev => ({ ...prev, [licenseId]: "" }));
     } else {

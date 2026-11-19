@@ -21,7 +21,7 @@ export default function TutorialsPage() {
           Software Setup &amp; Tutorials
         </h1>
         <p className="text-slate-300 text-base leading-relaxed">
-          Step-by-step video setup guides managed directly from the Toolsbd.com Admin Console.
+          Watch step-by-step video guides to install, configure, and activate your software tools.
         </p>
       </div>
 

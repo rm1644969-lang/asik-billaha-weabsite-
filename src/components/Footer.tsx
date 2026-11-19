@@ -32,7 +32,7 @@ export default function Footer() {
             </Link>
             
             <p className="text-sm text-slate-300 max-w-sm leading-relaxed">
-              {settings.siteTagline}. High-speed automated software distribution, 24/7 instant bKash & Rocket verification, and hardware-fingerprinted (HWID) security.
+              Official automated software licensing platform. Instant bKash &amp; Rocket payment verification and single-PC HWID security protection.
             </p>
 
             {/* Payment Numbers Highlight */}
@@ -118,9 +118,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/admin" className="text-yellow-400 hover:text-yellow-300 font-bold transition-colors flex items-center gap-1">
-                  <span>Owner Admin Panel</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
+                <Link href="/dashboard" className="hover:text-red-400 transition-colors">
+                  My Account Dashboard
                 </Link>
               </li>
             </ul>

@@ -84,15 +84,15 @@ export default function HomePage() {
             <div className="pt-3 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-[11px] sm:text-xs text-slate-300 border-t border-white/10">
               <span className="flex items-center gap-1.5 font-semibold">
                 <CheckCircle2 className="w-3.5 h-3.5 text-yellow-400" />
-                <span>bKash (01967922602) &amp; Rocket (01731328169)</span>
+                <span>bKash &amp; Rocket Instant Auto Delivery</span>
               </span>
               <span className="flex items-center gap-1.5 font-semibold">
                 <ShieldCheck className="w-3.5 h-3.5 text-red-500" />
-                <span>Single PC Permanent HWID Security</span>
+                <span>Single PC HWID Security Lock</span>
               </span>
               <span className="flex items-center gap-1.5 font-semibold">
-                <Activity className="w-3.5 h-3.5 text-white" />
-                <span>10k-12k Daily Traffic Scale</span>
+                <Zap className="w-3.5 h-3.5 text-yellow-400" />
+                <span>24/7 Active Telegram Support</span>
               </span>
             </div>
 
@@ -162,7 +162,7 @@ export default function HomePage() {
               Join Toolsbd.com Telegram Community
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
-              Get immediate announcements on tool version updates, promotional discounts, exclusive configuration scripts, and 24/7 direct owner support.
+              Get immediate tool updates, version releases, setup help, and 24/7 direct support from our official community.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">

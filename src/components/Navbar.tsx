@@ -18,7 +18,7 @@ import { useNexusStore } from "@/lib/store";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { settings } = useNexusStore();
+  const { settings, currentUser, isLoggedIn } = useNexusStore();
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -110,27 +110,39 @@ export default function Navbar() {
               <span>Telegram VIP</span>
             </a>
 
-            {/* User Dashboard / Admin Switcher */}
+            {/* User Dashboard / Login / Admin Switcher */}
             <div className="flex items-center gap-2 pl-2 border-l border-white/10">
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-200 bg-surface-card border border-white/10 hover:border-yellow-400/50 hover:bg-yellow-950/30 transition-all"
-              >
-                <User className="w-3.5 h-3.5 text-yellow-400" />
-                <span>My Licenses</span>
-              </Link>
+              {isLoggedIn ? (
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-200 bg-surface-card border border-white/10 hover:border-yellow-400/50 hover:bg-yellow-950/30 transition-all"
+                >
+                  <User className="w-3.5 h-3.5 text-yellow-400" />
+                  <span className="max-w-[120px] truncate">{currentUser?.name || "Dashboard"}</span>
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-200 bg-surface-card border border-white/10 hover:border-yellow-400/50 hover:bg-yellow-950/30 transition-all"
+                >
+                  <User className="w-3.5 h-3.5 text-yellow-400" />
+                  <span>Sign In</span>
+                </Link>
+              )}
 
-              <Link
-                href="/admin"
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-black transition-all shadow-md ${
-                  isAdminArea
-                    ? "bg-yellow-400 text-black shadow-neon-yellow"
-                    : "bg-gradient-to-r from-yellow-400 to-yellow-500 text-black hover:opacity-95 hover:shadow-neon-yellow"
-                }`}
-              >
-                <Shield className="w-3.5 h-3.5" />
-                <span>Owner Admin</span>
-              </Link>
+              {(currentUser?.role === "admin" || isAdminArea) && (
+                <Link
+                  href="/admin"
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-black transition-all shadow-md ${
+                    isAdminArea
+                      ? "bg-yellow-400 text-black shadow-neon-yellow"
+                      : "bg-gradient-to-r from-yellow-400 to-yellow-500 text-black hover:opacity-95 hover:shadow-neon-yellow"
+                  }`}
+                >
+                  <Shield className="w-3.5 h-3.5" />
+                  <span>Admin</span>
+                </Link>
+              )}
             </div>
           </div>
 
@@ -175,23 +187,25 @@ export default function Navbar() {
                 <span>Join Official Telegram</span>
               </a>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex gap-2">
                 <Link
-                  href="/dashboard"
+                  href={isLoggedIn ? "/dashboard" : "/login"}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium text-slate-200 bg-surface-card border border-white/10"
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium text-slate-200 bg-surface-card border border-white/10"
                 >
                   <User className="w-4 h-4 text-yellow-400" />
-                  <span>My Account</span>
+                  <span>{isLoggedIn ? "Dashboard" : "Sign In"}</span>
                 </Link>
-                <Link
-                  href="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-black bg-yellow-400 text-black shadow-neon-yellow"
-                >
-                  <Shield className="w-4 h-4" />
-                  <span>Admin Panel</span>
-                </Link>
+                {(currentUser?.role === "admin" || isAdminArea) && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-black bg-yellow-400 text-black shadow-neon-yellow"
+                  >
+                    <Shield className="w-4 h-4" />
+                    <span>Admin</span>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

@@ -22,14 +22,14 @@ export default function ContactPage() {
     <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-12">
       
       <div className="text-center space-y-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-cyan-400">
+        <span className="text-xs font-bold uppercase tracking-wider text-yellow-400">
           Get in Touch
         </span>
         <h1 className="text-4xl sm:text-5xl font-black text-white">
           Contact & Community Support
         </h1>
         <p className="text-slate-400 text-sm max-w-lg mx-auto">
-          Need a custom software tool, experiencing payment issues, or requesting an enterprise volume license?
+          Need assistance with tool installation, license activation, or payment verification?
         </p>
       </div>
 
@@ -44,15 +44,15 @@ export default function ContactPage() {
               href={settings.telegramGroupUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-start gap-4 p-4 rounded-2xl bg-surface-card border border-white/5 hover:border-cyan-500/40 transition-all group"
+              className="flex items-start gap-4 p-4 rounded-2xl bg-surface-card border border-white/5 hover:border-yellow-400/40 transition-all group"
             >
-              <div className="p-3 rounded-xl bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 group-hover:scale-110 transition-transform">
+              <div className="p-3 rounded-xl bg-yellow-950/60 border border-yellow-500/30 text-yellow-400 group-hover:scale-110 transition-transform">
                 <Send className="w-5 h-5" />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-white">Telegram Community</h4>
                 <p className="text-xs text-slate-400 mt-0.5">Instant public discussions & updates</p>
-                <span className="text-[11px] text-cyan-400 font-semibold mt-1 inline-block">Join Group &rarr;</span>
+                <span className="text-[11px] text-yellow-400 font-semibold mt-1 inline-block">Join Group &rarr;</span>
               </div>
             </a>
 
@@ -60,26 +60,26 @@ export default function ContactPage() {
               href={`https://t.me/${settings.telegramSupportUsername.replace("@", "")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-start gap-4 p-4 rounded-2xl bg-surface-card border border-white/5 hover:border-purple-500/40 transition-all group"
+              className="flex items-start gap-4 p-4 rounded-2xl bg-surface-card border border-white/5 hover:border-red-500/40 transition-all group"
             >
-              <div className="p-3 rounded-xl bg-purple-950/60 border border-purple-500/30 text-purple-400 group-hover:scale-110 transition-transform">
+              <div className="p-3 rounded-xl bg-red-950/60 border border-red-500/30 text-red-400 group-hover:scale-110 transition-transform">
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-white">Direct Admin Support</h4>
                 <p className="text-xs text-slate-400 mt-0.5">{settings.telegramSupportUsername}</p>
-                <span className="text-[11px] text-purple-400 font-semibold mt-1 inline-block">Message Admin &rarr;</span>
+                <span className="text-[11px] text-red-400 font-semibold mt-1 inline-block">Message Admin &rarr;</span>
               </div>
             </a>
 
             <div className="flex items-start gap-4 p-4 rounded-2xl bg-surface-card border border-white/5">
-              <div className="p-3 rounded-xl bg-pink-950/60 border border-pink-500/30 text-pink-400">
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-white">
                 <Mail className="w-5 h-5" />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-white">Official Email</h4>
                 <p className="text-xs text-slate-400 mt-0.5">{settings.contactEmail}</p>
-                <span className="text-[11px] text-slate-500 mt-1 inline-block">Response within 12 hours</span>
+                <span className="text-[11px] text-slate-500 mt-1 inline-block">Direct response</span>
               </div>
             </div>
           </div>
@@ -149,7 +149,7 @@ export default function ContactPage() {
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white font-bold text-xs shadow-neon-purple hover:opacity-95 transition-all"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black font-black text-xs shadow-neon-yellow hover:opacity-95 transition-all"
               >
                 Submit Message
               </button>

@@ -321,21 +321,21 @@ function CheckoutContent() {
       <div className="text-center space-y-2">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/40 text-yellow-400 text-xs font-black uppercase tracking-wider">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Toolsbd.com Express Checkout &bull; অতি সহজে দ্রুত ডেলিভারি</span>
+          <span>Toolsbd.com Instant Checkout</span>
         </div>
         <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
           {isSuccess 
             ? "🎉 লাইসেন্স কনফার্মেশন ও টুল ডাউনলোড" 
             : isPending 
-            ? "⏳ পেমেন্ট অর্ডার সফলভাবে জমা হয়েছে"
+            ? "⏳ পেমেন্ট ভেরিফিকেশন চলছে..."
             : "টুল কিনুন ও লাইসেন্স পান (Instant Delivery)"}
         </h1>
         <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
           {isSuccess 
             ? "আপনার পেমেন্ট সফল হয়েছে! নিচে দেওয়া লাইসেন্স কী ও ডাউনলোড লিঙ্ক ব্যবহার করে টুল চালু করুন।"
             : isPending
-            ? "আপনার পেমেন্ট রিকোয়েস্ট জমা হয়েছে। অ্যাডমিন TrxID ভেরিফাই করলেই লাইসেন্স অটো অ্যাক্টিভ হয়ে যাবে।"
-            : "bKash বা Rocket-এ টাকা পাঠিয়ে TrxID দিলে ভেরিফাই হয়ে সাথে সাথে লাইসেন্স পেয়ে যাবেন।"
+            ? "আপনার পেমেন্ট তথ্য জমা হয়েছে। এসএমএস গেটওয়ে TrxID ম্যাচ করলেই লাইসেন্স স্বয়ংক্রিয়ভাবে প্রদান করা হবে।"
+            : "bKash বা Rocket-এ টাকা পাঠিয়ে TrxID সাবমিট করলেই তাৎক্ষণিক লাইসেন্স পেয়ে যাবেন।"
           }
         </p>
       </div>
