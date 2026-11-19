@@ -85,18 +85,8 @@ export default function ToolsMarketplacePage() {
                 {plans.filter(p => p.enabled).map((plan) => (
                   <div
                     key={plan.id}
-                    className={`relative rounded-2xl p-5 border transition-all flex flex-col justify-between gap-4 ${
-                      plan.isPopular
-                        ? "bg-gradient-to-b from-yellow-400/15 via-red-600/10 to-black border-yellow-400 shadow-neon-yellow"
-                        : "bg-[#121212] border-white/10 hover:border-yellow-400/50"
-                    }`}
+                    className="relative rounded-2xl p-5 border transition-all flex flex-col justify-between gap-4 bg-[#121212] border-white/10 hover:border-yellow-400/50"
                   >
-                    {plan.isPopular && (
-                      <span className="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-600 text-white border border-yellow-400 shadow-md">
-                        ★ Most Popular
-                      </span>
-                    )}
-
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-base sm:text-lg font-black text-white">

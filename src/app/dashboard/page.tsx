@@ -745,22 +745,13 @@ export default function UserDashboardPage() {
               {activePlans.map((plan) => (
                 <div
                   key={plan.id}
-                  className={`p-5 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-                    plan.isPopular
-                      ? "bg-yellow-400/10 border-yellow-400 shadow-neon-yellow"
-                      : "bg-black/80 border-white/15 hover:border-white/30"
-                  }`}
+                  className="p-5 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-black/80 border-white/15 hover:border-yellow-400/40"
                 >
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-base font-black text-white">
                         {plan.durationDays} DAYS OFFER 🔥
                       </span>
-                      {plan.isPopular && (
-                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-red-600 text-white">
-                          POPULAR
-                        </span>
-                      )}
                     </div>
                     <p className="text-xs text-slate-400 mt-0.5">
                       {flagshipTool?.name} &bull; Single HWID Lock &bull; Firebase Sync

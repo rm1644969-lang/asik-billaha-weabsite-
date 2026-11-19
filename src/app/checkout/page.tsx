@@ -380,11 +380,6 @@ function CheckoutContent() {
                         : "bg-[#111111] border-white/10 hover:border-yellow-400/40 text-slate-300"
                     }`}
                   >
-                    {plan.isPopular && (
-                      <span className="absolute -top-2.5 right-3 px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-red-600 text-white border border-yellow-300">
-                        ★ Most Popular
-                      </span>
-                    )}
                     <span className="text-xs font-black uppercase block text-yellow-400">
                       {plan.name}
                     </span>

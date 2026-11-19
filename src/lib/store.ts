@@ -102,7 +102,10 @@ export function useNexusStore() {
         });
         setTools(updatedTools);
       }
-      if (storedPlans) setPlans(JSON.parse(storedPlans));
+      if (storedPlans) {
+        const parsedPlans = JSON.parse(storedPlans).map((p: PricePlan) => ({ ...p, isPopular: false }));
+        setPlans(parsedPlans);
+      }
       if (storedOrders) setOrders(JSON.parse(storedOrders));
       if (storedLicenses) setLicenses(JSON.parse(storedLicenses));
       if (storedSettings) setSettings(JSON.parse(storedSettings));

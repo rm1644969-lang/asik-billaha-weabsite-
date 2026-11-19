@@ -126,7 +126,7 @@ def verify_tool_license(key, hwid):
 
 - **Flagship Tool**: OTP Testing Utility (v3.4.2 PRO)
 - **7 Days Access**: $2 USD (৳240 BDT) 🔥
-- **15 Days Access**: $4 USD (৳480 BDT) 🔥 [Most Popular]
+- **15 Days Access**: $4 USD (৳480 BDT) 🔥
 - **30 Days VIP Access**: $8 USD (৳960 BDT) 🔥
 - **bKash Personal**: `01967922602`
 - **Rocket Personal**: `01731328169`

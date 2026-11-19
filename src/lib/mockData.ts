@@ -54,7 +54,7 @@ export const samplePlans: PricePlan[] = [
     priceBDT: 480,
     originalPriceBDT: 840,
     currency: "USD",
-    isPopular: true,
+    isPopular: false,
     enabled: true,
     features: [
       "Full 15 Days Unlimited Access",

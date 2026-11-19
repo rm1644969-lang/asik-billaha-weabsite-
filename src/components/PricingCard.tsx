@@ -19,22 +19,8 @@ export default function PricingCard({ plan, toolSlug }: PricingCardProps) {
 
   return (
     <div
-      className={`relative rounded-3xl p-[1px] transition-all duration-300 ${
-        plan.isPopular
-          ? "bg-gradient-to-b from-yellow-400 via-red-500 to-yellow-600 shadow-neon-yellow"
-          : "bg-gradient-to-b from-white/20 via-white/5 to-transparent hover:from-yellow-400/50 hover:to-white/10"
-      }`}
+      className="relative rounded-3xl p-[1px] transition-all duration-300 bg-gradient-to-b from-white/20 via-white/5 to-transparent hover:from-yellow-400/50 hover:to-white/10"
     >
-      {/* Popular Badge */}
-      {plan.isPopular && (
-        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20">
-          <span className="flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-red-600 text-white shadow-lg border border-yellow-400">
-            <Sparkles className="w-3 h-3 text-yellow-300" />
-            Most Popular
-          </span>
-        </div>
-      )}
-
       <div className="relative rounded-3xl bg-[#0a0a0a]/95 backdrop-blur-xl p-7 h-full flex flex-col justify-between overflow-hidden border border-white/10">
         <div>
           {/* Header */}
@@ -95,11 +81,7 @@ export default function PricingCard({ plan, toolSlug }: PricingCardProps) {
         <div>
           <Link
             href={checkoutUrl}
-            className={`w-full py-3.5 px-4 rounded-xl text-sm font-black flex items-center justify-center gap-2 transition-all text-center shadow-lg ${
-              plan.isPopular
-                ? "bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black shadow-neon-yellow hover:opacity-95"
-                : "bg-white/10 hover:bg-yellow-400 hover:text-black text-white border border-white/15"
-            }`}
+            className="w-full py-3.5 px-4 rounded-xl text-sm font-black flex items-center justify-center gap-2 transition-all text-center shadow-lg bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black shadow-neon-yellow hover:opacity-95"
           >
             <Zap className="w-4 h-4 text-black" />
             <span>Select & Buy Plan</span>
