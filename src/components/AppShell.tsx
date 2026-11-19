@@ -57,24 +57,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-[#070707] text-white selection:bg-yellow-400 selection:text-black">
       
-      {/* 1. TOP FLASH ANNOUNCEMENT BAR */}
-      {settings.isAnnouncementActive && (
-        <div className="sticky top-0 z-50 bg-gradient-to-r from-red-950 via-black to-yellow-950 border-b border-yellow-500/30 text-[11px] sm:text-xs py-1.5 px-4 text-center flex items-center justify-center gap-2 text-yellow-300 font-semibold shadow-lg">
-          <span className="w-2 h-2 rounded-full bg-red-500 animate-ping shrink-0" />
-          <span className="truncate">{settings.announcementNotice}</span>
-          <a
-            href={settings.telegramChannelUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline font-black text-white hover:text-yellow-400 transition-colors shrink-0 ml-1 flex items-center gap-1"
-          >
-            <span>Join Telegram</span>
-            <Send className="w-3 h-3 text-yellow-400" />
-          </a>
-        </div>
-      )}
-
-      {/* 2. MOBILE TOP HEADER (VISIBLE BELOW lg) */}
+      {/* 1. MOBILE TOP HEADER (VISIBLE BELOW lg) */}
       <header className="lg:hidden sticky top-0 z-40 h-14 px-4 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
           <button

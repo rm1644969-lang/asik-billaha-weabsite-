@@ -3,6 +3,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
+/**
+ * TOOLSBD.COM — 3D CYBERNETIC AI ROBOTIC SENTINEL EYE
+ * 
+ * Specifically designed for Automation Tools, Software Licensing & Security Guard.
+ * - Interactive mouse/cursor tracking (the robotic eye looks at user's cursor)
+ * - Gyroscopic cybernetic HUD gimbal rings (Cyber Yellow & Neon Red)
+ * - Glowing optical pupil with aperture blades and laser core
+ * - Sweeping cyber scanner radar beam
+ * - Lightweight, zero-lag pure WebGL (60 FPS)
+ */
 export default function Hero3D() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hasWebGL, setHasWebGL] = useState(true);
@@ -24,168 +34,230 @@ export default function Hero3D() {
     const container = containerRef.current;
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Scene setup with Deep Obsidian Black fog
+    // 1. SCENE & CAMERA
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x070707, 0.035);
+    scene.fog = new THREE.FogExp2(0x070707, 0.04);
 
     const camera = new THREE.PerspectiveCamera(
-      55,
+      50,
       container.clientWidth / container.clientHeight,
       0.1,
       100
     );
-    camera.position.z = 12;
+    camera.position.z = 9.5;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({ 
+      alpha: true, 
+      antialias: true, 
+      powerPreference: "high-performance" 
+    });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.3;
+    renderer.toneMappingExposure = 1.35;
     container.appendChild(renderer.domElement);
 
-    const worldGroup = new THREE.Group();
-    scene.add(worldGroup);
+    // Root World Group
+    const rootGroup = new THREE.Group();
+    scene.add(rootGroup);
 
-    // 1. Central Core Torus Knot in Cyber Gold/Yellow
-    const knotGeometry = new THREE.TorusKnotGeometry(1.8, 0.45, 128, 32, 2, 3);
-    const knotMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xfacc15, // Cyber Yellow
-      emissive: 0x78350f,
-      emissiveIntensity: 0.5,
+    // 2. THE CYBER EYE APPARATUS (Positioned on the right side for desktop)
+    const eyeAnchor = new THREE.Group();
+    // Default position: right side on desktop, center on mobile
+    const isMobile = container.clientWidth < 1024;
+    eyeAnchor.position.set(isMobile ? 0 : 3.8, isMobile ? 0.3 : 0, 0);
+    rootGroup.add(eyeAnchor);
+
+    // Inner Tracking Eyeball (looks at cursor)
+    const trackingEyeball = new THREE.Group();
+    eyeAnchor.add(trackingEyeball);
+
+    // --- A. Eyeball Sclera (Dark Metallic Obsidian Sphere) ---
+    const eyeballGeo = new THREE.SphereGeometry(1.65, 64, 64);
+    const eyeballMat = new THREE.MeshPhysicalMaterial({
+      color: 0x0a0a0a,
       roughness: 0.15,
-      metalness: 0.9,
+      metalness: 0.95,
       clearcoat: 1.0,
       clearcoatRoughness: 0.1,
     });
-    const knot = new THREE.Mesh(knotGeometry, knotMaterial);
-    knot.position.set(3.5, 0, 0);
-    worldGroup.add(knot);
+    const eyeballMesh = new THREE.Mesh(eyeballGeo, eyeballMat);
+    trackingEyeball.add(eyeballMesh);
 
-    // 2. Wireframe outer cage in Crimson Red
-    const wireframeKnotGeo = new THREE.TorusKnotGeometry(1.86, 0.46, 64, 16, 2, 3);
-    const wireframeKnotMat = new THREE.MeshBasicMaterial({
-      color: 0xef4444, // Neon Red
-      wireframe: true,
+    // --- B. Glowing Cybernetic Iris (Golden Yellow Aperture) ---
+    const irisOuterGeo = new THREE.RingGeometry(0.38, 1.05, 48);
+    const irisOuterMat = new THREE.MeshBasicMaterial({
+      color: 0xfacc15, // Cyber Yellow
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.95,
+    });
+    const irisOuter = new THREE.Mesh(irisOuterGeo, irisOuterMat);
+    irisOuter.position.z = 1.58;
+    trackingEyeball.add(irisOuter);
+
+    // Inner Crimson Red Accent Iris Ring
+    const irisInnerGeo = new THREE.RingGeometry(0.38, 0.65, 36);
+    const irisInnerMat = new THREE.MeshBasicMaterial({
+      color: 0xef4444, // Crimson Red
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.9,
+    });
+    const irisInner = new THREE.Mesh(irisInnerGeo, irisInnerMat);
+    irisInner.position.z = 1.60;
+    trackingEyeball.add(irisInner);
+
+    // --- C. Center Optical Pupil (Dark Camera Lens Core) ---
+    const pupilGeo = new THREE.CircleGeometry(0.36, 32);
+    const pupilMat = new THREE.MeshPhysicalMaterial({
+      color: 0x000000,
+      roughness: 0.05,
+      metalness: 0.9,
+      clearcoat: 1.0,
+    });
+    const pupil = new THREE.Mesh(pupilGeo, pupilMat);
+    pupil.position.z = 1.62;
+    trackingEyeball.add(pupil);
+
+    // Central Glowing Laser Dot (Red Security Point)
+    const laserDotGeo = new THREE.CircleGeometry(0.12, 24);
+    const laserDotMat = new THREE.MeshBasicMaterial({
+      color: 0xff0033,
+    });
+    const laserDot = new THREE.Mesh(laserDotGeo, laserDotMat);
+    laserDot.position.z = 1.63;
+    trackingEyeball.add(laserDot);
+
+    // Cornea Glass Dome (High Gloss Reflection)
+    const corneaGeo = new THREE.SphereGeometry(1.72, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.45);
+    const corneaMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      transmission: 0.85,
+      opacity: 0.35,
+      transparent: true,
+      roughness: 0.05,
+      metalness: 0.1,
+      clearcoat: 1.0,
+    });
+    const cornea = new THREE.Mesh(corneaGeo, corneaMat);
+    cornea.rotation.x = Math.PI / 2;
+    cornea.position.z = 0.2;
+    trackingEyeball.add(cornea);
+
+    // --- D. Gyroscopic Outer Gimbal Rings (Automation Radar Housing) ---
+    // Ring 1: Yellow Neon Gimbal Ring
+    const gimbalRing1Geo = new THREE.TorusGeometry(2.35, 0.035, 16, 100);
+    const gimbalRing1Mat = new THREE.MeshBasicMaterial({
+      color: 0xfacc15,
+      transparent: true,
+      opacity: 0.65,
+    });
+    const gimbalRing1 = new THREE.Mesh(gimbalRing1Geo, gimbalRing1Mat);
+    eyeAnchor.add(gimbalRing1);
+
+    // Ring 2: Crimson Red Gimbal Ring (Tilted)
+    const gimbalRing2Geo = new THREE.TorusGeometry(2.75, 0.03, 16, 100);
+    const gimbalRing2Mat = new THREE.MeshBasicMaterial({
+      color: 0xef4444,
+      transparent: true,
+      opacity: 0.55,
+    });
+    const gimbalRing2 = new THREE.Mesh(gimbalRing2Geo, gimbalRing2Mat);
+    gimbalRing2.rotation.x = Math.PI / 3;
+    eyeAnchor.add(gimbalRing2);
+
+    // Ring 3: Segmented Outer HUD Ring (White/Gold)
+    const gimbalRing3Geo = new THREE.TorusGeometry(3.15, 0.02, 16, 120);
+    const gimbalRing3Mat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
       transparent: true,
       opacity: 0.35,
+      wireframe: true,
     });
-    const wireKnot = new THREE.Mesh(wireframeKnotGeo, wireframeKnotMat);
-    knot.add(wireKnot);
+    const gimbalRing3 = new THREE.Mesh(gimbalRing3Geo, gimbalRing3Mat);
+    gimbalRing3.rotation.y = Math.PI / 4;
+    eyeAnchor.add(gimbalRing3);
 
-    // 3. Orbiting Geometric Floating Objects (Yellow, White, Red)
-    const floaters: { mesh: THREE.Mesh; speedX: number; speedY: number; speedZ: number; orbitRadius: number; orbitSpeed: number; baseAngle: number }[] = [];
-    const colors = [0xfacc15, 0xef4444, 0xffffff, 0xdc2626];
+    // --- E. Sweeping Automation Radar Scanner Beam ---
+    const scanBeamGeo = new THREE.PlaneGeometry(0.04, 4.8);
+    const scanBeamMat = new THREE.MeshBasicMaterial({
+      color: 0xfacc15,
+      transparent: true,
+      opacity: 0.75,
+      side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+    });
+    const scanBeam = new THREE.Mesh(scanBeamGeo, scanBeamMat);
+    scanBeam.position.z = 1.7;
+    eyeAnchor.add(scanBeam);
 
-    for (let i = 0; i < 7; i++) {
-      const geo = i % 2 === 0 
-        ? new THREE.IcosahedronGeometry(0.35 + Math.random() * 0.3, 0)
-        : new THREE.OctahedronGeometry(0.4 + Math.random() * 0.25, 0);
-      
-      const mat = new THREE.MeshStandardMaterial({
-        color: colors[i % colors.length],
-        roughness: 0.2,
-        metalness: 0.85,
-        wireframe: i % 3 === 0,
-      });
-
-      const mesh = new THREE.Mesh(geo, mat);
-      const orbitRadius = 4 + Math.random() * 2.5;
-      const angle = (i / 7) * Math.PI * 2;
-      mesh.position.set(
-        3.5 + Math.cos(angle) * orbitRadius,
-        (Math.random() - 0.5) * 4,
-        Math.sin(angle) * orbitRadius * 0.7
-      );
-
-      worldGroup.add(mesh);
-      floaters.push({
-        mesh,
-        speedX: (Math.random() - 0.5) * 0.02,
-        speedY: (Math.random() - 0.5) * 0.02,
-        speedZ: (Math.random() - 0.5) * 0.02,
-        orbitRadius,
-        orbitSpeed: 0.005 + Math.random() * 0.005,
-        baseAngle: angle
-      });
-    }
-
-    // 4. Glowing Rings (Yellow & Red)
-    const ring1 = new THREE.Mesh(
-      new THREE.TorusGeometry(3.6, 0.03, 16, 100),
-      new THREE.MeshBasicMaterial({ color: 0xfacc15, transparent: true, opacity: 0.5 })
-    );
-    ring1.position.set(3.5, 0, 0);
-    ring1.rotation.x = Math.PI / 3;
-    worldGroup.add(ring1);
-
-    const ring2 = new THREE.Mesh(
-      new THREE.TorusGeometry(4.2, 0.025, 16, 100),
-      new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.45 })
-    );
-    ring2.position.set(3.5, 0, 0);
-    ring2.rotation.y = Math.PI / 4;
-    worldGroup.add(ring2);
-
-    // 5. Starfield Particles (Yellow, White, Red)
-    const particlesCount = 380;
+    // --- F. Orbiting Cyber Telemetry Points ---
+    const particlesCount = 260;
     const particleGeometry = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particlesCount * 3);
     const particleColors = new Float32Array(particlesCount * 3);
 
-    const pColorYellow = new THREE.Color(0xfacc15);
-    const pColorRed = new THREE.Color(0xef4444);
-    const pColorWhite = new THREE.Color(0xffffff);
+    const cYellow = new THREE.Color(0xfacc15);
+    const cRed = new THREE.Color(0xef4444);
+    const cWhite = new THREE.Color(0xffffff);
 
     for (let i = 0; i < particlesCount; i++) {
-      particlePositions[i * 3] = (Math.random() - 0.5) * 25;
-      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 16;
-      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 14;
+      // Cylindrical cluster orbiting the eye
+      const r = 2.2 + Math.random() * 2.8;
+      const theta = Math.random() * Math.PI * 2;
+      const y = (Math.random() - 0.5) * 5.0;
 
-      const chosenColor = i % 3 === 0 ? pColorYellow : i % 3 === 1 ? pColorRed : pColorWhite;
-      particleColors[i * 3] = chosenColor.r;
-      particleColors[i * 3 + 1] = chosenColor.g;
-      particleColors[i * 3 + 2] = chosenColor.b;
+      particlePositions[i * 3] = Math.cos(theta) * r;
+      particlePositions[i * 3 + 1] = y;
+      particlePositions[i * 3 + 2] = Math.sin(theta) * r;
+
+      const col = i % 3 === 0 ? cYellow : i % 3 === 1 ? cRed : cWhite;
+      particleColors[i * 3] = col.r;
+      particleColors[i * 3 + 1] = col.g;
+      particleColors[i * 3 + 2] = col.b;
     }
 
     particleGeometry.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
     particleGeometry.setAttribute("color", new THREE.BufferAttribute(particleColors, 3));
 
     const particleMaterial = new THREE.PointsMaterial({
-      size: 0.07,
+      size: 0.055,
       vertexColors: true,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.75,
       blending: THREE.AdditiveBlending,
     });
     const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
-    worldGroup.add(particleSystem);
+    eyeAnchor.add(particleSystem);
 
-    // Lighting (Yellow + Red + White)
-    const ambientLight = new THREE.AmbientLight(0x181818, 2.5);
+    // 3. LIGHTING (Cyber Yellow & Crimson Red & White Highlights)
+    const ambientLight = new THREE.AmbientLight(0x1a1a1a, 2.5);
     scene.add(ambientLight);
 
-    const pointLightYellow = new THREE.PointLight(0xfacc15, 5.0, 20);
-    pointLightYellow.position.set(4, 3, 4);
-    scene.add(pointLightYellow);
+    const yellowLight = new THREE.PointLight(0xfacc15, 6, 20);
+    yellowLight.position.set(5, 3, 5);
+    scene.add(yellowLight);
 
-    const pointLightRed = new THREE.PointLight(0xef4444, 4.5, 18);
-    pointLightRed.position.set(0, -3, 3);
-    scene.add(pointLightRed);
+    const redLight = new THREE.PointLight(0xef4444, 5, 18);
+    redLight.position.set(-2, -3, 4);
+    scene.add(redLight);
 
-    const pointLightWhite = new THREE.PointLight(0xffffff, 3.5, 15);
-    pointLightWhite.position.set(6, -2, -2);
-    scene.add(pointLightWhite);
+    const whiteHighlight = new THREE.PointLight(0xffffff, 4, 15);
+    whiteHighlight.position.set(4, 0, 6);
+    scene.add(whiteHighlight);
 
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetX = 0;
-    let targetY = 0;
+    // 4. INTERACTIVE MOUSE TRACKING
+    let mouseNormX = 0;
+    let mouseNormY = 0;
+    let targetLookX = 0;
+    let targetLookY = 0;
 
     const handleMouseMove = (event: MouseEvent) => {
-      const windowHalfX = window.innerWidth / 2;
-      const windowHalfY = window.innerHeight / 2;
-      mouseX = (event.clientX - windowHalfX) * 0.0006;
-      mouseY = (event.clientY - windowHalfY) * 0.0006;
+      const rect = container.getBoundingClientRect();
+      // Normalized between -1 and 1 relative to container
+      mouseNormX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseNormY = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -196,14 +268,12 @@ export default function Hero3D() {
       const height = container.clientHeight;
       camera.aspect = width / height;
 
-      if (width < 768) {
-        knot.position.set(0, 1.2, 0);
-        ring1.position.set(0, 1.2, 0);
-        ring2.position.set(0, 1.2, 0);
+      if (width < 1024) {
+        eyeAnchor.position.set(0, 0.4, 0);
+        eyeAnchor.scale.set(0.78, 0.78, 0.78);
       } else {
-        knot.position.set(3.5, 0, 0);
-        ring1.position.set(3.5, 0, 0);
-        ring2.position.set(3.5, 0, 0);
+        eyeAnchor.position.set(3.8, 0, 0);
+        eyeAnchor.scale.set(1.0, 1.0, 1.0);
       }
 
       camera.updateProjectionMatrix();
@@ -213,6 +283,7 @@ export default function Hero3D() {
     window.addEventListener("resize", handleResize);
     handleResize();
 
+    // 5. ANIMATION LOOP
     let animationFrameId: number;
     let clock = new THREE.Clock();
 
@@ -221,33 +292,34 @@ export default function Hero3D() {
       const elapsedTime = clock.getElapsedTime();
 
       if (!prefersReducedMotion) {
-        knot.rotation.x = elapsedTime * 0.35;
-        knot.rotation.y = elapsedTime * 0.45;
+        // Smooth eye looking interpolation towards mouse cursor
+        targetLookX += (mouseNormX * 0.7 - targetLookX) * 0.08;
+        targetLookY += (mouseNormY * 0.5 - targetLookY) * 0.08;
 
-        ring1.rotation.z = elapsedTime * 0.2;
-        ring2.rotation.x = -elapsedTime * 0.25;
+        // Eyeball tracks the cursor smoothly
+        trackingEyeball.rotation.y = targetLookX;
+        trackingEyeball.rotation.x = -targetLookY;
 
-        floaters.forEach((item) => {
-          item.mesh.rotation.x += item.speedX;
-          item.mesh.rotation.y += item.speedY;
-          item.mesh.rotation.z += item.speedZ;
-          
-          const curAngle = item.baseAngle + elapsedTime * item.orbitSpeed * 8;
-          const baseX = window.innerWidth < 768 ? 0 : 3.5;
-          const baseY = window.innerWidth < 768 ? 1.2 : 0;
-          item.mesh.position.x = baseX + Math.cos(curAngle) * item.orbitRadius;
-          item.mesh.position.z = Math.sin(curAngle) * item.orbitRadius * 0.7;
-          item.mesh.position.y = baseY + Math.sin(elapsedTime * 2 + item.baseAngle) * 0.7;
-        });
+        // Pupil subtle dilation/breathing effect
+        const pulse = 1 + Math.sin(elapsedTime * 2.5) * 0.04;
+        pupil.scale.set(pulse, pulse, 1);
+        laserDot.scale.set(pulse, pulse, 1);
 
-        particleSystem.rotation.y = elapsedTime * 0.02;
-        particleSystem.rotation.x = elapsedTime * 0.01;
+        // Gyroscopic gimbal rings rotate around the eye
+        gimbalRing1.rotation.z = elapsedTime * 0.4;
+        gimbalRing1.rotation.x = Math.sin(elapsedTime * 0.3) * 0.2;
 
-        targetX += (mouseX - targetX) * 0.05;
-        targetY += (mouseY - targetY) * 0.05;
+        gimbalRing2.rotation.z = -elapsedTime * 0.35;
+        gimbalRing2.rotation.y = elapsedTime * 0.25;
 
-        worldGroup.rotation.y = targetX;
-        worldGroup.rotation.x = targetY;
+        gimbalRing3.rotation.x = elapsedTime * 0.2;
+        gimbalRing3.rotation.y = -elapsedTime * 0.15;
+
+        // Sweeping scanner beam
+        scanBeam.rotation.z = elapsedTime * 1.5;
+
+        // Telemetry orbit
+        particleSystem.rotation.y = elapsedTime * 0.08;
       }
 
       renderer.render(scene, camera);
@@ -263,8 +335,18 @@ export default function Hero3D() {
         container.removeChild(renderer.domElement);
       }
       renderer.dispose();
-      knotGeometry.dispose();
-      knotMaterial.dispose();
+      eyeballGeo.dispose();
+      eyeballMat.dispose();
+      irisOuterGeo.dispose();
+      irisOuterMat.dispose();
+      irisInnerGeo.dispose();
+      irisInnerMat.dispose();
+      gimbalRing1Geo.dispose();
+      gimbalRing1Mat.dispose();
+      gimbalRing2Geo.dispose();
+      gimbalRing2Mat.dispose();
+      gimbalRing3Geo.dispose();
+      gimbalRing3Mat.dispose();
       particleGeometry.dispose();
       particleMaterial.dispose();
     };
@@ -275,7 +357,7 @@ export default function Hero3D() {
       <div ref={containerRef} className="w-full h-full relative" />
       {!hasWebGL && (
         <div className="absolute inset-0 flex items-center justify-center bg-radial-gradient">
-          <div className="w-96 h-96 rounded-full bg-gradient-to-tr from-yellow-500/30 to-red-600/20 blur-3xl animate-pulse" />
+          <div className="w-80 h-80 rounded-full bg-gradient-to-tr from-yellow-500/25 to-red-600/20 blur-3xl animate-pulse" />
         </div>
       )}
     </div>
