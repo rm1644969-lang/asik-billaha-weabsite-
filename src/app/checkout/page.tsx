@@ -565,6 +565,57 @@ function CheckoutContent() {
           {(paymentMethod === "bKash" || paymentMethod === "Rocket") && (
             <form onSubmit={handleExpressPaymentSubmit} className="space-y-5">
               
+              {/* ৩-ধাপের ভিজ্যুয়াল মিনি পেমেন্ট গাইড (Visual 3-Step Guide) — পেমেন্ট বক্সের ঠিক ওপরে */}
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-red-500" />
+                    <span>সহজ ৩-ধাপে পেমেন্ট নির্দেশিকা:</span>
+                  </span>
+                  <span className="text-[11px] font-mono text-emerald-400 font-bold">
+                    ⚡ তাৎক্ষণিক অটো ডেলিভারি
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <div className="p-3.5 rounded-2xl bg-[#111111] border border-white/10 hover:border-yellow-400/40 transition-all flex items-start gap-3">
+                    <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-500 text-black font-black flex items-center justify-center text-xs shrink-0 shadow-neon-yellow">
+                      ১
+                    </div>
+                    <div className="space-y-0.5">
+                      <h4 className="font-bold text-white text-xs">Send Money দিন</h4>
+                      <p className="text-[11px] text-slate-400 leading-tight">
+                        {paymentMethod} অ্যাপে গিয়ে &apos;Send Money&apos; নির্বাচন করুন।
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-[#111111] border border-white/10 hover:border-yellow-400/40 transition-all flex items-start gap-3">
+                    <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 text-white font-black flex items-center justify-center text-xs shrink-0 shadow-neon-red">
+                      ২
+                    </div>
+                    <div className="space-y-0.5">
+                      <h4 className="font-bold text-white text-xs">টাকা পাঠান</h4>
+                      <p className="text-[11px] text-slate-400 leading-tight">
+                        নিচের নাম্বারে <strong>৳{selectedPlan.priceBDT}</strong> পাঠিয়ে দিন।
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-[#111111] border border-white/10 hover:border-yellow-400/40 transition-all flex items-start gap-3">
+                    <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-black font-black flex items-center justify-center text-xs shrink-0 shadow-md">
+                      ৩
+                    </div>
+                    <div className="space-y-0.5">
+                      <h4 className="font-bold text-white text-xs">TrxID পেস্ট করুন</h4>
+                      <p className="text-[11px] text-slate-400 leading-tight">
+                        কনফার্মেশন SMS-এর TrxID নিচের বক্সে দিন।
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Payment Number Card */}
               <div className="p-4 sm:p-5 rounded-2xl bg-[#111111] border border-yellow-400/50 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -594,22 +645,6 @@ function CheckoutContent() {
                     {copiedNumber ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     <span>{copiedNumber ? "কপি হয়েছে!" : "নাম্বার কপি করুন"}</span>
                   </button>
-                </div>
-
-                {/* 3-Step Mini Visual Guide */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-white/10 text-[11px] text-slate-300">
-                  <div className="p-2.5 rounded-xl bg-black/60 border border-white/5 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-[10px] shrink-0">১</span>
-                    <span>{paymentMethod} অ্যাপে <strong>Send Money</strong> দিন</span>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-black/60 border border-white/5 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-[10px] shrink-0">২</span>
-                    <span>নাম্বারে <strong>৳{selectedPlan.priceBDT}</strong> পাঠান</span>
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-black/60 border border-white/5 flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-[10px] shrink-0">৩</span>
-                    <span>এসএমএসের <strong>TrxID</strong> পেস্ট করুন</span>
-                  </div>
                 </div>
               </div>
 
@@ -759,22 +794,57 @@ function CheckoutContent() {
               </div>
             </div>
 
-            {/* 3-Step Visual Progress Pipeline */}
-            <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 max-w-md mx-auto">
-              <div className="flex items-center justify-between text-[11px] font-mono">
-                <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>১. TrxID জমা</span>
+            {/* ⏳ লাইভ ভেরিফিকেশন প্রগ্রেস পাইপলাইন (3-Step Progress Timeline) */}
+            <div className="p-5 rounded-3xl bg-[#090909] border border-yellow-400/40 shadow-neon-yellow max-w-xl mx-auto space-y-3">
+              <div className="flex items-center justify-between text-xs pb-1 border-b border-white/10">
+                <span className="font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
+                  <RotateCcw className="w-3.5 h-3.5 animate-spin text-yellow-400" />
+                  <span>লাইভ ভেরিফিকেশন প্রগ্রেস পাইপলাইন:</span>
+                </span>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 animate-pulse">
+                  ধাপ ২ চলমান...
+                </span>
+              </div>
+
+              {/* 3 Interactive Pipeline Nodes */}
+              <div className="flex items-center justify-between gap-1 pt-1">
+                {/* Node 1: Completed */}
+                <div className="flex flex-col items-center gap-1 text-center flex-1">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.4)]">
+                    <Check className="w-5 h-5 font-black text-emerald-400" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-black text-emerald-400 block">১. TrxID জমা</span>
+                    <span className="text-[10px] text-emerald-400/80 font-mono">সফলভাবে গৃহীত</span>
+                  </div>
                 </div>
-                <div className="w-8 h-[2px] bg-amber-400 animate-pulse" />
-                <div className="flex items-center gap-1.5 text-amber-400 font-bold animate-pulse">
-                  <RotateCcw className="w-3.5 h-3.5 animate-spin text-amber-400" />
-                  <span>২. ভেরিফিকেশন চলছে</span>
+
+                {/* Animated Connecting Track 1 */}
+                <div className="flex-1 h-1.5 bg-gradient-to-r from-emerald-500 via-amber-400 to-amber-500 rounded-full animate-pulse mx-1 shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
+
+                {/* Node 2: In-Progress */}
+                <div className="flex flex-col items-center gap-1 text-center flex-1">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-500/25 border-2 border-amber-400 flex items-center justify-center text-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.7)] animate-pulse">
+                    <RotateCcw className="w-5 h-5 animate-spin text-amber-400" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-black text-amber-400 block">২. এসএমএস ভেরিফিকেশন</span>
+                    <span className="text-[10px] text-amber-300 font-mono animate-pulse">যাচাই চলছে...</span>
+                  </div>
                 </div>
-                <div className="w-8 h-[2px] bg-white/20" />
-                <div className="flex items-center gap-1.5 text-slate-500">
-                  <Key className="w-3.5 h-3.5" />
-                  <span>৩. লাইসেন্স আনলক</span>
+
+                {/* Connecting Track 2 */}
+                <div className="flex-1 h-1.5 bg-white/15 rounded-full mx-1" />
+
+                {/* Node 3: Pending */}
+                <div className="flex flex-col items-center gap-1 text-center flex-1 opacity-70">
+                  <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-slate-400">
+                    <Key className="w-5 h-5 text-yellow-400/70" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-slate-300 block">৩. লাইসেন্স আনলক</span>
+                    <span className="text-[10px] text-slate-500 font-mono">অটো ডেলিভারি</span>
+                  </div>
                 </div>
               </div>
             </div>
