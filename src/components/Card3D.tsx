@@ -10,7 +10,7 @@ interface Card3DProps {
   depth?: number;   // 3D scale
 }
 
-export default function Card3D({
+function Card3DComponent({
   children,
   className = "",
   maxTilt = 8,
@@ -88,3 +88,6 @@ export default function Card3D({
     </div>
   );
 }
+
+const Card3D = React.memo(Card3DComponent);
+export default Card3D;

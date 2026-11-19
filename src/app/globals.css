@@ -252,3 +252,20 @@ body {
 .animate-wave {
   animation: robotWave 0.8s ease-in-out infinite;
 }
+
+/* Dashboard Smooth Tab Switch Animations */
+@keyframes tabFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.animate-tab-fade {
+  animation: tabFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}

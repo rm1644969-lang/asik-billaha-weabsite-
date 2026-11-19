@@ -9,7 +9,7 @@ interface CyberCanvas3DProps {
   interactive?: boolean;
 }
 
-export default function CyberCanvas3D({
+function CyberCanvas3DComponent({
   className = "absolute inset-0 pointer-events-none overflow-hidden",
   variant = "floating-geometry",
   interactive = true,
@@ -204,3 +204,6 @@ export default function CyberCanvas3D({
 
   return <div ref={containerRef} className={className} aria-hidden="true" />;
 }
+
+const CyberCanvas3D = React.memo(CyberCanvas3DComponent);
+export default CyberCanvas3D;

@@ -559,11 +559,12 @@ export default function UserDashboardPage() {
       {/* Dashboard Tabs (Horizontally scrollable on mobile, wrapping on tablets & desktops) */}
       <div className="flex items-center gap-2 border-b border-white/10 pb-3 overflow-x-auto scrollbar-none sm:flex-wrap">
         <button
+          type="button"
           onClick={() => setActiveTab("wallet")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all shrink-0 whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
             activeTab === "wallet"
-              ? "bg-yellow-400 text-black shadow-neon-yellow"
-              : "text-slate-300 hover:text-white bg-surface-card"
+              ? "bg-yellow-400 text-black shadow-neon-yellow scale-[1.02]"
+              : "text-slate-300 hover:text-white bg-surface-card hover:bg-white/10"
           }`}
         >
           <Wallet className="w-4 h-4" />
@@ -571,11 +572,12 @@ export default function UserDashboardPage() {
         </button>
 
         <button
+          type="button"
           onClick={() => setActiveTab("licenses")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all shrink-0 whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
             activeTab === "licenses"
-              ? "bg-yellow-400 text-black shadow-neon-yellow"
-              : "text-slate-300 hover:text-white bg-surface-card"
+              ? "bg-yellow-400 text-black shadow-neon-yellow scale-[1.02]"
+              : "text-slate-300 hover:text-white bg-surface-card hover:bg-white/10"
           }`}
         >
           <Key className="w-4 h-4" />
@@ -583,11 +585,12 @@ export default function UserDashboardPage() {
         </button>
 
         <button
+          type="button"
           onClick={() => setActiveTab("downloads")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all shrink-0 whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
             activeTab === "downloads"
-              ? "bg-yellow-400 text-black shadow-neon-yellow"
-              : "text-slate-300 hover:text-white bg-surface-card"
+              ? "bg-yellow-400 text-black shadow-neon-yellow scale-[1.02]"
+              : "text-slate-300 hover:text-white bg-surface-card hover:bg-white/10"
           }`}
         >
           <Download className="w-4 h-4" />
@@ -595,11 +598,12 @@ export default function UserDashboardPage() {
         </button>
 
         <button
+          type="button"
           onClick={() => setActiveTab("orders")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all shrink-0 whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
             activeTab === "orders"
-              ? "bg-yellow-400 text-black shadow-neon-yellow"
-              : "text-slate-300 hover:text-white bg-surface-card"
+              ? "bg-yellow-400 text-black shadow-neon-yellow scale-[1.02]"
+              : "text-slate-300 hover:text-white bg-surface-card hover:bg-white/10"
           }`}
         >
           <CreditCard className="w-4 h-4" />
@@ -611,7 +615,7 @@ export default function UserDashboardPage() {
       {/* TAB 1: ADD MONEY + INSTANT BUY OFFER WITH WALLET               */}
       {/* ============================================================== */}
       {activeTab === "wallet" && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div key="tab-wallet" className="animate-tab-fade grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Left: Add Money via bKash / Rocket */}
           <div className="lg:col-span-6 glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10">
@@ -809,7 +813,7 @@ export default function UserDashboardPage() {
       {/* TAB 2: MY LICENSES & HWID KEY BINDING (FIREBASE SYNC)          */}
       {/* ============================================================== */}
       {activeTab === "licenses" && (
-        <div className="space-y-6">
+        <div key="tab-licenses" className="animate-tab-fade space-y-6">
           {userLicenses.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {userLicenses.map((lic) => {
@@ -957,6 +961,7 @@ export default function UserDashboardPage() {
                               <iframe
                                 width="100%"
                                 height="100%"
+                                loading="lazy"
                                 src={normalizeYouTubeEmbedUrl(flagshipTool.setupVideoUrl)}
                                 title="License Setup Video"
                                 frameBorder="0"
@@ -996,7 +1001,7 @@ export default function UserDashboardPage() {
       {/* TAB 3: AUTHORIZED DOWNLOADS & SETUP VIDEOS                     */}
       {/* ============================================================== */}
       {activeTab === "downloads" && (
-        <div className="space-y-4">
+        <div key="tab-downloads" className="animate-tab-fade space-y-4">
           <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10">
             <div>
               <h3 className="text-xl font-black text-white">
@@ -1077,6 +1082,7 @@ export default function UserDashboardPage() {
                           <iframe
                             width="100%"
                             height="100%"
+                            loading="lazy"
                             src={normalizeYouTubeEmbedUrl(t.setupVideoUrl)}
                             title={`${t.name} Setup Guide`}
                             frameBorder="0"
@@ -1098,7 +1104,7 @@ export default function UserDashboardPage() {
       {/* TAB 4: PAYMENT & DEPOSIT HISTORY                               */}
       {/* ============================================================== */}
       {activeTab === "orders" && (
-        <div className="space-y-6">
+        <div key="tab-orders" className="animate-tab-fade space-y-6">
           {/* Wallet Deposits Table */}
           <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-white/10">
             <h3 className="text-lg font-black text-white">Wallet Add Money History</h3>
@@ -1342,6 +1348,7 @@ export default function UserDashboardPage() {
                       {isVideoOpen && matchedTool?.setupVideoUrl && (
                         <div className="relative aspect-video rounded-xl overflow-hidden border border-yellow-400/40 shadow-lg mt-2">
                           <iframe
+                            loading="lazy"
                             src={normalizeYouTubeEmbedUrl(matchedTool.setupVideoUrl)}
                             title="Setup Guide Video"
                             className="w-full h-full"
