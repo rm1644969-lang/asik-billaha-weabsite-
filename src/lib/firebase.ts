@@ -33,12 +33,13 @@ import { License, Order } from "./types";
 // 1. PRIMARY WEB FIREBASE CONFIG (Website, Auth, Wallet, Orders, Settings)
 // ----------------------------------------------------------------------------
 const webFirebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyBSRWUOkhV3rt-GmXM7Nm3Tkghn8Qbg1yA",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "fb-resend-otp.firebaseapp.com",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "fb-resend-otp",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "fb-resend-otp.firebasestorage.app",
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "588215403017",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:588215403017:web:59f0686513e4a0d871aed8",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyCTO5CfHZLf3ODLDl2qBQe6Ry8O8Jjv9eg",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "asik-billaha-weabsite.firebaseapp.com",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "asik-billaha-weabsite",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "asik-billaha-weabsite.firebasestorage.app",
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "971624723908",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:971624723908:web:a655667ea26268ed016091",
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-MGG71VC9LX",
 };
 
 // ----------------------------------------------------------------------------
