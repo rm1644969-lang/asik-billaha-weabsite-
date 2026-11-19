@@ -82,25 +82,27 @@ export function useNexusStore() {
 
       if (storedTools) {
         const parsedTools = JSON.parse(storedTools);
-        const updatedTools = parsedTools.map((t: Tool) => {
-          if (t.id === "tool-otp-utility" || (t.bannerUrl && t.bannerUrl.includes("unsplash.com"))) {
-            return {
-              ...t,
-              name: "FAST OTP — FB Auto Resender Pro",
-              version: "v3.0 PRO",
-              bannerUrl: "/images/fast-otp-tool.jpg",
-              screenshots: ["/images/fast-otp-tool.jpg"],
-            };
-          }
-          return t;
-        });
-        // Ensure newly introduced sample tools (e.g. TikTok & Instagram Coming Soon) are present
-        sampleTools.forEach(st => {
-          if (!updatedTools.some((t: Tool) => t.id === st.id)) {
-            updatedTools.push(st);
+        const toolMap = new Map<string, Tool>();
+        // Seed with sampleTools to guarantee updated metadata & new entries
+        sampleTools.forEach((st) => toolMap.set(st.id, st));
+        parsedTools.forEach((pt: Tool) => {
+          if (toolMap.has(pt.id)) {
+            // Keep user overrides while ensuring latest release paths, video urls & coming soon status
+            toolMap.set(pt.id, { ...toolMap.get(pt.id)!, ...pt, setupVideoUrl: toolMap.get(pt.id)!.setupVideoUrl, downloadFilePath: toolMap.get(pt.id)!.downloadFilePath, status: toolMap.get(pt.id)!.status });
+          } else {
+            toolMap.set(pt.id, pt);
           }
         });
-        setTools(updatedTools);
+        const reconciledTools = Array.from(toolMap.values());
+        setTools(reconciledTools);
+        try {
+          localStorage.setItem("toolsbd_v4_tools", JSON.stringify(reconciledTools));
+        } catch (_) {}
+      } else {
+        setTools(sampleTools);
+        try {
+          localStorage.setItem("toolsbd_v4_tools", JSON.stringify(sampleTools));
+        } catch (_) {}
       }
       if (storedPlans) {
         const parsedPlans = JSON.parse(storedPlans).map((p: PricePlan) => ({ ...p, isPopular: false }));

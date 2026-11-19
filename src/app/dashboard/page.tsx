@@ -27,7 +27,8 @@ import {
   Zap,
   HardDrive,
   Bell,
-  DownloadCloud
+  DownloadCloud,
+  Lock
 } from "lucide-react";
 import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
 import { playChimeSound, showBrowserNotification } from "@/lib/notifications";
@@ -75,7 +76,9 @@ export default function UserDashboardPage() {
   const [hwidInputs, setHwidInputs] = useState<Record<string, string>>({});
   const [bindingId, setBindingId] = useState<string | null>(null);
   const [buyingPlanId, setBuyingPlanId] = useState<string | null>(null);
-  const [openVideoModal, setOpenVideoModal] = useState<string | null>(null);
+  const [closedVideoIds, setClosedVideoIds] = useState<Record<string, boolean>>({});
+  const [viewingDownloadVideoId, setViewingDownloadVideoId] = useState<string | null>(null);
+  const [viewingLicenseVideoId, setViewingLicenseVideoId] = useState<string | null>(null);
 
   // Real-time Firestore sync & Notifications
   const [firestoreOrders, setFirestoreOrders] = useState<any[]>([]);
@@ -912,16 +915,51 @@ export default function UserDashboardPage() {
                       )}
                     </div>
 
-                    {/* Direct Download Button on Card */}
+                    {/* Direct Download & Setup Video Buttons on Card */}
                     {flagshipTool && (
-                      <a
-                        href={flagshipTool.downloadFilePath}
-                        download
-                        className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all"
-                      >
-                        <Download className="w-3.5 h-3.5 text-yellow-400" />
-                        <span>Download {flagshipTool.name} ({flagshipTool.fileSize})</span>
-                      </a>
+                      <div className="space-y-3 pt-1">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <a
+                            href={flagshipTool.downloadFilePath}
+                            download
+                            className="py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-black text-xs font-black flex items-center justify-center gap-2 shadow-lg transition-all"
+                          >
+                            <Download className="w-3.5 h-3.5 text-black" />
+                            <span>টুল ডাউনলোড ({flagshipTool.fileSize})</span>
+                          </a>
+
+                          {flagshipTool.setupVideoUrl && (
+                            <button
+                              type="button"
+                              onClick={() => setViewingLicenseVideoId(viewingLicenseVideoId === lic.id ? null : lic.id)}
+                              className="py-2.5 px-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center justify-center gap-2 shadow-neon-yellow transition-all"
+                            >
+                              <Play className="w-3.5 h-3.5 text-red-600" />
+                              <span>{viewingLicenseVideoId === lic.id ? "ভিডিও লুকান ▲" : "সেটআপ ভিডিও ▼"}</span>
+                            </button>
+                          )}
+                        </div>
+
+                        {viewingLicenseVideoId === lic.id && flagshipTool.setupVideoUrl && (
+                          <div className="p-3.5 rounded-2xl bg-black border border-yellow-400/50 space-y-2">
+                            <span className="text-xs font-bold text-yellow-400 flex items-center gap-1.5">
+                              <Play className="w-3.5 h-3.5 text-red-500" />
+                              <span>{flagshipTool.name} — ফুল সেটআপ ভিডিও গাইড:</span>
+                            </span>
+                            <div className="relative aspect-video rounded-xl overflow-hidden border border-white/10 bg-black shadow-lg">
+                              <iframe
+                                width="100%"
+                                height="100%"
+                                src={normalizeYouTubeEmbedUrl(flagshipTool.setupVideoUrl)}
+                                title="License Setup Video"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowFullScreen
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     )}
 
                   </div>
@@ -947,50 +985,102 @@ export default function UserDashboardPage() {
       )}
 
       {/* ============================================================== */}
-      {/* TAB 3: AUTHORIZED DOWNLOADS                                    */}
+      {/* TAB 3: AUTHORIZED DOWNLOADS & SETUP VIDEOS                     */}
       {/* ============================================================== */}
       {activeTab === "downloads" && (
         <div className="space-y-4">
           <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10">
             <div>
               <h3 className="text-xl font-black text-white">
-                Authorized Software Package Download
+                Authorized Software Package Download &amp; Setup Videos
               </h3>
               <p className="text-xs text-slate-300 mt-1">
-                Download the tool, extract, run to view your HWID, then paste your HWID in the &ldquo;My Licenses&rdquo; tab to activate.
+                অফিশিয়াল সফটওয়্যার ডাউনলোড করুন এবং সেটআপ ভিডিও গাইড দেখে সহজেই আপনার কম্পিউটারে ইন্সটল ও লাইসেন্স অ্যাক্টিভ করুন।
               </p>
             </div>
 
             <div className="space-y-4">
-              {tools.map((t) => (
-                <div
-                  key={t.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-[#0f0f0f] border border-white/10 hover:border-yellow-400/40 transition-all"
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-black text-white text-base">{t.name}</h4>
-                      <span className="text-[10px] font-bold text-black bg-yellow-400 px-2 py-0.5 rounded font-mono">
-                        {t.version}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-300">{t.tagline}</p>
-                    <div className="flex items-center gap-4 text-[11px] text-slate-400 pt-1 font-mono">
-                      <span>Size: {t.fileSize}</span>
-                      <span>OS: {t.systemRequirements.os}</span>
-                    </div>
-                  </div>
+              {tools.map((t) => {
+                const isComingSoon = t.status === "coming_soon";
+                const isWatchingVideo = viewingDownloadVideoId === t.id;
 
-                  <a
-                    href={t.downloadFilePath}
-                    download
-                    className="px-5 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-black flex items-center justify-center gap-2 shadow-neon-red transition-all shrink-0"
+                return (
+                  <div
+                    key={t.id}
+                    className="p-5 rounded-2xl bg-[#0f0f0f] border border-white/10 hover:border-yellow-400/40 transition-all space-y-4"
                   >
-                    <Download className="w-4 h-4" />
-                    <span>Download Tool ({t.fileSize})</span>
-                  </a>
-                </div>
-              ))}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-black text-white text-base">{t.name}</h4>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono ${
+                            isComingSoon 
+                              ? "bg-white/10 text-slate-300 border border-white/15" 
+                              : "text-black bg-yellow-400 font-black"
+                          }`}>
+                            {t.version}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-300">{t.tagline}</p>
+                        <div className="flex items-center gap-4 text-[11px] text-slate-400 pt-1 font-mono">
+                          <span>Size: {t.fileSize}</span>
+                          <span>OS: {t.systemRequirements.os}</span>
+                        </div>
+                      </div>
+
+                      {isComingSoon ? (
+                        <div className="px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 text-xs font-black flex items-center justify-center gap-2 shrink-0">
+                          <Lock className="w-4 h-4 text-yellow-400" />
+                          <span>Coming Soon (শীঘ্রই আসছে)</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+                          <a
+                            href={t.downloadFilePath || "/releases/Setup.zip"}
+                            download
+                            className="px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-black text-xs font-black flex items-center justify-center gap-2 shadow-lg transition-all"
+                          >
+                            <Download className="w-4 h-4 text-black" />
+                            <span>টুল ডাউনলোড ({t.fileSize})</span>
+                          </a>
+
+                          {t.setupVideoUrl && (
+                            <button
+                              type="button"
+                              onClick={() => setViewingDownloadVideoId(isWatchingVideo ? null : t.id)}
+                              className="px-4 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center justify-center gap-2 shadow-neon-yellow transition-all"
+                            >
+                              <Play className="w-4 h-4 text-red-600" />
+                              <span>{isWatchingVideo ? "ভিডিও লুকান ▲" : "সেটআপ ভিডিও ▼"}</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Expandable Setup Video Player */}
+                    {!isComingSoon && isWatchingVideo && t.setupVideoUrl && (
+                      <div className="pt-4 border-t border-white/10 space-y-2">
+                        <span className="text-xs font-bold text-yellow-400 flex items-center gap-1.5">
+                          <Play className="w-4 h-4 text-red-500" />
+                          <span>{t.name} — ফুল ইনস্টলেশন ও সেটআপ ভিডিও গাইড:</span>
+                        </span>
+                        <div className="relative aspect-video rounded-xl overflow-hidden border border-yellow-400/40 bg-black shadow-2xl max-w-2xl">
+                          <iframe
+                            width="100%"
+                            height="100%"
+                            src={normalizeYouTubeEmbedUrl(t.setupVideoUrl)}
+                            title={`${t.name} Setup Guide`}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -1144,7 +1234,7 @@ export default function UserDashboardPage() {
               const expiresDate = new Date(lic.expiresAt);
               const isExpired = expiresDate.getTime() < Date.now();
               const daysRemaining = Math.max(0, Math.ceil((expiresDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
-              const isVideoOpen = openVideoModal === lic.id;
+              const isVideoOpen = !closedVideoIds[lic.id];
 
               return (
                 <div
@@ -1230,7 +1320,7 @@ export default function UserDashboardPage() {
                         </span>
                         <button
                           type="button"
-                          onClick={() => setOpenVideoModal(isVideoOpen ? null : lic.id)}
+                          onClick={() => setClosedVideoIds(prev => ({ ...prev, [lic.id]: !prev[lic.id] }))}
                           className="text-[11px] font-bold text-yellow-400 hover:underline"
                         >
                           {isVideoOpen ? "ভিডিও লুকান ▲" : "ভিডিও দেখুন ▼"}
@@ -1257,7 +1347,7 @@ export default function UserDashboardPage() {
                       {!isVideoOpen && (
                         <button
                           type="button"
-                          onClick={() => setOpenVideoModal(lic.id)}
+                          onClick={() => setClosedVideoIds(prev => ({ ...prev, [lic.id]: false }))}
                           className="w-full py-3.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
                         >
                           <Play className="w-4 h-4 text-yellow-400" />

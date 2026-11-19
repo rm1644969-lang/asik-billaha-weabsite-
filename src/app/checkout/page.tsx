@@ -24,9 +24,11 @@ import {
   Database,
   Send,
   Zap,
-  HelpCircle
+  HelpCircle,
+  Play
 } from "lucide-react";
 import { playChimeSound, showBrowserNotification } from "@/lib/notifications";
+import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
 
 export default function CheckoutPage() {
   return (
@@ -758,7 +760,7 @@ function CheckoutContent() {
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
                 <Download className="w-4 h-4" />
-                <span>ধাপ ১: টুলস ডাউনলোড করে সফটওয়্যার ওপেন করুন</span>
+                <span>ধাপ ১: টুলস ডাউনলোড ফাইল (Software Setup Package)</span>
               </span>
               <span className="text-xs font-mono text-slate-300 bg-black/60 px-2 py-0.5 rounded border border-white/10">
                 {selectedTool.fileSize || "28.4 MB"}
@@ -774,17 +776,54 @@ function CheckoutContent() {
               <span>টুল ডাউনলোড করুন ({selectedTool.downloadFileName || "Fast_OTP_v3.0_Pro_Setup.zip"})</span>
             </a>
 
-            <p className="text-[11px] text-slate-300">
-              ডাউনলোড করার পর জিপ ফাইলটি আনজিপ করুন এবং <strong>Run as Administrator</strong> হিসেবে সফটওয়্যারটি ওপেন করুন। ওপেন করলে সফটওয়্যার উইন্ডোর ভেতর আপনার কম্পিউটারের <strong>Machine HWID</strong> দেখতে পাবেন।
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300 pt-1">
+              <span>ডাউনলোড শেষে জিপ ফাইলটি আনজিপ করে <strong>Run as Administrator</strong> হিসেবে রান করুন।</span>
+              <span className="text-emerald-400 font-mono font-bold">● 100% Virus-Free &bull; Tested</span>
+            </div>
           </div>
 
-          {/* 2. STEP 2: HWID FIRST — USER ENTERS HWID BEFORE GETTING LICENSE */}
+          {/* 2. STEP 2: FULL SETUP VIDEO TUTORIAL */}
+          {selectedTool.setupVideoUrl && (
+            <div className="p-5 rounded-2xl bg-[#0e0e0e] border border-yellow-400/50 text-left space-y-3 shadow-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
+                  <Play className="w-4 h-4 text-red-500" />
+                  <span>ধাপ ২: ফুল সেটআপ ভিডিও গাইড (Watch Setup Video)</span>
+                </span>
+                <span className="text-[10px] font-mono text-yellow-400 bg-yellow-400/10 px-2.5 py-0.5 rounded-full border border-yellow-400/30 font-bold">
+                  ভিডিও দেখে সহজে সেটআপ করুন
+                </span>
+              </div>
+
+              <p className="text-xs text-slate-300 leading-relaxed">
+                সফটওয়্যার কীভাবে ওপেন করবেন, Machine HWID কোথায় পাবেন এবং লাইসেন্স কী পেস্ট করে চালু করবেন — সম্পূর্ণ ভিডিওটি দেখে নিন:
+              </p>
+
+              <div className="relative aspect-video rounded-xl overflow-hidden border border-yellow-400/40 bg-black shadow-2xl">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={normalizeYouTubeEmbedUrl(selectedTool.setupVideoUrl)}
+                  title={`${selectedTool.name} Setup Video Guide`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+
+              <div className="text-[11px] text-slate-400 flex flex-wrap items-center justify-between gap-2 pt-1 font-mono">
+                <span>&bull; ভিডিও অনুযায়ী সফটওয়্যার ওপেন করে Machine HWID কপি করুন</span>
+                <span className="text-yellow-400 font-bold">নিচের ৩য় ধাপে HWID পেস্ট করুন &darr;</span>
+              </div>
+            </div>
+          )}
+
+          {/* 3. STEP 3: HWID FIRST — USER ENTERS HWID BEFORE GETTING LICENSE */}
           <div className="p-5 rounded-2xl bg-[#121212] border border-yellow-400/60 text-left space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
                 <Cpu className="w-4 h-4 text-red-500" />
-                <span>ধাপ ২: সফটওয়্যার ওপেন করে আপনার Machine HWID দিন</span>
+                <span>ধাপ ৩: সফটওয়্যার ওপেন করে আপনার Machine HWID দিন</span>
               </span>
               <span className="text-[10px] text-yellow-300 font-mono font-bold">
                 আগে HWID দিন &rarr; তারপর লাইসেন্স পাবেন
@@ -826,7 +865,7 @@ function CheckoutContent() {
             )}
           </div>
 
-          {/* 3. STEP 3: REVEALED LICENSE ACTIVATION KEY (SHOWN AFTER HWID IS SUBMITTED) */}
+          {/* 4. STEP 4: REVEALED LICENSE ACTIVATION KEY (SHOWN AFTER HWID IS SUBMITTED) */}
           <div className={`p-5 rounded-2xl text-left space-y-3 transition-all ${
             hwidBoundStatus?.bound 
               ? "bg-black border-2 border-yellow-400 shadow-neon-yellow" 
@@ -835,7 +874,7 @@ function CheckoutContent() {
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
                 <Key className="w-4 h-4 text-red-500" />
-                <span>ধাপ ৩: আপনার অ্যাক্টিভেটেড লাইসেন্স কী (License Key)</span>
+                <span>ধাপ ৪: আপনার অ্যাক্টিভেটেড লাইসেন্স কী (License Key)</span>
               </span>
               <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-black">
                 {hwidBoundStatus?.bound ? "● Locked to your PC" : "Locked until HWID"}
@@ -872,7 +911,7 @@ function CheckoutContent() {
                   <Key className="w-4 h-4" />
                 </div>
                 <span>
-                  লাইসেন্স কী দেখতে প্রথমে ওপরের <strong>ধাপ ২</strong>-এ আপনার টুলের Machine HWID দিন। HWID সাবমিট করার সাথে সাথেই আপনার এক্সক্লুসিভ লাইসেন্স কী এখানে আনলক হবে।
+                  লাইসেন্স কী দেখতে প্রথমে ওপরের <strong>ধাপ ৩</strong>-এ আপনার টুলের Machine HWID দিন। HWID সাবমিট করার সাথে সাথেই আপনার এক্সক্লুসিভ লাইসেন্স কী এখানে আনলক হবে।
                 </span>
               </div>
             )}
