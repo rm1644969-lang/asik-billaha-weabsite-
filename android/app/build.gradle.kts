@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "io.nexustools.companion"
+    namespace = "com.toolsbd.paysync"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "io.nexustools.companion"
+        applicationId = "com.toolsbd.paysync"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -19,11 +19,15 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            applicationIdSuffix = ".debug"
+            isDebuggable = true
         }
     }
     compileOptions {
@@ -43,6 +47,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.cardview:cardview:1.0.0")
 
     // WorkManager for background retry queue
     implementation("androidx.work:work-runtime-ktx:2.9.1")

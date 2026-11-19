@@ -82,6 +82,31 @@ export async function POST(req: NextRequest) {
       payload = { rawMessage: rawBody };
     }
 
+    // Handle Gateway Heartbeat / Diagnostic Ping
+    if (payload.action === "ping" || payload.action === "heartbeat") {
+      try {
+        const deviceId = payload.deviceId || req.headers.get("x-device-id") || "toolsbd-android-primary";
+        const devRef = doc(webDb, "sms_devices", deviceId);
+        await setDoc(devRef, {
+          deviceId,
+          name: "Toolsbd PaySync Companion Phone",
+          model: payload.model || "Android Gateway Phone",
+          batteryLevel: payload.batteryLevel ?? 100,
+          status: "ONLINE",
+          lastHeartbeat: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+          lastPingTimestamp: serverTimestamp()
+        }, { merge: true });
+      } catch (err) {
+        console.warn("Failed to update sms_device heartbeat doc:", err);
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: "Toolsbd SMS Gateway online and connected.",
+        timestamp: new Date().toISOString()
+      });
+    }
+
     const messageText = payload.rawMessage || payload.message || payload.body || payload.text || payload.content || "";
     let trxId = (payload.trxId || payload.trx_id || "").trim().toUpperCase();
     let amount = payload.amount ? Number(payload.amount) : undefined;

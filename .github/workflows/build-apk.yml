@@ -1,0 +1,70 @@
+name: Build Toolsbd PaySync Android APK
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'android/**'
+      - '.github/workflows/build-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Grant Execute Permission to Gradlew
+        run: chmod +x ./android/gradlew
+
+      - name: Build APK with Gradle
+        working-directory: ./android
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Rename APK Output
+        run: |
+          mkdir -p build-output
+          cp android/app/build/outputs/apk/debug/app-debug.apk build-output/toolsbd-paysync.apk
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: toolsbd-paysync-apk
+          path: build-output/toolsbd-paysync.apk
+          if-no-files-found: error
+
+      - name: Release APK on GitHub
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.0.0-gateway
+          name: Toolsbd PaySync Android Gateway v1.0.0
+          body: |
+            ### 📱 Toolsbd PaySync Official Android Companion Gateway
+            - **App Name**: Toolsbd PaySync
+            - **Version**: v1.0.0
+            - **Description**: Monitors bKash & Rocket SMS and auto-approves orders & wallet deposits on Toolsbd.com.
+            
+            #### 📥 Direct Download:
+            Download and install `toolsbd-paysync.apk` directly on your Android phone holding the bKash/Rocket SIM card.
+          files: build-output/toolsbd-paysync.apk
+          prerelease: false
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

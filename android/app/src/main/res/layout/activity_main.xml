@@ -1,83 +1,328 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:background="#070a24">
+    android:background="#090D16">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nexus SMS Gateway"
-        android:textColor="#FFFFFF"
-        android:textSize="22sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Merchant Auto-Verification Companion"
-        android:textColor="#9E77ED"
-        android:textSize="12sp"
-        android:layout_marginTop="4dp" />
-
-    <View
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#2E375B"
-        android:layout_marginVertical="20dp" />
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/textStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="STATUS: LISTENING (ONLINE)"
-        android:textColor="#10B981"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Companion Device Secret (HMAC-SHA256):"
-        android:textColor="#E0E7FF"
-        android:textSize="12sp"
-        android:layout_marginTop="20dp" />
+            <!-- Top Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingBottom="12dp">
 
-    <EditText
-        android:id="@+id/editSecret"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#111840"
-        android:textColor="#00F5FF"
-        android:padding="12dp"
-        android:textSize="13sp"
-        android:fontFamily="monospace"
-        android:layout_marginTop="8dp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btnSaveSecret"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save Device Secret"
-        android:backgroundTint="#7C3AED"
-        android:layout_marginTop="12dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Toolsbd PaySync"
+                        android:textColor="#FACC15"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btnTestSync"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Send Heartbeat Test"
-        android:backgroundTint="#0EA5E9"
-        android:layout_marginTop="8dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Official Auto SMS Gateway Companion"
+                        android:textColor="#9CA3AF"
+                        android:textSize="11sp" />
+                </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Security Notice: This companion service parses incoming bKash &amp; Nagad merchant payment receipts only. It never collects personal SMS, passwords, or customer OTPs."
-        android:textColor="#64748B"
-        android:textSize="11sp"
-        android:layout_marginTop="28dp" />
+                <TextView
+                    android:id="@+id/textServiceStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="● LISTENING 24/7"
+                    android:textColor="#10B981"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:background="#064E3B" />
+            </LinearLayout>
 
-</LinearLayout>
+            <!-- Status & Switch Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="#111827"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="3dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Background SMS Service"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Monitors bKash (16247) &amp; Rocket (16216)"
+                                android:textColor="#9CA3AF"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchService"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true" />
+                    </LinearLayout>
+
+                    <!-- Permission Warning if needed -->
+                    <LinearLayout
+                        android:id="@+id/layoutPermissionWarning"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="12dp"
+                        android:padding="10dp"
+                        android:background="#451A03"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/textPermissionStatus"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="SMS Permission Required to read payments"
+                            android:textColor="#FBBF24"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnGrantPermission"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Grant"
+                            android:textSize="10sp"
+                            android:backgroundTint="#D97706" />
+                    </LinearLayout>
+
+                    <!-- Battery Optimization Warning -->
+                    <LinearLayout
+                        android:id="@+id/layoutBatteryWarning"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="8dp"
+                        android:padding="8dp"
+                        android:background="#1E1B4B"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Keep running when screen is off"
+                            android:textColor="#C7D2FE"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnIgnoreBattery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Allow 24/7"
+                            android:textSize="10sp"
+                            android:backgroundTint="#4F46E5" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Server Settings Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardBackgroundColor="#111827"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="3dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Server &amp; API Configuration"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Toolsbd Webhook URL:"
+                        android:textColor="#9CA3AF"
+                        android:textSize="11sp"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/editEndpoint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#1F2937"
+                        android:textColor="#FACC15"
+                        android:textSize="12sp"
+                        android:padding="10dp"
+                        android:fontFamily="monospace"
+                        android:layout_marginTop="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Device Secret Key (HMAC-SHA256):"
+                        android:textColor="#9CA3AF"
+                        android:textSize="11sp"
+                        android:layout_marginTop="10dp" />
+
+                    <EditText
+                        android:id="@+id/editSecret"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#1F2937"
+                        android:textColor="#38BDF8"
+                        android:textSize="12sp"
+                        android:padding="10dp"
+                        android:fontFamily="monospace"
+                        android:layout_marginTop="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="12dp">
+
+                        <Button
+                            android:id="@+id/btnSaveConfig"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Save Config"
+                            android:textSize="11sp"
+                            android:backgroundTint="#FACC15"
+                            android:textColor="#000000"
+                            android:layout_marginEnd="6dp" />
+
+                        <Button
+                            android:id="@+id/btnTestPing"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Test Ping Server"
+                            android:textSize="11sp"
+                            android:backgroundTint="#374151"
+                            android:textColor="#FFFFFF"
+                            android:layout_marginStart="6dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Live Intercepted Payments Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="16dp"
+                android:paddingBottom="6dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Live Payment SMS Feed"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/btnClearLogs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Clear History"
+                    android:textColor="#9CA3AF"
+                    android:textSize="11sp"
+                    android:padding="4dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textEmptyLogs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No payments intercepted yet. When a customer sends bKash or Rocket money, it will show up and auto-confirm here instantly."
+                android:textColor="#6B7280"
+                android:textSize="12sp"
+                android:padding="20dp"
+                android:gravity="center"
+                android:background="#111827" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerLogs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone" />
+
+            <!-- Security & Notice in Bengali -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="নির্দেশনা: আপনার যে ফোনে bKash (01967922602) এবং Rocket (01731328169) সিম কার্ড রয়েছে, সেই ফোনে এই অ্যাপটি ওপেন রাখুন। কোন ইউজার টাকা পাঠালে স্বয়ংক্রিয়ভাবে তার অর্ডার অ্যাপ্রুভ হয়ে যাবে এবং টুলস ডেলিভারি হবে।"
+                android:textColor="#9CA3AF"
+                android:textSize="11sp"
+                android:layout_marginTop="20dp"
+                android:lineSpacingExtra="3dp"
+                android:padding="12dp"
+                android:background="#0F172A" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
