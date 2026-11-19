@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { useNexusStore } from "@/lib/store";
+import { useNexusStore, generateToolLicenseKey } from "@/lib/store";
+import { syncLicenseToFirestore } from "@/lib/firebase";
 import { License } from "@/lib/types";
 import { Key, Plus, RefreshCw, Ban, CheckCircle2, Copy, Check, X, ShieldAlert } from "lucide-react";
 
@@ -20,7 +21,7 @@ export default function AdminLicensesPage() {
   const handleCreateManual = (e: React.FormEvent) => {
     e.preventDefault();
     const tool = tools.find(t => t.id === formData.toolId);
-    const generatedKey = `NEX-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const generatedKey = generateToolLicenseKey();
 
     const expires = new Date();
     expires.setDate(expires.getDate() + formData.durationDays);
@@ -30,7 +31,7 @@ export default function AdminLicensesPage() {
       key: generatedKey,
       keyHash: "hash_" + generatedKey,
       toolId: formData.toolId,
-      toolName: tool ? tool.name : "Tool",
+      toolName: tool ? tool.name : "FAST OTP — FB Auto Resender Pro",
       userId: `user-manual-${Date.now()}`,
       userEmail: formData.customerEmail,
       orderId: `ord-manual-${Date.now()}`,
@@ -44,6 +45,7 @@ export default function AdminLicensesPage() {
     };
 
     saveLicenses([newLic, ...licenses]);
+    syncLicenseToFirestore(newLic);
     setIsCreating(false);
   };
 

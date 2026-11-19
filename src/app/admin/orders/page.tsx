@@ -1,19 +1,43 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNexusStore } from "@/lib/store";
+import { webDb } from "@/lib/firebase";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { Search, Filter, CheckCircle2, XCircle, Clock, Check, Key } from "lucide-react";
 
 export default function AdminOrdersPage() {
   const { orders, approveOrderManually, rejectOrderManually } = useNexusStore();
+  const [firestoreOrders, setFirestoreOrders] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
 
-  const filteredOrders = orders.filter((ord) => {
+  useEffect(() => {
+    try {
+      const q = query(collection(webDb, "orders"), orderBy("createdAt", "desc"));
+      const unsub = onSnapshot(q, (snap) => {
+        const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        setFirestoreOrders(list);
+      }, (err) => {
+        // Fallback without orderBy if index is building
+        const fallbackUnsub = onSnapshot(collection(webDb, "orders"), (snap) => {
+          const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          setFirestoreOrders(list);
+        });
+      });
+      return () => unsub();
+    } catch (e) {
+      console.warn("Firestore orders listener notice:", e);
+    }
+  }, []);
+
+  const combinedOrders = firestoreOrders.length > 0 ? firestoreOrders : orders;
+
+  const filteredOrders = combinedOrders.filter((ord: any) => {
     const matchesSearch =
-      ord.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ord.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ord.userEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (ord.orderNumber || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (ord.userName || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (ord.userEmail || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
       (ord.trxId && ord.trxId.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const matchesStatus = statusFilter === "ALL" || ord.status === statusFilter;

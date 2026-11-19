@@ -5,6 +5,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useNexusStore, generateToolLicenseKey } from "@/lib/store";
 import { Tool, PricePlan, Order } from "@/lib/types";
+import { webDb } from "@/lib/firebase";
+import { doc, onSnapshot, getDoc } from "firebase/firestore";
 import { 
   CheckCircle2, 
   Copy, 
@@ -86,19 +88,80 @@ function CheckoutContent() {
   const [hwidInput, setHwidInput] = useState("");
   const [hwidBoundStatus, setHwidBoundStatus] = useState<{ bound: boolean; message: string } | null>(null);
   const [isBindingHwid, setIsBindingHwid] = useState(false);
+  const [isCheckingStatus, setIsCheckingStatus] = useState(false);
 
-  // Auto-listen when order is approved by Admin in real-time
-  useEffect(() => {
-    if (activeOrder && isPending) {
-      const current = orders.find(o => o.id === activeOrder.id);
-      if (current && current.status === "PAID") {
-        setGeneratedLicense(current.licenseKey || null);
-        setIsPending(false);
-        setIsSuccess(true);
-        triggerConfetti();
+  const handleManualCheckOrder = async () => {
+    if (!activeOrder?.id) return;
+    setIsCheckingStatus(true);
+    try {
+      const snap = await getDoc(doc(webDb, "orders", activeOrder.id));
+      if (snap.exists()) {
+        const ord = snap.data();
+        if (ord.status === "PAID" || ord.status === "APPROVED") {
+          setActiveOrder(prev => prev ? { ...prev, status: "PAID", licenseKey: ord.licenseKey || prev.licenseKey } : null);
+          setGeneratedLicense(ord.licenseKey || null);
+          setIsPending(false);
+          setIsSuccess(true);
+          triggerConfetti();
+        } else {
+          setErrorMsg("অর্ডারটি এখনো PENDING রয়েছে। বিকাশ/রকেট মেসেজ বা অ্যাডমিন এপ্রুভালের জন্য অপেক্ষা করুন।");
+          setTimeout(() => setErrorMsg(null), 4000);
+        }
       }
+    } catch (e) {
+      // Ignored
+    } finally {
+      setIsCheckingStatus(false);
     }
-  }, [orders, activeOrder, isPending]);
+  };
+
+  // Real-time Firestore & Local auto-listen: The second SMS gateway or Admin approves, transition to SUCCESS!
+  useEffect(() => {
+    if (!activeOrder?.id || !isPending) return;
+
+    // 1. Direct Firestore Snapshot Listener (Zero polling latency!)
+    let unsub: (() => void) | undefined;
+    try {
+      unsub = onSnapshot(doc(webDb, "orders", activeOrder.id), (docSnap) => {
+        if (docSnap.exists()) {
+          const ord = docSnap.data();
+          if (ord.status === "PAID" || ord.status === "APPROVED") {
+            setActiveOrder(prev => prev ? { ...prev, status: "PAID", licenseKey: ord.licenseKey || prev.licenseKey } : null);
+            setGeneratedLicense(ord.licenseKey || null);
+            setIsPending(false);
+            setIsSuccess(true);
+            triggerConfetti();
+          }
+        }
+      });
+    } catch (e) {
+      console.warn("Firestore snapshot listener notice:", e);
+    }
+
+    // 2. High-reliability fallback polling interval (every 2.5s)
+    const interval = setInterval(async () => {
+      try {
+        const snap = await getDoc(doc(webDb, "orders", activeOrder.id));
+        if (snap.exists()) {
+          const ord = snap.data();
+          if (ord.status === "PAID" || ord.status === "APPROVED") {
+            setActiveOrder(prev => prev ? { ...prev, status: "PAID", licenseKey: ord.licenseKey || prev.licenseKey } : null);
+            setGeneratedLicense(ord.licenseKey || null);
+            setIsPending(false);
+            setIsSuccess(true);
+            triggerConfetti();
+          }
+        }
+      } catch (err) {
+        // Ignored
+      }
+    }, 2500);
+
+    return () => {
+      if (unsub) unsub();
+      clearInterval(interval);
+    };
+  }, [activeOrder?.id, isPending]);
 
   // Sync email when user logs in
   useEffect(() => {
@@ -574,7 +637,7 @@ function CheckoutContent() {
       )}
 
       {/* ============================================================== */}
-      {/* VIEW: ORDER PENDING REAL-TIME ADMIN VERIFICATION               */}
+      {/* VIEW: ORDER PENDING REAL-TIME ADMIN & SMS GATEWAY VERIFICATION  */}
       {/* ============================================================== */}
       {isPending && activeOrder && (
         <div className="glass-panel rounded-3xl p-6 sm:p-10 space-y-7 border-2 border-yellow-400/50 shadow-neon-yellow text-center relative overflow-hidden bg-[#0c0c0c]">
@@ -584,14 +647,15 @@ function CheckoutContent() {
           </div>
 
           <div>
-            <span className="text-xs font-black uppercase tracking-wider text-yellow-400">
-              পেমেন্ট রিকোয়েস্ট সফলভাবে জমা হয়েছে
-            </span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 animate-pulse mb-2">
+              <span className="w-2 h-2 rounded-full bg-amber-400" />
+              <span>স্ট্যাটাস: পেন্ডিং (যাচাই চলছে...) — PENDING</span>
+            </div>
             <h2 className="text-2xl sm:text-3xl font-black text-white mt-1">
-              অ্যাডমিন ভেরিফিকেশন অপেক্ষারত (Payment Pending)
+              পেমেন্ট ভেরিফিকেশন অপেক্ষারত (Awaiting Verification)
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-lg mx-auto">
-              আপনার {paymentMethod} TrxID (<strong className="text-white font-mono">{trxId.trim().toUpperCase()}</strong>) সফলভাবে সিস্টেমে যুক্ত হয়েছে। অ্যাডমিন পেমেন্ট চেক করে অ্যাপ্রুভ করার সাথে সাথেই এই স্ক্রিনেই লাইসেন্স চলে আসবে।
+              আপনার {paymentMethod} TrxID (<strong className="text-white font-mono">{trxId.trim().toUpperCase()}</strong>) সিস্টেমে যুক্ত হয়েছে। বিকাশ/রকেট মেসেজ ম্যাচিং অথবা অ্যাডমিন কনফার্মেশন হওয়ামাত্রই এই স্ক্রিনে স্বয়ংক্রিয়ভাবে লাইসেন্স ডেলিভারি হয়ে যাবে।
             </p>
           </div>
 
@@ -612,6 +676,13 @@ function CheckoutContent() {
               <span>Submitted TrxID:</span>
               <strong className="text-white uppercase font-black">{trxId.trim().toUpperCase()}</strong>
             </div>
+            <div className="flex justify-between text-slate-400">
+              <span>Current Status:</span>
+              <span className="text-amber-400 font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                <span>PENDING</span>
+              </span>
+            </div>
           </div>
 
           <div className="p-4 rounded-2xl bg-[#090909] border border-white/10 text-xs text-slate-300 space-y-1 max-w-lg mx-auto text-left">
@@ -620,27 +691,36 @@ function CheckoutContent() {
               <span>রিয়েল-টাইম অটো লাইসেন্স আপডেট:</span>
             </p>
             <p className="text-[11px] text-slate-300 leading-relaxed">
-              অ্যাডমিন প্যানেল থেকে আপনার বিকাশ/রকেট TrxID নিশ্চিত করার সাথে সাথে এই পেইজটি স্বয়ংক্রিয়ভাবে লাইসেন্স ডেলিভারি স্ক্রিনে পরিবর্তন হয়ে যাবে। আপনি এখানে অপেক্ষা করতে পারেন অথবা ড্যাশবোর্ডে গিয়েও চেক করতে পারেন।
+              স্বয়ংক্রিয় SMS গেটওয়ে থেকে আপনার পেমেন্ট কনফার্ম হওয়া মাত্রই এই পেইজটি রিলোড ছাড়াই সাথে সাথে লাইসেন্স এবং ডাউনলোড স্ক্রিনে চলে যাবে।
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 max-w-lg mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 max-w-xl mx-auto">
+            <button
+              onClick={handleManualCheckOrder}
+              disabled={isCheckingStatus}
+              className="py-3 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all border border-white/10"
+            >
+              <RotateCcw className={`w-3.5 h-3.5 ${isCheckingStatus ? "animate-spin text-yellow-400" : ""}`} />
+              <span>{isCheckingStatus ? "চেক হচ্ছে..." : "এখনই চেক করুন"}</span>
+            </button>
+
             <Link
               href="/dashboard"
-              className="py-3.5 px-4 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs flex items-center justify-center gap-2 shadow-neon-yellow transition-all"
+              className="py-3 px-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs flex items-center justify-center gap-1.5 shadow-neon-yellow transition-all"
             >
-              <span>আমার ড্যাশবোর্ডে যান (Check Dashboard)</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>ড্যাশবোর্ডে যান</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
 
             <a
               href={settings.telegramGroupUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="py-3.5 px-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs flex items-center justify-center gap-2 shadow-neon-red transition-all"
+              className="py-3 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-neon-red transition-all"
             >
-              <Send className="w-4 h-4" />
-              <span>টেলিগ্রামে দ্রুত কনফার্মেশন নিন</span>
+              <Send className="w-3.5 h-3.5" />
+              <span>টেলিগ্রাম সাপোর্ট</span>
             </a>
           </div>
 

@@ -270,10 +270,10 @@ public class ToolsbdGuard {
           <button
             onClick={handleRunVerifyTest}
             disabled={loading}
-            className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-black shadow-neon-red transition-all flex items-center gap-2 self-start sm:self-auto"
+            className="px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black shadow-neon-yellow transition-all flex items-center gap-2 self-start sm:self-auto"
           >
-            <Zap className="w-3.5 h-3.5" />
-            <span>Simulate Desktop Tool Verify</span>
+            <Zap className="w-3.5 h-3.5 text-black" />
+            <span>Check Licensing Engine Ping</span>
           </button>
         </div>
 

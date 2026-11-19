@@ -1,16 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNexusStore } from "@/lib/store";
+import { webDb } from "@/lib/firebase";
+import { collection, onSnapshot } from "firebase/firestore";
 import { Search, Smartphone, Zap, CheckCircle2, AlertTriangle, Filter } from "lucide-react";
 
 export default function AdminPaymentsPage() {
   const { smsRecords, orders, settings, saveSettings } = useNexusStore();
+  const [firestoreRecords, setFirestoreRecords] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [providerFilter, setProviderFilter] = useState("ALL");
   const [bkashNum, setBkashNum] = useState(settings.bkashMerchantNumber);
   const [rocketNum, setRocketNum] = useState(settings.rocketMerchantNumber);
   const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    try {
+      const unsub = onSnapshot(collection(webDb, "sms_records"), (snap) => {
+        const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        setFirestoreRecords(list);
+      });
+      return () => unsub();
+    } catch (e) {
+      console.warn("SMS records listener notice:", e);
+    }
+  }, []);
 
   const handleSaveNumbers = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,11 +38,13 @@ export default function AdminPaymentsPage() {
     setTimeout(() => setIsSaved(false), 3000);
   };
 
-  const filteredRecords = smsRecords.filter((rec) => {
+  const recordsToDisplay = firestoreRecords.length > 0 ? firestoreRecords : smsRecords;
+
+  const filteredRecords = recordsToDisplay.filter((rec: any) => {
     const matchesSearch =
-      rec.trxId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      rec.rawMessage.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      rec.sender.toLowerCase().includes(searchQuery.toLowerCase());
+      (rec.trxId || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (rec.rawMessage || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (rec.sender || "").toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesProvider = providerFilter === "ALL" || rec.provider === providerFilter;
 

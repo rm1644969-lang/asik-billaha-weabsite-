@@ -128,161 +128,28 @@ export const sampleTools: Tool[] = [
   }
 ];
 
-export const sampleOrders: Order[] = [
-  {
-    id: "ord-8831",
-    orderNumber: "TBD-2026-8831",
-    userId: "user-test-01",
-    userEmail: "shakil.dev@gmail.com",
-    userName: "Shakil Ahmed",
-    toolId: "tool-otp-utility",
-    toolName: "OTP Testing Utility",
-    planId: "plan-otp-7d",
-    planDuration: 7,
-    amount: 240,
-    currency: "BDT",
-    status: "PAID",
-    paymentMethod: "bKash",
-    senderNumber: "01755123456",
-    trxId: "BK992A81KC",
-    licenseKey: "TBD-OTP-7D-9A2F-84BC-4E11",
-    notes: "Verified automatically via Companion SMS gateway ($2 Offer).",
-    createdAt: "2026-03-12T14:22:00Z",
-    paidAt: "2026-03-12T14:23:15Z"
-  },
-  {
-    id: "ord-8832",
-    orderNumber: "TBD-2026-8832",
-    userId: "user-test-02",
-    userEmail: "fahim.pro@outlook.com",
-    userName: "Fahim Hasan",
-    toolId: "tool-otp-utility",
-    toolName: "OTP Testing Utility",
-    planId: "plan-otp-15d",
-    planDuration: 15,
-    amount: 480,
-    currency: "BDT",
-    status: "PAID",
-    paymentMethod: "Rocket",
-    senderNumber: "01822998877",
-    trxId: "RK784B10XQ",
-    licenseKey: "TBD-OTP-15D-7C3D-11FE-9088",
-    notes: "Verified automatically via Companion SMS gateway ($4 Offer).",
-    createdAt: "2026-03-13T09:10:00Z",
-    paidAt: "2026-03-13T09:12:05Z"
-  },
-  {
-    id: "ord-8833",
-    orderNumber: "TBD-2026-8833",
-    userId: "user-test-03",
-    userEmail: "tanjil.coder@yahoo.com",
-    userName: "Tanjil Hossain",
-    toolId: "tool-otp-utility",
-    toolName: "OTP Testing Utility",
-    planId: "plan-otp-30d",
-    planDuration: 30,
-    amount: 960,
-    currency: "BDT",
-    status: "PENDING",
-    paymentMethod: "bKash",
-    senderNumber: "01911443322",
-    trxId: "BK118X74MN",
-    notes: "Awaiting SMS gateway confirmation ($8 Offer).",
-    createdAt: "2026-03-14T11:45:00Z"
-  }
-];
+// Real Production Data: Orders, Licenses, and SMS records start clean and populate from Firestore
+export const sampleOrders: Order[] = [];
 
-export const sampleLicenses: License[] = [
-  {
-    id: "lic-01",
-    key: "TBD-OTP-7D-9A2F-84BC-4E11",
-    keyHash: "e6c279f62e717f9d4c8771160a9d42e335028656bf3f191747802d4f407b34d5",
-    toolId: "tool-otp-utility",
-    toolName: "OTP Testing Utility",
-    userId: "user-test-01",
-    userEmail: "shakil.dev@gmail.com",
-    orderId: "ord-8831",
-    durationDays: 7,
-    status: "ACTIVE",
-    hwid: "BFEBFBFF000906EA-F48E-381A-B19F",
-    hwidHash: "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
-    hwidLockedAt: "2026-03-12T14:30:00Z",
-    hwidResetCount: 0,
-    maxDevices: 1,
-    activationsCount: 14,
-    lastActivatedAt: "2026-03-14T08:12:00Z",
-    lastIpAddress: "103.205.71.42",
-    createdAt: "2026-03-12T14:23:15Z",
-    expiresAt: "2026-03-19T14:23:15Z"
-  },
-  {
-    id: "lic-02",
-    key: "TBD-OTP-15D-7C3D-11FE-9088",
-    keyHash: "3f79bb7b435b05321651daefd374cd681b61801fb476325153216f144598011e",
-    toolId: "tool-otp-utility",
-    toolName: "OTP Testing Utility",
-    userId: "user-test-02",
-    userEmail: "fahim.pro@outlook.com",
-    orderId: "ord-8832",
-    durationDays: 15,
-    status: "ACTIVE",
-    hwid: "4C4C4544-004B-4E10-8043-B5C04F343232",
-    hwidHash: "4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a",
-    hwidLockedAt: "2026-03-13T09:20:00Z",
-    hwidResetCount: 0,
-    maxDevices: 1,
-    activationsCount: 6,
-    lastActivatedAt: "2026-03-14T02:45:00Z",
-    lastIpAddress: "118.179.80.12",
-    createdAt: "2026-03-13T09:12:05Z",
-    expiresAt: "2026-03-28T09:12:05Z"
-  }
-];
+export const sampleLicenses: License[] = [];
 
 export const sampleSmsDevices: SmsDevice[] = [
   {
     id: "dev-01",
-    deviceId: "samsung-sm-g998b-primary",
-    name: "Toolsbd Merchant Phone (Samsung S21)",
-    model: "SM-G998B / Android 14",
+    deviceId: "toolsbd-android-primary",
+    name: "Toolsbd PaySync Merchant Phone",
+    model: "Android Gateway (bKash & Rocket SIM)",
     status: "ONLINE",
-    secretPreview: "sec_live_9f83...42d9",
-    batteryLevel: 94,
-    lastHeartbeat: "Just now (20s ago)",
-    lastSyncAt: "2026-03-14T11:46:10Z",
-    totalSmsProcessed: 412,
-    createdAt: "2026-01-05T00:00:00Z"
+    secretPreview: "sec_live_9f83ca42d992e10650b2ed6cb6bb79",
+    batteryLevel: 95,
+    lastHeartbeat: "Active",
+    lastSyncAt: new Date().toISOString(),
+    totalSmsProcessed: 0,
+    createdAt: new Date().toISOString()
   }
 ];
 
-export const sampleSmsRecords: SmsRecord[] = [
-  {
-    id: "sms-101",
-    deviceId: "samsung-sm-g998b-primary",
-    deviceName: "Toolsbd Merchant Phone",
-    sender: "bKash",
-    rawMessage: "You have received Tk 240.00 from 01755123456. Fee Tk 0.00. Balance Tk 48,210.50. TrxID BK992A81KC at 12/03/2026 14:23",
-    trxId: "BK992A81KC",
-    amount: 240,
-    provider: "bKash",
-    receivedAt: "2026-03-12T14:23:10Z",
-    matchedOrderId: "ord-8831",
-    status: "MATCHED"
-  },
-  {
-    id: "sms-102",
-    deviceId: "samsung-sm-g998b-primary",
-    deviceName: "Toolsbd Merchant Phone",
-    sender: "Rocket",
-    rawMessage: "DBBL Rocket Cash In: Tk 480.00 received from 01822998877. TxnId: RK784B10XQ. Balance: Tk 19,450.00.",
-    trxId: "RK784B10XQ",
-    amount: 480,
-    provider: "Rocket",
-    receivedAt: "2026-03-13T09:11:50Z",
-    matchedOrderId: "ord-8832",
-    status: "MATCHED"
-  }
-];
+export const sampleSmsRecords: SmsRecord[] = [];
 
 export const sampleReviews: Review[] = [
   {

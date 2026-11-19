@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useNexusStore } from "@/lib/store";
+import { webDb } from "@/lib/firebase";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { 
   User, 
   Key, 
@@ -71,12 +73,77 @@ export default function UserDashboardPage() {
   const [buyingPlanId, setBuyingPlanId] = useState<string | null>(null);
   const [openVideoModal, setOpenVideoModal] = useState<string | null>(null);
 
+  // Real-time Firestore sync
+  const [firestoreOrders, setFirestoreOrders] = useState<any[]>([]);
+  const [firestoreDeposits, setFirestoreDeposits] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!currentUser?.email) return;
+
+    let unsubOrders: (() => void) | undefined;
+    try {
+      const q = query(collection(webDb, "orders"), where("userEmail", "==", currentUser.email));
+      unsubOrders = onSnapshot(q, (snap) => {
+        const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        setFirestoreOrders(list);
+      });
+    } catch (e) {
+      console.warn("Orders listener notice:", e);
+    }
+
+    let unsubDeposits: (() => void) | undefined;
+    try {
+      const qDep = query(collection(webDb, "deposits"), where("userEmail", "==", currentUser.email));
+      unsubDeposits = onSnapshot(qDep, (snap) => {
+        const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        setFirestoreDeposits(list);
+      });
+    } catch (e) {
+      console.warn("Deposits listener notice:", e);
+    }
+
+    return () => {
+      if (unsubOrders) unsubOrders();
+      if (unsubDeposits) unsubDeposits();
+    };
+  }, [currentUser?.email]);
+
   const userLicenses = currentUser 
     ? licenses.filter(l => l.userId === currentUser.id || l.userEmail === currentUser.email)
     : [];
-  const userOrders = currentUser 
-    ? orders.filter(o => o.userId === currentUser.id || o.userEmail === currentUser.email)
-    : [];
+  const userOrders = firestoreOrders.length > 0 
+    ? firestoreOrders 
+    : (currentUser ? orders.filter(o => o.userId === currentUser.id || o.userEmail === currentUser.email) : []);
+  const activeDeposits = firestoreDeposits.length > 0 ? firestoreDeposits : deposits;
+
+  // Merge direct licenses with any paid/approved orders having a licenseKey
+  const paidOrdersWithLicense = userOrders.filter(o => (o.status === "PAID" || o.status === "APPROVED") && o.licenseKey);
+  const allActiveLicenses = [...userLicenses];
+  for (const ord of paidOrdersWithLicense) {
+    if (!allActiveLicenses.some(l => l.key === ord.licenseKey || l.orderId === ord.id)) {
+      const expires = new Date();
+      expires.setDate(expires.getDate() + (ord.planDuration || 7));
+      allActiveLicenses.push({
+        id: `lic-${ord.id}`,
+        key: ord.licenseKey,
+        keyHash: `hash_${ord.licenseKey}`,
+        toolId: ord.toolId,
+        toolName: ord.toolName,
+        userId: ord.userId,
+        userEmail: ord.userEmail,
+        orderId: ord.id,
+        durationDays: ord.planDuration || 7,
+        status: "ACTIVE",
+        hwid: undefined,
+        hwidResetCount: 0,
+        maxDevices: 1,
+        activationsCount: 0,
+        createdAt: ord.createdAt,
+        expiresAt: expires.toISOString()
+      });
+    }
+  }
+
   const activePlans = plans.filter(p => p.enabled);
   const flagshipTool = tools[0];
 
@@ -835,19 +902,29 @@ export default function UserDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 text-slate-300">
-                  {deposits.map(dep => (
+                  {activeDeposits.map(dep => (
                     <tr key={dep.id} className="hover:bg-white/5">
                       <td className="py-3 font-bold text-white">{dep.method}</td>
                       <td className="py-3 font-black text-yellow-400">${dep.amountUSD} (৳{dep.amountBDT})</td>
                       <td className="py-3 font-mono">{dep.senderNumber}</td>
                       <td className="py-3 font-mono text-white font-bold">{dep.trxId}</td>
                       <td className="py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black inline-flex items-center gap-1.5 ${
                           dep.status === "APPROVED"
                             ? "bg-emerald-950 text-emerald-400 border border-emerald-500/40"
-                            : "bg-yellow-950 text-yellow-400 border border-yellow-500/40"
+                            : "bg-amber-950 text-amber-400 border border-amber-500/40 animate-pulse"
                         }`}>
-                          {dep.status}
+                          {dep.status === "APPROVED" ? (
+                            <>
+                              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                              <span>সফল (APPROVED)</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                              <span>পেন্ডিং (যাচাই চলছে...)</span>
+                            </>
+                          )}
                         </span>
                       </td>
                       <td className="py-3 text-slate-400 text-[11px]">{new Date(dep.createdAt).toLocaleDateString()}</td>
@@ -885,14 +962,26 @@ export default function UserDashboardPage() {
                       <td className="py-3 font-bold text-white">{ord.paymentMethod}</td>
                       <td className="py-3 font-mono text-white font-bold">{ord.trxId || "Pending"}</td>
                       <td className="py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          ord.status === "PAID"
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black inline-flex items-center gap-1.5 ${
+                          ord.status === "PAID" || ord.status === "APPROVED"
                             ? "bg-emerald-950 text-emerald-400 border border-emerald-500/40"
                             : ord.status === "PENDING"
-                            ? "bg-yellow-950 text-yellow-400 border border-yellow-500/40"
+                            ? "bg-amber-950 text-amber-400 border border-amber-500/40 animate-pulse"
                             : "bg-red-950 text-red-400 border border-red-500/40"
                         }`}>
-                          {ord.status}
+                          {ord.status === "PAID" || ord.status === "APPROVED" ? (
+                            <>
+                              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                              <span>সফল (APPROVED)</span>
+                            </>
+                          ) : ord.status === "PENDING" ? (
+                            <>
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                              <span>পেন্ডিং (যাচাই চলছে...)</span>
+                            </>
+                          ) : (
+                            <span>{ord.status}</span>
+                          )}
                         </span>
                       </td>
                     </tr>
@@ -933,9 +1022,9 @@ export default function UserDashboardPage() {
         </div>
 
         {/* Memberships Cards List */}
-        {userLicenses.length > 0 ? (
+        {allActiveLicenses.length > 0 ? (
           <div className="space-y-6">
-            {userLicenses.map((lic) => {
+            {allActiveLicenses.map((lic) => {
               const matchedTool = tools.find(t => t.id === lic.toolId || t.name === lic.toolName) || flagshipTool;
               const expiresDate = new Date(lic.expiresAt);
               const isExpired = expiresDate.getTime() < Date.now();

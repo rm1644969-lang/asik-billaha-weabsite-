@@ -17,7 +17,8 @@ import {
   Sparkles,
   Zap,
   Activity,
-  Layers
+  Layers,
+  Download
 } from "lucide-react";
 
 export default function AdminOverviewPage() {
@@ -31,14 +32,8 @@ export default function AdminOverviewPage() {
     firebaseProjectId,
     approveWalletDeposit,
     approveOrderManually, 
-    rejectOrderManually,
-    simulateIncomingSms 
+    rejectOrderManually 
   } = useNexusStore();
-
-  const [testSimAmount, setTestSimAmount] = useState(240);
-  const [testSimProvider, setTestSimProvider] = useState<"bKash" | "Rocket">("bKash");
-  const [testSimSender, setTestSimSender] = useState("01755123456");
-  const [simAlert, setSimAlert] = useState<string | null>(null);
 
   // Statistics calculation
   const totalRevenue = orders
@@ -49,16 +44,6 @@ export default function AdminOverviewPage() {
   const paidOrders = orders.filter(o => o.status === "PAID");
   const activeLicenses = licenses.filter(l => l.status === "ACTIVE");
   const activeDevices = smsDevices.filter(d => d.status === "ONLINE");
-
-  const handleSimulateSms = () => {
-    const res = simulateIncomingSms(testSimProvider, testSimAmount, testSimSender);
-    setSimAlert(
-      res.matched 
-        ? `SMS received (${res.record.trxId})! Order automatically verified & license issued.`
-        : `SMS received (${res.record.trxId}) and queued in SMS log (awaiting order match).`
-    );
-    setTimeout(() => setSimAlert(null), 4000);
-  };
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
@@ -90,13 +75,6 @@ export default function AdminOverviewPage() {
           </Link>
         </div>
       </div>
-
-      {simAlert && (
-        <div className="p-4 rounded-2xl bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs flex items-center gap-2 shadow-neon-cyan">
-          <Sparkles className="w-4 h-4 shrink-0" />
-          <span>{simAlert}</span>
-        </div>
-      )}
 
       {/* ============================================================== */}
       {/* METRICS & ANALYTICS OVERVIEW                                    */}
@@ -163,67 +141,44 @@ export default function AdminOverviewPage() {
       </div>
 
       {/* ============================================================== */}
-      {/* SIMULATE INCOMING SMS GATEWAY WIDGET (DEVELOPER / OWNER TEST)   */}
+      {/* TOOLSBD PAYSYSNC COMPANION GATEWAY PRODUCTION STATUS           */}
       {/* ============================================================== */}
-      <div className="glass-panel rounded-3xl p-6 border border-yellow-400/30 space-y-4 shadow-neon-yellow/10">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Smartphone className="w-5 h-5 text-yellow-400" />
-            <h3 className="font-black text-white text-base">
-              Companion Android SMS Tester (bKash &amp; Rocket)
-            </h3>
+      <div className="glass-panel rounded-3xl p-6 border border-emerald-500/30 bg-emerald-950/20 space-y-4 shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+              <Smartphone className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-black text-white text-base flex items-center gap-2">
+                <span>Toolsbd PaySync — Companion Android Gateway</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-900/80 text-emerald-300 border border-emerald-500/30">
+                  ONLINE (24/7)
+                </span>
+              </h3>
+              <p className="text-xs text-slate-300 mt-0.5">
+                আপনার অ্যান্ড্রয়েড ফোন bKash (01967922602) ও Rocket (01731328169) SMS পড়ে স্বয়ংক্রিয়ভাবে অর্ডার কনফার্ম করছে।
+              </p>
+            </div>
           </div>
-          <span className="text-[11px] text-yellow-400 font-mono bg-yellow-400/10 px-2.5 py-0.5 rounded border border-yellow-400/30">
-            Firebase Connected: {firebaseProjectId}
-          </span>
-        </div>
 
-        <p className="text-xs text-slate-300">
-          Simulates an incoming payment receipt SMS from bKash (01967922602) or Rocket (01731328169), matches pending orders, and syncs licenses to Firebase.
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
-          <div>
-            <label className="text-slate-400 block mb-1">Provider</label>
-            <select
-              value={testSimProvider}
-              onChange={(e) => setTestSimProvider(e.target.value as "bKash" | "Rocket")}
-              className="w-full p-2.5 rounded-xl glass-input text-white"
+          <div className="flex items-center gap-2 shrink-0">
+            <a
+              href="/admin/sms-devices"
+              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all"
             >
-              <option value="bKash" className="bg-[#111]">bKash</option>
-              <option value="Rocket" className="bg-[#111]">Rocket</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="text-slate-400 block mb-1">Amount (BDT)</label>
-            <input
-              type="number"
-              value={testSimAmount}
-              onChange={(e) => setTestSimAmount(Number(e.target.value))}
-              className="w-full p-2.5 rounded-xl glass-input text-white font-mono"
-            />
-          </div>
-
-          <div>
-            <label className="text-slate-400 block mb-1">Sender Mobile</label>
-            <input
-              type="text"
-              value={testSimSender}
-              onChange={(e) => setTestSimSender(e.target.value)}
-              className="w-full p-2.5 rounded-xl glass-input text-white font-mono"
-            />
-          </div>
-
-          <div className="flex items-end">
-            <button
-              type="button"
-              onClick={handleSimulateSms}
-              className="w-full py-2.5 px-4 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-neon-yellow transition-all flex items-center justify-center gap-1.5"
+              Gateway Settings
+            </a>
+            <a
+              href="https://github.com/rm1644969-lang/asik-billaha-weabsite-/releases/download/v1.0.0-gateway/toolsbd-paysync.apk"
+              target="_blank"
+              rel="noreferrer"
+              download="toolsbd-paysync.apk"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black text-xs font-black shadow-lg shadow-amber-500/20 transition-all flex items-center gap-1.5"
             >
-              <Zap className="w-3.5 h-3.5" />
-              <span>Broadcast Test SMS</span>
-            </button>
+              <Download className="w-4 h-4" />
+              <span>Download APK</span>
+            </a>
           </div>
         </div>
       </div>
