@@ -28,7 +28,7 @@ function RegisterContent() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -42,7 +42,7 @@ function RegisterContent() {
     }
 
     setLoading(true);
-    const res = registerUser(name, email, password);
+    const res = await registerUser(name, email, password);
     setLoading(false);
 
     if (res.success) {

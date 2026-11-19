@@ -34,8 +34,10 @@ import {
   syncWalletBalanceToFirestore,
   syncSettingsToFirestore,
   fetchSettingsFromFirestore,
-  FIREBASE_PROJECT_ID
+  FIREBASE_PROJECT_ID,
+  webDb
 } from "./firebase";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 
 export function generateToolLicenseKey(): string {
   const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
@@ -196,8 +198,9 @@ export function useNexusStore() {
 
   // ==============================================================
   // USER AUTHENTICATION (REGISTER / LOGIN WITH GMAIL & PASSWORD)
+  // CLOUD PERSISTED ACROSS ALL DEVICES VIA FIREBASE FIRESTORE
   // ==============================================================
-  const registerUser = (name: string, email: string, password = ""): { success: boolean; error?: string } => {
+  const registerUser = async (name: string, email: string, password = ""): Promise<{ success: boolean; error?: string }> => {
     const cleanEmail = email.trim().toLowerCase();
     const cleanName = name.trim() || cleanEmail.split("@")[0] || "Toolsbd Member";
 
@@ -208,49 +211,137 @@ export function useNexusStore() {
       return { success: false, error: "Password must be at least 4 characters." };
     }
 
-    const newUser: UserAccount = {
-      id: `usr-${Date.now()}`,
-      name: cleanName,
-      email: cleanEmail,
-      password,
-      role: cleanEmail.includes("admin") ? "admin" : "customer",
-      walletBalanceUSD: 0,
-      walletBalanceBDT: 0,
-      createdAt: new Date().toISOString()
-    };
+    try {
+      const userRef = doc(webDb, "users", cleanEmail);
+      const existingSnap = await getDoc(userRef);
 
-    setCurrentUser(newUser);
-    setIsLoggedIn(true);
-    setWalletBalanceUSD(0);
+      if (existingSnap.exists()) {
+        const existingData = existingSnap.data();
+        if (password && existingData.password && existingData.password !== password) {
+          return { success: false, error: "এই ইমেইল দিয়ে ইতিমধ্যে অ্যাকাউন্ট তৈরি আছে। সঠিক পাসওয়ার্ড দিন।" };
+        }
+        const userObj: UserAccount = {
+          id: cleanEmail,
+          name: existingData.name || cleanName,
+          email: cleanEmail,
+          password: existingData.password || password,
+          role: cleanEmail.includes("admin") ? "admin" : (existingData.role || "customer"),
+          walletBalanceUSD: existingData.walletBalanceUSD ?? 0,
+          walletBalanceBDT: existingData.walletBalanceBDT ?? (Math.round((existingData.walletBalanceUSD ?? 0) * 120)),
+          createdAt: existingData.createdAt || new Date().toISOString()
+        };
+        setCurrentUser(userObj);
+        setIsLoggedIn(true);
+        setWalletBalanceUSD(userObj.walletBalanceUSD);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("toolsbd_auth_current_user", JSON.stringify(userObj));
+        }
+        return { success: true };
+      }
 
-    if (typeof window !== "undefined") {
-      localStorage.setItem("toolsbd_auth_current_user", JSON.stringify(newUser));
-      // Also save in all users directory
-      const allUsers = JSON.parse(localStorage.getItem("toolsbd_all_users") || "[]");
-      const filtered = allUsers.filter((u: UserAccount) => u.email !== cleanEmail);
-      filtered.push(newUser);
-      localStorage.setItem("toolsbd_all_users", JSON.stringify(filtered));
+      // Create new user in Firestore
+      const newUser: UserAccount = {
+        id: cleanEmail,
+        name: cleanName,
+        email: cleanEmail,
+        password,
+        role: cleanEmail.includes("admin") ? "admin" : "customer",
+        walletBalanceUSD: 0,
+        walletBalanceBDT: 0,
+        createdAt: new Date().toISOString()
+      };
+
+      await setDoc(userRef, {
+        ...newUser,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      setCurrentUser(newUser);
+      setIsLoggedIn(true);
+      setWalletBalanceUSD(0);
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("toolsbd_auth_current_user", JSON.stringify(newUser));
+        const allUsers = JSON.parse(localStorage.getItem("toolsbd_all_users") || "[]");
+        const filtered = allUsers.filter((u: UserAccount) => u.email !== cleanEmail);
+        filtered.push(newUser);
+        localStorage.setItem("toolsbd_all_users", JSON.stringify(filtered));
+      }
+
+      return { success: true };
+    } catch (err: any) {
+      console.warn("Firestore registration notice:", err);
+      // Fallback local register
+      const fallbackUser: UserAccount = {
+        id: cleanEmail,
+        name: cleanName,
+        email: cleanEmail,
+        password,
+        role: cleanEmail.includes("admin") ? "admin" : "customer",
+        walletBalanceUSD: 0,
+        walletBalanceBDT: 0,
+        createdAt: new Date().toISOString()
+      };
+      setCurrentUser(fallbackUser);
+      setIsLoggedIn(true);
+      setWalletBalanceUSD(0);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("toolsbd_auth_current_user", JSON.stringify(fallbackUser));
+      }
+      return { success: true };
     }
-
-    // Sync user record to Firestore
-    syncWalletBalanceToFirestore(newUser.id, newUser.email, 0, 0);
-
-    return { success: true };
   };
 
-  const loginUser = (email: string, password = ""): { success: boolean; error?: string } => {
+  const loginUser = async (email: string, password = ""): Promise<{ success: boolean; error?: string }> => {
     const cleanEmail = email.trim().toLowerCase();
     if (!cleanEmail || !cleanEmail.includes("@")) {
       return { success: false, error: "Please enter a valid Gmail address." };
     }
 
+    try {
+      // 1. Fetch live user document from Firestore (Cloud sync for any device!)
+      const userRef = doc(webDb, "users", cleanEmail);
+      const snap = await getDoc(userRef);
+
+      if (snap.exists()) {
+        const u = snap.data();
+        if (password && u.password && u.password !== password) {
+          return { success: false, error: "ভুল পাসওয়ার্ড। দয়া করে সঠিক পাসওয়ার্ড দিন।" };
+        }
+
+        const userObj: UserAccount = {
+          id: cleanEmail,
+          name: u.name || cleanEmail.split("@")[0],
+          email: cleanEmail,
+          password: u.password || password,
+          role: cleanEmail.includes("admin") ? "admin" : (u.role || "customer"),
+          walletBalanceUSD: u.walletBalanceUSD ?? 0,
+          walletBalanceBDT: u.walletBalanceBDT ?? (Math.round((u.walletBalanceUSD ?? 0) * 120)),
+          createdAt: u.createdAt || new Date().toISOString()
+        };
+
+        setCurrentUser(userObj);
+        setIsLoggedIn(true);
+        setWalletBalanceUSD(userObj.walletBalanceUSD);
+
+        if (typeof window !== "undefined") {
+          localStorage.setItem("toolsbd_auth_current_user", JSON.stringify(userObj));
+        }
+
+        return { success: true };
+      }
+    } catch (err) {
+      console.warn("Firestore cloud login notice:", err);
+    }
+
+    // 2. Check local users cache
     if (typeof window !== "undefined") {
       const allUsers: UserAccount[] = JSON.parse(localStorage.getItem("toolsbd_all_users") || "[]");
       const existing = allUsers.find(u => u.email === cleanEmail);
 
       if (existing) {
         if (password && existing.password && existing.password !== password) {
-          return { success: false, error: "Incorrect password. Please try again." };
+          return { success: false, error: "ভুল পাসওয়ার্ড। দয়া করে সঠিক পাসওয়ার্ড দিন।" };
         }
         setCurrentUser(existing);
         setIsLoggedIn(true);
@@ -260,8 +351,8 @@ export function useNexusStore() {
       }
     }
 
-    // If new user signing in for first time, auto-register them seamlessly
-    return registerUser(cleanEmail.split("@")[0], cleanEmail, password || "123456");
+    // 3. If brand new user, auto-register them seamlessly in Firestore!
+    return await registerUser(cleanEmail.split("@")[0], cleanEmail, password || "123456");
   };
 
   const logoutUser = () => {

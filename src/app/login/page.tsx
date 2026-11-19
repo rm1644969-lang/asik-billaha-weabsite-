@@ -27,7 +27,7 @@ function LoginContent() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     if (!email.trim() || !email.includes("@")) {
@@ -36,7 +36,7 @@ function LoginContent() {
     }
 
     setLoading(true);
-    const res = loginUser(email, password);
+    const res = await loginUser(email, password);
     setLoading(false);
 
     if (res.success) {

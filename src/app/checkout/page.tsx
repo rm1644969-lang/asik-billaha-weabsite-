@@ -264,9 +264,9 @@ function CheckoutContent() {
       return;
     }
 
-    // Auto-create account if not logged in
+    // Auto-create account if not logged in (Synced to Firestore for all devices)
     if (!isLoggedIn) {
-      registerUser(emailToUse.split("@")[0], emailToUse, "123456");
+      await registerUser(emailToUse.split("@")[0], emailToUse, "123456");
     }
 
     setIsSubmitting(true);

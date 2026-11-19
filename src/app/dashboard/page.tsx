@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useNexusStore } from "@/lib/store";
 import { webDb } from "@/lib/firebase";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
 import { 
   User, 
   Key, 
@@ -46,7 +46,8 @@ export default function UserDashboardPage() {
     logoutUser,
     submitWalletDeposit,
     purchaseOfferWithWallet,
-    bindHwidToLicense
+    bindHwidToLicense,
+    saveWalletBalance
   } = useNexusStore();
 
   const [activeTab, setActiveTab] = useState<"wallet" | "licenses" | "downloads" | "orders">("wallet");
@@ -93,7 +94,7 @@ export default function UserDashboardPage() {
 
     let unsubDeposits: (() => void) | undefined;
     try {
-      const qDep = query(collection(webDb, "deposits"), where("userEmail", "==", currentUser.email));
+      const qDep = query(collection(webDb, "wallet_deposits"), where("userEmail", "==", currentUser.email));
       unsubDeposits = onSnapshot(qDep, (snap) => {
         const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         setFirestoreDeposits(list);
@@ -102,9 +103,25 @@ export default function UserDashboardPage() {
       console.warn("Deposits listener notice:", e);
     }
 
+    // 3. Listen to real-time wallet balance changes
+    let unsubUser: (() => void) | undefined;
+    try {
+      unsubUser = onSnapshot(doc(webDb, "users", currentUser.email.toLowerCase()), (snap) => {
+        if (snap.exists()) {
+          const u = snap.data();
+          if (typeof u.walletBalanceUSD === "number") {
+            saveWalletBalance(u.walletBalanceUSD);
+          }
+        }
+      });
+    } catch (e) {
+      console.warn("User balance listener notice:", e);
+    }
+
     return () => {
       if (unsubOrders) unsubOrders();
       if (unsubDeposits) unsubDeposits();
+      if (unsubUser) unsubUser();
     };
   }, [currentUser?.email]);
 
@@ -147,7 +164,7 @@ export default function UserDashboardPage() {
   const activePlans = plans.filter(p => p.enabled);
   const flagshipTool = tools[0];
 
-  const handleAuthSubmit = (e: React.FormEvent) => {
+  const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
     if (!authEmail.trim() || !authEmail.includes("@")) {
@@ -158,7 +175,7 @@ export default function UserDashboardPage() {
       setAuthError("Password must be at least 4 characters.");
       return;
     }
-    const res = registerUser(authName || authEmail.split("@")[0], authEmail, authPassword);
+    const res = await registerUser(authName || authEmail.split("@")[0], authEmail, authPassword);
     if (!res.success) {
       setAuthError(res.error || "Authentication failed.");
     }

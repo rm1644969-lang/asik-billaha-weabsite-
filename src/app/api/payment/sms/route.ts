@@ -198,13 +198,23 @@ export async function POST(req: NextRequest) {
               notes: "Auto-approved by Companion Phone SMS Gateway."
             });
 
-            // Credit user wallet in Primary Web Firebase
-            if (dep.userId) {
-              await updateDoc(doc(webDb, "users", dep.userId), {
+            // Credit user wallet in Primary Web Firebase (Syncs across all devices)
+            const targetUserKey = (dep.userEmail || dep.userId || "").toLowerCase().trim();
+            if (targetUserKey) {
+              await setDoc(doc(webDb, "users", targetUserKey), {
                 walletBalanceUSD: increment(dep.amountUSD || 2),
                 walletBalanceBDT: increment(dep.amountBDT || 240),
                 updatedAt: serverTimestamp()
-              });
+              }, { merge: true });
+            }
+            if (dep.userId && dep.userId !== targetUserKey) {
+              try {
+                await setDoc(doc(webDb, "users", dep.userId), {
+                  walletBalanceUSD: increment(dep.amountUSD || 2),
+                  walletBalanceBDT: increment(dep.amountBDT || 240),
+                  updatedAt: serverTimestamp()
+                }, { merge: true });
+              } catch (_) {}
             }
 
             matchedTarget = `Wallet Deposit #${depDoc.id} ($${dep.amountUSD})`;
