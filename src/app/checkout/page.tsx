@@ -46,6 +46,10 @@ function CheckoutContent() {
     settings, 
     walletBalanceUSD,
     firebaseProjectId,
+    currentUser,
+    isLoggedIn,
+    loginUser,
+    registerUser,
     purchaseOfferWithWallet,
     bindHwidToLicense,
     createOrder, 
@@ -63,6 +67,11 @@ function CheckoutContent() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [activeOrder, setActiveOrder] = useState<Order | null>(null);
   
+  // Auth fields if guest
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authName, setAuthName] = useState("");
+
   const [senderNumber, setSenderNumber] = useState("");
   const [trxId, setTrxId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -121,7 +130,29 @@ function CheckoutContent() {
     if (!selectedPlan) return;
     setErrorMsg(null);
 
+    // If guest, auto register / sign in
+    if (!isLoggedIn) {
+      if (!authEmail.trim() || !authEmail.includes("@")) {
+        setErrorMsg("Please enter your Gmail address so your license & orders are saved to your account.");
+        return;
+      }
+      if (!authPassword || authPassword.length < 4) {
+        setErrorMsg("Please enter a password (at least 4 characters).");
+        return;
+      }
+      const authRes = registerUser(authName || authEmail.split("@")[0], authEmail, authPassword);
+      if (!authRes.success) {
+        setErrorMsg(authRes.error || "Authentication failed.");
+        return;
+      }
+    }
+
     if (paymentMethod === "Wallet") {
+      if (walletBalanceUSD < selectedPlan.priceUSD) {
+        setErrorMsg(`Your profile balance is $${walletBalanceUSD.toFixed(2)}, but this plan is $${selectedPlan.priceUSD}. Please select bKash or Rocket to pay directly.`);
+        return;
+      }
+
       setIsSubmitting(true);
       const res = await purchaseOfferWithWallet(selectedTool, selectedPlan);
       setIsSubmitting(false);
@@ -129,6 +160,7 @@ function CheckoutContent() {
         setErrorMsg(res.error || "Insufficient wallet balance.");
         return;
       }
+      triggerConfetti();
       if (res.order) setActiveOrder(res.order);
       if (res.license) setGeneratedLicense(res.license.key);
       setStep(3);
@@ -174,7 +206,7 @@ function CheckoutContent() {
       setIsSubmitting(false);
 
       if (result.autoVerified) {
-        setGeneratedLicense(result.key);
+        setGeneratedLicense(result.key || null);
         setStep(3);
       } else {
         setActiveOrder(prev => prev ? ({ ...prev, trxId: trxId.toUpperCase(), senderNumber, notes: "Awaiting SMS verification..." }) : null);
@@ -197,7 +229,7 @@ function CheckoutContent() {
 
     const matchRes = submitOrderPayment(activeOrder.id, mockTrx, senderNumber || "01731328169");
     if (matchRes.autoVerified) {
-      setGeneratedLicense(matchRes.key);
+      setGeneratedLicense(matchRes.key || null);
       setStep(3);
     }
   };
@@ -354,6 +386,65 @@ function CheckoutContent() {
                     <span className="text-[10px] font-mono text-slate-300">01731328169</span>
                   </button>
                 </div>
+              </div>
+
+              {/* 4. Account Profile Gate */}
+              <div className="pt-4 border-t border-white/10 space-y-3">
+                <label className="text-xs font-black uppercase tracking-wider text-yellow-400 block">
+                  4. Your Account (Saves License &amp; Tool Downloads)
+                </label>
+                {isLoggedIn && currentUser ? (
+                  <div className="p-3.5 rounded-2xl bg-black border border-emerald-500/40 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                        ✓
+                      </div>
+                      <div>
+                        <span className="font-bold text-white block">{currentUser.name}</span>
+                        <span className="text-slate-400 font-mono text-[11px]">{currentUser.email}</span>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-mono font-bold text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-lg border border-yellow-400/30">
+                      Profile Balance: ${walletBalanceUSD.toFixed(2)}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-2xl bg-black border border-yellow-400/40 space-y-3">
+                    <p className="text-xs text-slate-300">
+                      Enter your Gmail address &amp; password so your license key and downloads stay permanently saved to your profile:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <label className="text-slate-400 block mb-1 font-bold">Your Gmail Address</label>
+                        <input
+                          type="email"
+                          required
+                          placeholder="yourname@gmail.com"
+                          value={authEmail}
+                          onChange={(e) => setAuthEmail(e.target.value)}
+                          className="w-full p-2.5 rounded-xl glass-input text-white text-xs font-medium"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-slate-400 block mb-1 font-bold">Password</label>
+                        <input
+                          type="password"
+                          required
+                          placeholder="Minimum 4 characters"
+                          value={authPassword}
+                          onChange={(e) => setAuthPassword(e.target.value)}
+                          className="w-full p-2.5 rounded-xl glass-input text-white text-xs font-medium"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] pt-1 text-slate-400">
+                      <span>Existing account? It will auto-login.</span>
+                      <Link href={`/login?redirect=${encodeURIComponent("/checkout")}`} className="text-yellow-400 font-bold hover:underline">
+                        Sign In &rarr;
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </div>
 
             </div>

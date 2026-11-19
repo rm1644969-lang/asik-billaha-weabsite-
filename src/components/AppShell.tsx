@@ -22,14 +22,15 @@ import {
   ChevronLeft,
   ChevronRight,
   Flame,
-  Zap
+  Zap,
+  User
 } from "lucide-react";
 import { useNexusStore } from "@/lib/store";
 import Footer from "@/components/Footer";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { settings, walletBalanceUSD } = useNexusStore();
+  const { settings, walletBalanceUSD, currentUser, isLoggedIn, logoutUser } = useNexusStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -162,6 +163,33 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
               </button>
             </div>
+
+            {/* User Account / Profile status */}
+            {!collapsed && (
+              isLoggedIn && currentUser ? (
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10 text-xs">
+                  <div className="truncate min-w-0">
+                    <span className="font-bold text-white block truncate">{currentUser.name}</span>
+                    <span className="text-[10px] text-slate-400 font-mono block truncate">{currentUser.email}</span>
+                  </div>
+                  <button
+                    onClick={logoutUser}
+                    className="text-[10px] font-bold text-slate-400 hover:text-red-400 shrink-0 ml-2"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-yellow-400/10 hover:bg-yellow-400/20 border border-yellow-400/40 text-yellow-400 text-xs font-black transition-all"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Sign In / Register</span>
+                </Link>
+              )
+            )}
 
             {/* Wallet Widget in Sidebar */}
             {!collapsed ? (

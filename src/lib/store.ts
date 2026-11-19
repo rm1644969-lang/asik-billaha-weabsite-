@@ -1,7 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Tool, PricePlan, Order, License, SiteSettings, SmsDevice, SmsRecord, Review, Tutorial, FaqItem, WalletDeposit } from "./types";
+import { 
+  Tool, 
+  PricePlan, 
+  Order, 
+  License, 
+  SiteSettings, 
+  SmsDevice, 
+  SmsRecord, 
+  Review, 
+  Tutorial, 
+  FaqItem, 
+  WalletDeposit,
+  UserAccount 
+} from "./types";
 import { 
   sampleTools, 
   samplePlans, 
@@ -33,33 +46,15 @@ export function useNexusStore() {
   const [reviews] = useState<Review[]>(sampleReviews);
   const [tutorials, setTutorials] = useState<Tutorial[]>(sampleTutorials);
   const [faqs, setFaqs] = useState<FaqItem[]>(sampleFaqs);
-  const [walletBalanceUSD, setWalletBalanceUSD] = useState<number>(10); // Demo starting wallet balance ($10) so user can test instantly, or add more via bKash/Rocket
-  const [deposits, setDeposits] = useState<WalletDeposit[]>([
-    {
-      id: "dep-1001",
-      userId: "user-test-01",
-      userEmail: "shakil.dev@gmail.com",
-      userName: "Shakil Ahmed",
-      amountUSD: 10,
-      amountBDT: 1200,
-      method: "bKash",
-      senderNumber: "01755123456",
-      trxId: "BK5519X20P",
-      status: "APPROVED",
-      createdAt: "2026-03-14T10:00:00Z",
-      approvedAt: "2026-03-14T10:01:00Z"
-    }
-  ]);
-
-  const [currentUser, setCurrentUser] = useState({
-    id: "user-test-01",
-    name: "Shakil Ahmed",
-    email: "shakil.dev@gmail.com",
-    role: "customer", // "customer" | "admin"
-  });
+  const [walletBalanceUSD, setWalletBalanceUSD] = useState<number>(0);
+  const [deposits, setDeposits] = useState<WalletDeposit[]>([]);
+  
+  // User Authentication State
+  const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load from localStorage if present
+  // Load from localStorage on mount
   useEffect(() => {
     try {
       const storedTools = localStorage.getItem("toolsbd_v4_tools");
@@ -73,10 +68,10 @@ export function useNexusStore() {
       const storedDeposits = localStorage.getItem("toolsbd_v4_deposits");
       const storedTutorials = localStorage.getItem("toolsbd_v4_tutorials");
       const storedFaqs = localStorage.getItem("toolsbd_v4_faqs");
+      const storedAuthUser = localStorage.getItem("toolsbd_auth_current_user");
 
       if (storedTools) {
         const parsedTools = JSON.parse(storedTools);
-        // Ensure latest official desktop tool image and info are applied
         const updatedTools = parsedTools.map((t: Tool) => {
           if (t.id === "tool-otp-utility" || (t.bannerUrl && t.bannerUrl.includes("unsplash.com"))) {
             return {
@@ -97,12 +92,21 @@ export function useNexusStore() {
       if (storedSettings) setSettings(JSON.parse(storedSettings));
       if (storedSmsRecords) setSmsRecords(JSON.parse(storedSmsRecords));
       if (storedDevices) setSmsDevices(JSON.parse(storedDevices));
-      if (storedWallet) setWalletBalanceUSD(JSON.parse(storedWallet));
       if (storedDeposits) setDeposits(JSON.parse(storedDeposits));
       if (storedTutorials) setTutorials(JSON.parse(storedTutorials));
       if (storedFaqs) setFaqs(JSON.parse(storedFaqs));
+
+      // Load Logged in User & Balance
+      if (storedAuthUser) {
+        const user: UserAccount = JSON.parse(storedAuthUser);
+        setCurrentUser(user);
+        setIsLoggedIn(true);
+        setWalletBalanceUSD(user.walletBalanceUSD ?? 0);
+      } else if (storedWallet) {
+        setWalletBalanceUSD(JSON.parse(storedWallet));
+      }
     } catch {
-      // Fallback to memory
+      // Fallback
     }
     setIsLoaded(true);
   }, []);
@@ -140,8 +144,21 @@ export function useNexusStore() {
 
   const saveWalletBalance = (newBalanceUSD: number) => {
     setWalletBalanceUSD(newBalanceUSD);
-    if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_wallet_usd", JSON.stringify(newBalanceUSD));
-    syncWalletBalanceToFirestore(currentUser.id, currentUser.email, newBalanceUSD, newBalanceUSD * 120);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("toolsbd_v4_wallet_usd", JSON.stringify(newBalanceUSD));
+    }
+    if (currentUser) {
+      const updatedUser: UserAccount = {
+        ...currentUser,
+        walletBalanceUSD: newBalanceUSD,
+        walletBalanceBDT: Math.round(newBalanceUSD * 120),
+      };
+      setCurrentUser(updatedUser);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("toolsbd_auth_current_user", JSON.stringify(updatedUser));
+      }
+      syncWalletBalanceToFirestore(currentUser.id, currentUser.email, newBalanceUSD, newBalanceUSD * 120);
+    }
   };
 
   const saveDeposits = (newDeposits: WalletDeposit[]) => {
@@ -160,22 +177,105 @@ export function useNexusStore() {
   };
 
   // ==============================================================
-  // WALLET ADD MONEY ACTIONS (bKash / Rocket -> Firebase)
+  // USER AUTHENTICATION (REGISTER / LOGIN WITH GMAIL & PASSWORD)
+  // ==============================================================
+  const registerUser = (name: string, email: string, password = ""): { success: boolean; error?: string } => {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim() || cleanEmail.split("@")[0] || "Toolsbd Member";
+
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      return { success: false, error: "Please enter a valid Gmail / Email address." };
+    }
+    if (!password || password.length < 4) {
+      return { success: false, error: "Password must be at least 4 characters." };
+    }
+
+    const newUser: UserAccount = {
+      id: `usr-${Date.now()}`,
+      name: cleanName,
+      email: cleanEmail,
+      password,
+      role: cleanEmail.includes("admin") ? "admin" : "customer",
+      walletBalanceUSD: 0,
+      walletBalanceBDT: 0,
+      createdAt: new Date().toISOString()
+    };
+
+    setCurrentUser(newUser);
+    setIsLoggedIn(true);
+    setWalletBalanceUSD(0);
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("toolsbd_auth_current_user", JSON.stringify(newUser));
+      // Also save in all users directory
+      const allUsers = JSON.parse(localStorage.getItem("toolsbd_all_users") || "[]");
+      const filtered = allUsers.filter((u: UserAccount) => u.email !== cleanEmail);
+      filtered.push(newUser);
+      localStorage.setItem("toolsbd_all_users", JSON.stringify(filtered));
+    }
+
+    // Sync user record to Firestore
+    syncWalletBalanceToFirestore(newUser.id, newUser.email, 0, 0);
+
+    return { success: true };
+  };
+
+  const loginUser = (email: string, password = ""): { success: boolean; error?: string } => {
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      return { success: false, error: "Please enter a valid Gmail address." };
+    }
+
+    if (typeof window !== "undefined") {
+      const allUsers: UserAccount[] = JSON.parse(localStorage.getItem("toolsbd_all_users") || "[]");
+      const existing = allUsers.find(u => u.email === cleanEmail);
+
+      if (existing) {
+        if (password && existing.password && existing.password !== password) {
+          return { success: false, error: "Incorrect password. Please try again." };
+        }
+        setCurrentUser(existing);
+        setIsLoggedIn(true);
+        setWalletBalanceUSD(existing.walletBalanceUSD || 0);
+        localStorage.setItem("toolsbd_auth_current_user", JSON.stringify(existing));
+        return { success: true };
+      }
+    }
+
+    // If new user signing in for first time, auto-register them seamlessly
+    return registerUser(cleanEmail.split("@")[0], cleanEmail, password || "123456");
+  };
+
+  const logoutUser = () => {
+    setCurrentUser(null);
+    setIsLoggedIn(false);
+    setWalletBalanceUSD(0);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("toolsbd_auth_current_user");
+    }
+  };
+
+  // ==============================================================
+  // WALLET DEPOSIT (ADD MONEY VIA BKASH & ROCKET)
   // ==============================================================
   const submitWalletDeposit = async (
-    amountUSD: number,
-    method: "bKash" | "Rocket",
-    senderNumber: string,
-    trxId: string,
+    amountUSD: number, 
+    method: "bKash" | "Rocket", 
+    senderNumber: string, 
+    trxId: string, 
     autoApprove = false
   ) => {
     const cleanTrx = trxId.trim().toUpperCase();
     const amountBDT = amountUSD * 120;
+    const userId = currentUser?.id || "guest-user";
+    const userEmail = currentUser?.email || "guest@toolsbd.com";
+    const userName = currentUser?.name || "Toolsbd Guest";
+
     const newDeposit: WalletDeposit = {
       id: `dep-${Date.now()}`,
-      userId: currentUser.id,
-      userEmail: currentUser.email,
-      userName: currentUser.name,
+      userId,
+      userEmail,
+      userName,
       amountUSD,
       amountBDT,
       method,
@@ -193,48 +293,62 @@ export function useNexusStore() {
       saveWalletBalance(walletBalanceUSD + amountUSD);
     }
 
-    return { deposit: newDeposit, firebaseSynced: fbRes.synced, firebaseError: fbRes.error };
+    return {
+      success: true,
+      deposit: newDeposit,
+      firebaseSynced: fbRes.synced,
+      firebaseError: fbRes.error
+    };
   };
 
-  const approveWalletDeposit = async (depositId: string) => {
-    const target = deposits.find(d => d.id === depositId);
-    if (!target || target.status === "APPROVED") return;
+  const approveWalletDeposit = (depositId: string) => {
+    const dep = deposits.find(d => d.id === depositId);
+    if (!dep || dep.status === "APPROVED") return;
 
-    const updatedDeposit: WalletDeposit = {
-      ...target,
+    const updated = deposits.map(d => {
+      if (d.id === depositId) {
+        return {
+          ...d,
+          status: "APPROVED" as const,
+          approvedAt: new Date().toISOString()
+        };
+      }
+      return d;
+    });
+
+    saveDeposits(updated);
+    saveWalletBalance(walletBalanceUSD + dep.amountUSD);
+    syncDepositToFirestore({
+      ...dep,
       status: "APPROVED",
-      approvedAt: new Date().toISOString()
-    };
-
-    saveDeposits(deposits.map(d => d.id === depositId ? updatedDeposit : d));
-    saveWalletBalance(walletBalanceUSD + target.amountUSD);
-    await syncDepositToFirestore(updatedDeposit);
+      createdAt: dep.createdAt
+    });
   };
 
   // ==============================================================
-  // BUY OFFER USING WALLET BALANCE -> INSTANT KEY + FIREBASE SYNC
+  // PURCHASE TOOL PLAN WITH PRE-FUNDED WALLET BALANCE
   // ==============================================================
   const purchaseOfferWithWallet = async (
-    tool: Tool,
+    tool: Tool, 
     plan: PricePlan,
     initialHwid?: string
-  ): Promise<{ success: boolean; error?: string; order?: Order; license?: License; firebaseSynced?: boolean }> => {
+  ) => {
     if (walletBalanceUSD < plan.priceUSD) {
       return {
         success: false,
-        error: `Insufficient wallet balance! You have $${walletBalanceUSD.toFixed(2)}, but this plan costs $${plan.priceUSD}. Please Add Money via bKash or Rocket first.`
+        error: `Insufficient balance! You have $${walletBalanceUSD.toFixed(2)}, but plan requires $${plan.priceUSD.toFixed(2)}. Please Add Money via bKash/Rocket.`
       };
     }
 
+    const orderNumber = `TBD-WALLET-${Math.floor(100000 + Math.random() * 900000)}`;
     const generatedKey = `TBD-${plan.durationDays}D-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-    const orderNumber = `TBD-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
       orderNumber,
-      userId: currentUser.id,
-      userEmail: currentUser.email,
-      userName: currentUser.name,
+      userId: currentUser?.id || "guest-user",
+      userEmail: currentUser?.email || "guest@toolsbd.com",
+      userName: currentUser?.name || "Toolsbd Member",
       toolId: tool.id,
       toolName: tool.name,
       planId: plan.id,
@@ -245,7 +359,7 @@ export function useNexusStore() {
       paymentMethod: "Manual",
       trxId: `WALLET-$${plan.priceUSD}`,
       licenseKey: generatedKey,
-      notes: `Purchased using Toolsbd Wallet Balance ($${plan.priceUSD} / ৳${plan.priceBDT}).`,
+      notes: `Purchased using Toolsbd Profile Balance ($${plan.priceUSD} / ৳${plan.priceBDT}).`,
       createdAt: new Date().toISOString(),
       paidAt: new Date().toISOString()
     };
@@ -259,8 +373,8 @@ export function useNexusStore() {
       keyHash: "hash_" + generatedKey,
       toolId: tool.id,
       toolName: tool.name,
-      userId: currentUser.id,
-      userEmail: currentUser.email,
+      userId: currentUser?.id || "guest-user",
+      userEmail: currentUser?.email || "guest@toolsbd.com",
       orderId: newOrder.id,
       durationDays: plan.durationDays,
       status: "ACTIVE",
@@ -273,12 +387,12 @@ export function useNexusStore() {
       expiresAt: expires.toISOString()
     };
 
-    // Deduct balance & save
+    // Deduct balance from profile & save
     saveWalletBalance(Number((walletBalanceUSD - plan.priceUSD).toFixed(2)));
     saveOrders([newOrder, ...orders]);
     saveLicenses([newLic, ...licenses]);
 
-    // Sync directly to Firebase (fb-resend-otp)
+    // Sync to Firebase
     await syncOrderToFirestore(newOrder);
     const fbLic = await syncLicenseToFirestore(newLic);
 
@@ -291,22 +405,19 @@ export function useNexusStore() {
   };
 
   // ==============================================================
-  // BIND HWID TO LICENSE KEY -> DIRECTLY WRITES TO FIREBASE
+  // PERMANENT HWID LOCK (NO COMPLICATED RESET NEEDED)
   // ==============================================================
-  const bindHwidToLicense = async (licenseIdOrKey: string, hwidInput: string) => {
-    const cleanHwid = hwidInput.trim();
-    if (!cleanHwid) return { success: false, error: "Please enter a valid HWID." };
-
+  const bindHwidToLicense = async (licenseKeyOrId: string, hwid: string) => {
     let targetLic: License | undefined;
+    const cleanHwid = hwid.trim();
+
     const updated = licenses.map(lic => {
-      if (lic.id === licenseIdOrKey || lic.key === licenseIdOrKey) {
+      if (lic.id === licenseKeyOrId || lic.key === licenseKeyOrId) {
         targetLic = {
           ...lic,
           hwid: cleanHwid,
-          hwidHash: "hwid_" + cleanHwid,
           hwidLockedAt: new Date().toISOString(),
-          activationsCount: (lic.activationsCount || 0) + 1,
-          lastActivatedAt: new Date().toISOString()
+          activationsCount: (lic.activationsCount || 0) + 1
         };
         return targetLic;
       }
@@ -314,7 +425,7 @@ export function useNexusStore() {
     });
 
     if (!targetLic) {
-      return { success: false, error: "License record not found." };
+      return { success: false, error: "License key not found." };
     }
 
     saveLicenses(updated);
@@ -328,17 +439,35 @@ export function useNexusStore() {
     };
   };
 
-  // ==============================================================
-  // DIRECT CHECKOUT ORDER ACTIONS
-  // ==============================================================
-  const createOrder = (tool: Tool, plan: PricePlan, paymentMethod: "bKash" | "Rocket" | "Nagad"): Order => {
-    const orderNumber = `TBD-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+  const resetHwid = (licenseId: string) => {
+    let targetLic: License | undefined;
+    const updated = licenses.map(l => {
+      if (l.id === licenseId || l.key === licenseId) {
+        targetLic = {
+          ...l,
+          hwid: undefined,
+          hwidLockedAt: undefined,
+          hwidResetCount: (l.hwidResetCount || 0) + 1,
+        };
+        return targetLic;
+      }
+      return l;
+    });
+    saveLicenses(updated);
+    if (targetLic) {
+      syncLicenseToFirestore(targetLic);
+    }
+  };
+
+  // Direct checkout order creation
+  const createOrder = (tool: Tool, plan: PricePlan, paymentMethod: "bKash" | "Rocket" | "Manual") => {
+    const orderNumber = `TBD-${Math.floor(100000 + Math.random() * 900000)}`;
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
       orderNumber,
-      userId: currentUser.id,
-      userEmail: currentUser.email,
-      userName: currentUser.name,
+      userId: currentUser?.id || "guest-user",
+      userEmail: currentUser?.email || "guest@toolsbd.com",
+      userName: currentUser?.name || "Toolsbd Member",
       toolId: tool.id,
       toolName: tool.name,
       planId: plan.id,
@@ -356,47 +485,42 @@ export function useNexusStore() {
   };
 
   const submitOrderPayment = (orderId: string, trxId: string, senderNumber: string) => {
-    const cleanTrx = trxId.trim().toUpperCase();
-    const cleanSender = senderNumber.trim();
+    let targetOrder = orders.find(o => o.id === orderId);
+    if (!targetOrder) return { autoVerified: false, error: "Order not found" };
 
     const matchingSms = smsRecords.find(
-      r => r.trxId.toUpperCase() === cleanTrx && r.status === "UNMATCHED"
+      sms => sms.trxId.toUpperCase() === trxId.trim().toUpperCase() && sms.amount === targetOrder!.amount
     );
 
-    let generatedKey = "";
     const isAutoVerified = !!matchingSms;
+    const generatedKey = `TBD-${targetOrder.planDuration}D-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
-    const targetOrder = orders.find(o => o.id === orderId);
-    if (isAutoVerified) {
-      generatedKey = `TBD-${targetOrder?.planDuration || 7}D-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-    }
-
-    let updatedOrderObj: Order | undefined;
+    let updatedOrder: Order;
     const updatedOrders = orders.map(ord => {
       if (ord.id === orderId) {
-        updatedOrderObj = {
+        updatedOrder = {
           ...ord,
-          trxId: cleanTrx,
-          senderNumber: cleanSender,
+          trxId: trxId.trim().toUpperCase(),
+          senderNumber,
           status: isAutoVerified ? ("PAID" as const) : ("PENDING" as const),
           licenseKey: isAutoVerified ? generatedKey : undefined,
           paidAt: isAutoVerified ? new Date().toISOString() : undefined,
-          notes: isAutoVerified ? "Instant auto-matched via companion SMS" : "Submitted. Verification in progress."
+          notes: isAutoVerified ? "Auto-verified by Companion SMS Gateway" : "Payment submitted, awaiting companion match"
         };
-        return updatedOrderObj;
+        return updatedOrder;
       }
       return ord;
     });
 
     saveOrders(updatedOrders);
-    if (updatedOrderObj) syncOrderToFirestore(updatedOrderObj);
+    if (updatedOrder!) syncOrderToFirestore(updatedOrder);
 
-    if (isAutoVerified && targetOrder) {
-      const updatedSms = smsRecords.map(s => {
-        if (s.id === matchingSms.id) {
-          return { ...s, status: "MATCHED" as const, matchedOrderId: orderId };
+    if (isAutoVerified) {
+      const updatedSms = smsRecords.map(sms => {
+        if (sms.id === matchingSms.id) {
+          return { ...sms, matchedOrderId: orderId, status: "MATCHED" as const };
         }
-        return s;
+        return sms;
       });
       saveSmsRecords(updatedSms);
 
@@ -441,7 +565,7 @@ export function useNexusStore() {
     const newRecord: SmsRecord = {
       id: `sms-${Date.now()}`,
       deviceId: "samsung-sm-g998b-primary",
-      deviceName: "Toolsbd Merchant Phone (Samsung S21)",
+      deviceName: "Toolsbd Merchant Phone",
       sender: provider,
       rawMessage,
       trxId,
@@ -560,32 +684,21 @@ export function useNexusStore() {
     saveOrders(updated);
   };
 
-  const resetHwid = (licenseId: string) => {
-    let targetLic: License | undefined;
-    const updated = licenses.map(lic => {
-      if (lic.id === licenseId) {
-        targetLic = {
-          ...lic,
-          hwid: undefined,
-          hwidHash: undefined,
-          hwidResetCount: lic.hwidResetCount + 1,
-          lastHwidResetAt: new Date().toISOString()
-        };
-        return targetLic;
-      }
-      return lic;
-    });
-    saveLicenses(updated);
-    if (targetLic) syncLicenseToFirestore(targetLic);
-  };
-
   const switchUserRole = (role: "customer" | "admin") => {
-    setCurrentUser(prev => ({
-      ...prev,
-      role,
-      name: role === "admin" ? "Platform Administrator" : "Shakil Ahmed",
-      email: role === "admin" ? "admin@toolsbd.com" : "shakil.dev@gmail.com"
-    }));
+    if (currentUser) {
+      const updated: UserAccount = {
+        ...currentUser,
+        role,
+        name: role === "admin" ? "Platform Administrator" : (currentUser.name || "Toolsbd Member"),
+        email: role === "admin" ? "admin@toolsbd.com" : currentUser.email,
+      };
+      setCurrentUser(updated);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("toolsbd_auth_current_user", JSON.stringify(updated));
+      }
+    } else {
+      registerUser(role === "admin" ? "Admin" : "Member", role === "admin" ? "admin@toolsbd.com" : "user@gmail.com", "123456");
+    }
   };
 
   return {
@@ -604,6 +717,10 @@ export function useNexusStore() {
     walletBalanceUSD,
     deposits,
     currentUser,
+    isLoggedIn,
+    loginUser,
+    registerUser,
+    logoutUser,
     switchUserRole,
     saveTools,
     savePlans,
@@ -612,15 +729,16 @@ export function useNexusStore() {
     saveSettings,
     saveTutorials,
     saveFaqs,
+    saveWalletBalance,
     submitWalletDeposit,
     approveWalletDeposit,
     purchaseOfferWithWallet,
     bindHwidToLicense,
+    resetHwid,
     createOrder,
     submitOrderPayment,
     simulateIncomingSms,
     approveOrderManually,
     rejectOrderManually,
-    resetHwid
   };
 }

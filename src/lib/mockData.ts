@@ -59,7 +59,7 @@ export const samplePlans: PricePlan[] = [
     features: [
       "Full 15 Days Unlimited Access",
       "High Priority High-Speed Route",
-      "Single PC HWID Lock + 1 Free Reset",
+      "Single PC HWID Security Lock",
       "Instant Auto-Delivery via SMS",
       "Priority 24/7 Telegram Support"
     ]
@@ -80,7 +80,7 @@ export const samplePlans: PricePlan[] = [
     features: [
       "Full 30 Days VIP Unlimited Access",
       "Ultra-Fast Multi-Thread Engine",
-      "Single PC HWID Lock + 2 Free Resets",
+      "Single PC HWID Security Lock",
       "Dedicated VIP Telegram Group",
       "All Future Updates Included Free"
     ]
@@ -109,7 +109,7 @@ export const sampleTools: Tool[] = [
       "Real-time high-concurrency multi-threading engine",
       "Instant automated license delivery via bKash & Rocket",
       "HWID Hardware Security Lock to protect your subscription",
-      "1-Click HWID Reset available inside Customer Dashboard",
+      "Instant HWID Machine Authorization (No resets needed)",
       "Detailed live terminal telemetry & exportable logs",
       "Full setup video & direct high-speed download link"
     ],

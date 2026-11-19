@@ -31,17 +31,26 @@ export default function UserDashboardPage() {
     walletBalanceUSD,
     deposits,
     firebaseProjectId,
+    currentUser,
+    isLoggedIn,
+    loginUser,
+    registerUser,
+    logoutUser,
     submitWalletDeposit,
     purchaseOfferWithWallet,
-    bindHwidToLicense,
-    resetHwid, 
-    currentUser 
+    bindHwidToLicense
   } = useNexusStore();
 
   const [activeTab, setActiveTab] = useState<"wallet" | "licenses" | "downloads" | "orders">("wallet");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [copiedNum, setCopiedNum] = useState<string | null>(null);
   const [bannerMsg, setBannerMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Auth fields if not signed in
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authName, setAuthName] = useState("");
+  const [authError, setAuthError] = useState<string | null>(null);
 
   // Add Money form state
   const [depositAmountUSD, setDepositAmountUSD] = useState<number>(2);
@@ -55,10 +64,31 @@ export default function UserDashboardPage() {
   const [bindingId, setBindingId] = useState<string | null>(null);
   const [buyingPlanId, setBuyingPlanId] = useState<string | null>(null);
 
-  const userLicenses = licenses.filter(l => l.userId === currentUser.id || l.userEmail === currentUser.email);
-  const userOrders = orders.filter(o => o.userId === currentUser.id || o.userEmail === currentUser.email);
+  const userLicenses = currentUser 
+    ? licenses.filter(l => l.userId === currentUser.id || l.userEmail === currentUser.email)
+    : [];
+  const userOrders = currentUser 
+    ? orders.filter(o => o.userId === currentUser.id || o.userEmail === currentUser.email)
+    : [];
   const activePlans = plans.filter(p => p.enabled);
   const flagshipTool = tools[0];
+
+  const handleAuthSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError(null);
+    if (!authEmail.trim() || !authEmail.includes("@")) {
+      setAuthError("Please enter a valid Gmail address.");
+      return;
+    }
+    if (!authPassword || authPassword.length < 4) {
+      setAuthError("Password must be at least 4 characters.");
+      return;
+    }
+    const res = registerUser(authName || authEmail.split("@")[0], authEmail, authPassword);
+    if (!res.success) {
+      setAuthError(res.error || "Authentication failed.");
+    }
+  };
 
   const showBanner = (type: "success" | "error", text: string) => {
     setBannerMsg({ type, text });
@@ -165,75 +195,157 @@ export default function UserDashboardPage() {
     }
   };
 
-  const handleResetHwid = (licId: string) => {
-    resetHwid(licId);
-    showBanner("success", "HWID lock released! You can now enter a new HWID and sync to Firebase.");
-  };
-
   return (
     <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
       
-      {/* Welcome & Wallet Balance Banner */}
-      <div className="relative rounded-3xl p-[1px] bg-gradient-to-r from-yellow-400 via-red-500 to-yellow-600 shadow-neon-yellow overflow-hidden">
-        <div className="rounded-3xl bg-[#0c0c0c]/95 p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6 backdrop-blur-xl border border-white/10">
-          
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-red-600 p-[2px] shadow-neon-yellow shrink-0">
-              <div className="w-full h-full bg-[#111] rounded-[14px] flex items-center justify-center">
-                <User className="w-8 h-8 text-yellow-400" />
-              </div>
-            </div>
+      {/* If Guest: Login / Register Form */}
+      {!isLoggedIn || !currentUser ? (
+        <div className="rounded-3xl p-6 sm:p-8 bg-[#0c0c0c] border border-yellow-400/40 shadow-neon-yellow space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/10">
             <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-2xl font-black text-white">
-                  Welcome, {currentUser.name}
-                </h1>
-                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-yellow-400 text-black shadow-neon-yellow">
-                  Toolsbd.com
-                </span>
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/40 flex items-center gap-1">
-                  <Database className="w-3 h-3" />
-                  <span>Firebase: {firebaseProjectId}</span>
-                </span>
-              </div>
-              <p className="text-xs text-slate-300 mt-1 font-medium">
-                {currentUser.email} &bull; Add Money &rarr; Buy Offer &rarr; Download Tool &rarr; Enter HWID for Key
+              <h2 className="text-xl font-black text-white flex items-center gap-2">
+                <User className="w-5 h-5 text-yellow-400" />
+                <span>Sign In or Register with Gmail</span>
+              </h2>
+              <p className="text-xs text-slate-300 mt-0.5">
+                Sign in with your Gmail to save wallet balance, purchase software offers, and unlock HWID license keys.
               </p>
             </div>
+            <Link
+              href="/login"
+              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-yellow-400 text-xs font-bold self-start sm:self-auto"
+            >
+              Sign In Existing Account &rarr;
+            </Link>
           </div>
 
-          {/* Wallet Balance Box */}
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="px-5 py-3 rounded-2xl bg-black border border-yellow-400/50 shadow-neon-yellow flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-yellow-400/15 text-yellow-400">
-                <Wallet className="w-5 h-5" />
+          {authError && (
+            <div className="p-3 rounded-xl bg-red-950/80 border border-red-500 text-white text-xs font-bold">
+              {authError}
+            </div>
+          )}
+
+          <form onSubmit={handleAuthSubmit} className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div>
+              <label className="text-slate-400 font-bold block mb-1">Your Full Name</label>
+              <input
+                type="text"
+                placeholder="e.g. Asik Billah"
+                value={authName}
+                onChange={(e) => setAuthName(e.target.value)}
+                className="w-full p-2.5 rounded-xl glass-input text-white"
+              />
+            </div>
+            <div>
+              <label className="text-slate-400 font-bold block mb-1">Your Gmail Address</label>
+              <input
+                type="email"
+                required
+                placeholder="yourname@gmail.com"
+                value={authEmail}
+                onChange={(e) => setAuthEmail(e.target.value)}
+                className="w-full p-2.5 rounded-xl glass-input text-white"
+              />
+            </div>
+            <div>
+              <label className="text-slate-400 font-bold block mb-1">Password</label>
+              <input
+                type="password"
+                required
+                placeholder="Minimum 4 characters"
+                value={authPassword}
+                onChange={(e) => setAuthPassword(e.target.value)}
+                className="w-full p-2.5 rounded-xl glass-input text-white"
+              />
+            </div>
+            <div className="sm:col-span-3 pt-1 flex items-center justify-between">
+              <button
+                type="submit"
+                className="px-6 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-neon-yellow transition-all"
+              >
+                Sign In / Register Account
+              </button>
+              <button
+                type="button"
+                onClick={() => registerUser("Member", "member@gmail.com", "123456")}
+                className="text-slate-400 hover:text-white text-xs underline"
+              >
+                Or 1-Click Demo Sign In
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : (
+        /* Welcome & Wallet Balance Banner */
+        <div className="relative rounded-3xl p-[1px] bg-gradient-to-r from-yellow-400 via-red-500 to-yellow-600 shadow-neon-yellow overflow-hidden">
+          <div className="rounded-3xl bg-[#0c0c0c]/95 p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6 backdrop-blur-xl border border-white/10">
+            
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-red-600 p-[2px] shadow-neon-yellow shrink-0">
+                <div className="w-full h-full bg-[#111] rounded-[14px] flex items-center justify-center">
+                  <User className="w-8 h-8 text-yellow-400" />
+                </div>
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                  Wallet Balance
-                </span>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-black text-yellow-400">
-                    ${walletBalanceUSD.toFixed(2)}
+                <div className="flex flex-wrap items-center gap-2">
+                  <h1 className="text-2xl font-black text-white">
+                    Welcome, {currentUser.name}
+                  </h1>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-yellow-400 text-black shadow-neon-yellow">
+                    Toolsbd.com
                   </span>
-                  <span className="text-xs font-mono text-slate-300">
-                    (৳{(walletBalanceUSD * 120).toLocaleString()})
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/40 flex items-center gap-1">
+                    <Database className="w-3 h-3" />
+                    <span>Firebase: {firebaseProjectId}</span>
                   </span>
                 </div>
+                <p className="text-xs text-slate-300 mt-1 font-medium">
+                  {currentUser.email} &bull; Add Money &rarr; Buy Offer &rarr; Download Tool &rarr; Enter HWID for Key
+                </p>
               </div>
             </div>
 
-            <button
-              onClick={() => setActiveTab("wallet")}
-              className="px-4 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-black shadow-neon-red transition-all flex items-center gap-1.5"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>Add Money</span>
-            </button>
-          </div>
+            {/* Wallet Balance Box */}
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="px-5 py-3 rounded-2xl bg-black border border-yellow-400/50 shadow-neon-yellow flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-yellow-400/15 text-yellow-400">
+                  <Wallet className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Profile Balance
+                  </span>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl font-black text-yellow-400">
+                      ${walletBalanceUSD.toFixed(2)}
+                    </span>
+                    <span className="text-xs font-mono text-slate-300">
+                      (৳{(walletBalanceUSD * 120).toLocaleString()})
+                    </span>
+                  </div>
+                </div>
+              </div>
 
+              <button
+                onClick={() => setActiveTab("wallet")}
+                className="px-4 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-black shadow-neon-red transition-all flex items-center gap-1.5"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>Add Money</span>
+              </button>
+
+              <button
+                onClick={logoutUser}
+                className="px-3 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white text-xs font-bold transition-all"
+                title="Sign Out"
+              >
+                Sign Out
+              </button>
+            </div>
+
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Alert Banner */}
       {bannerMsg && (
@@ -598,20 +710,15 @@ export default function UserDashboardPage() {
                       {lic.hwid ? (
                         <>
                           <div className="font-mono text-[11px] text-emerald-400 break-all p-2.5 rounded-lg bg-black border border-emerald-500/30">
-                            BOUND HWID: {lic.hwid}
+                            BOUND HWID: {lic.hwid} (Permanently locked to this PC)
                           </div>
                           <div className="flex items-center justify-between pt-1">
                             <span className="text-[10px] text-slate-400">
                               Expires: {expiresDate.toLocaleDateString()}
                             </span>
-                            <button
-                              type="button"
-                              onClick={() => handleResetHwid(lic.id)}
-                              className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-[11px] font-black flex items-center gap-1 transition-all shadow-neon-red"
-                            >
-                              <RefreshCw className="w-3 h-3" />
-                              <span>Reset HWID</span>
-                            </button>
+                            <span className="text-[10px] text-emerald-400 font-bold">
+                              ● Permanent Machine License Active
+                            </span>
                           </div>
                         </>
                       ) : (

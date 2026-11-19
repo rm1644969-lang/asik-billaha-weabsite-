@@ -83,7 +83,7 @@ export default function HomePage() {
               </span>
               <span className="flex items-center gap-1.5 font-semibold">
                 <ShieldCheck className="w-3.5 h-3.5 text-red-500" />
-                <span>1-Click HWID Lock &amp; Reset</span>
+                <span>Single PC Permanent HWID Security</span>
               </span>
               <span className="flex items-center gap-1.5 font-semibold">
                 <Activity className="w-3.5 h-3.5 text-white" />
@@ -102,7 +102,7 @@ export default function HomePage() {
       {/* ============================================================== */}
       {/* SECTION 2: TOOL ON LEFT + PRICE LIST ON RIGHT (SIDE BY SIDE)    */}
       {/* ============================================================== */}
-      <section id="offer-prices" className="pt-4 pb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-20">
+      <section id="offer-prices" className="pt-4 pb-14 px-4 sm:px-6 lg:px-8 max-w-[1440px] mx-auto scroll-mt-20">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-3">
@@ -115,7 +115,7 @@ export default function HomePage() {
               Our Official Software Tool &amp; Offer Price List
             </h2>
             <p className="text-slate-300 text-xs sm:text-sm mt-1 max-w-xl">
-              Independently tested, HWID protected, and delivered instantaneously upon bKash (01967922602) or Rocket (01731328169) confirmation.
+              Independently tested, HWID protected, and delivered instantaneously upon bKash ({settings.bkashMerchantNumber}) or Rocket ({settings.rocketMerchantNumber}) confirmation.
             </p>
           </div>
           <Link
@@ -131,109 +131,153 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
           
           {/* LEFT: Official Tool Card */}
-          <div className="lg:col-span-5 flex flex-col">
+          <div className="lg:col-span-5 xl:col-span-4 flex flex-col">
             {tools[0] && <ToolCard tool={tools[0]} />}
           </div>
 
           {/* RIGHT: TOOLS OFFER PRICE List Panel */}
-          <div className="lg:col-span-7 flex flex-col">
-            <div className="relative rounded-2xl p-[1px] bg-gradient-to-b from-yellow-400 via-red-500/70 to-yellow-600/40 shadow-neon-yellow h-full">
-              <div className="rounded-2xl bg-[#0b0b0b]/95 backdrop-blur-xl p-6 sm:p-7 h-full flex flex-col justify-between space-y-5 border border-white/10">
+          <div className="lg:col-span-7 xl:col-span-8 flex flex-col">
+            <div className="relative rounded-2xl p-[1px] bg-gradient-to-b from-yellow-400/80 via-red-500/50 to-yellow-600/30 shadow-2xl h-full flex flex-col">
+              <div className="rounded-2xl bg-[#090909]/95 backdrop-blur-xl p-5 sm:p-6 h-full flex flex-col justify-between space-y-6 border border-white/10">
                 
                 {/* Price List Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
-                  <div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-600/20 border border-red-500 text-yellow-400 text-[10px] font-black uppercase tracking-widest mb-1.5">
-                      <Sparkles className="w-3 h-3" />
-                      <span>Limited Time Offer</span>
-                    </div>
-                    <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                      TOOLS OFFER PRICE 🔊
-                    </h3>
+                <div className="text-center space-y-1.5 pb-2 border-b border-white/10">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/20 border border-red-500/60 text-yellow-400 text-xs font-black uppercase tracking-wider">
+                    <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
+                    <span>Instant bKash &bull; Rocket Verification &bull; Zero Delay</span>
                   </div>
-                  <div className="text-left sm:text-right text-xs font-mono text-slate-300">
-                    <span className="block text-yellow-400 font-black">Instant HWID Key</span>
-                    <span>bKash &bull; Rocket Auto</span>
-                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center justify-center gap-2">
+                    <span>TOOLS OFFER PRICE</span>
+                    <span className="text-xl">📢</span>
+                  </h3>
+                  <p className="text-xs sm:text-sm font-bold text-yellow-400 tracking-wide">
+                    7 DAYS &mdash; $2 🔥 &nbsp;|&nbsp; 15 DAYS &mdash; $4 🔥 &nbsp;|&nbsp; 30 DAYS &mdash; $8 🔥
+                  </p>
                 </div>
 
-                {/* Offer Rows */}
-                <div className="space-y-3.5 flex-1 flex flex-col justify-center">
-                  {plans.filter(p => p.enabled).map((plan) => (
-                    <div
-                      key={plan.id}
-                      className={`relative rounded-2xl p-4 sm:p-5 border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-                        plan.isPopular
-                          ? "bg-gradient-to-r from-yellow-400/15 via-red-600/10 to-black border-yellow-400 shadow-neon-yellow"
-                          : "bg-[#121212] border-white/10 hover:border-yellow-400/50"
-                      }`}
-                    >
-                      {plan.isPopular && (
-                        <span className="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-600 text-white border border-yellow-400 shadow-md">
-                          ★ Most Popular
-                        </span>
-                      )}
+                {/* 3 Price Cards Side-by-Side */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 flex-1 items-stretch">
+                  {plans.filter(p => p.enabled).map((plan) => {
+                    const discountPercent = plan.originalPriceUSD 
+                      ? Math.round(((plan.originalPriceUSD - plan.priceUSD) / plan.originalPriceUSD) * 100)
+                      : null;
 
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-base sm:text-lg font-black text-white">
-                            {plan.durationDays} DAYS OFFER 🔥
-                          </span>
-                          {plan.originalPriceUSD && (
-                            <span className="text-xs text-slate-500 line-through font-mono">
-                              ${plan.originalPriceUSD}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-300">
-                          {plan.features.slice(0, 3).map((feat, idx) => (
-                            <span key={idx} className="inline-flex items-center gap-1">
-                              <Check className="w-3 h-3 text-yellow-400 shrink-0" />
-                              <span>{feat}</span>
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/10">
-                        <div className="text-left sm:text-right">
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-2xl sm:text-3xl font-black text-yellow-400 leading-none">
-                              ${plan.priceUSD}
-                            </span>
-                            <span className="text-xs font-black text-white">🔥</span>
+                    return (
+                      <div
+                        key={plan.id}
+                        className={`relative rounded-2xl p-4.5 sm:p-5 flex flex-col justify-between transition-all duration-300 ${
+                          plan.isPopular
+                            ? "bg-gradient-to-b from-[#18150c] via-[#120f09] to-[#0d0d0d] border-2 border-yellow-400 shadow-neon-yellow scale-[1.02] z-10"
+                            : "bg-[#111111] border border-white/10 hover:border-yellow-400/40 hover:bg-[#141414]"
+                        }`}
+                      >
+                        {/* Most Popular Badge */}
+                        {plan.isPopular && (
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 text-black border border-yellow-300 shadow-md whitespace-nowrap">
+                            ★ MOST POPULAR
                           </div>
-                          <span className="text-[11px] font-mono text-slate-400 block mt-0.5">
-                            ৳{plan.priceBDT} BDT
-                          </span>
+                        )}
+
+                        <div>
+                          {/* Top Plan Badge */}
+                          <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                            {plan.durationDays} DAYS ACCESS
+                          </div>
+
+                          {/* Plan Name */}
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <h4 className="text-base sm:text-lg font-black text-white leading-tight">
+                              {plan.name}
+                            </h4>
+                          </div>
+
+                          {/* Tool Subtitle */}
+                          <p className="text-[11px] text-slate-400 mb-3 font-medium truncate">
+                            {tools[0]?.name || "Fast OTP Pro Utility"}
+                          </p>
+
+                          {/* Price Display */}
+                          <div className="mb-2 pb-3 border-b border-white/10">
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-3xl font-black text-yellow-400 leading-none">
+                                ${plan.priceUSD}
+                              </span>
+                              <span className="text-xs font-bold text-white uppercase tracking-wider">
+                                USD 🔥
+                              </span>
+                              {plan.originalPriceUSD && (
+                                <span className="text-xs text-slate-500 line-through font-mono">
+                                  ${plan.originalPriceUSD}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="text-[11px] font-mono text-slate-300 mt-1">
+                              bKash / Rocket Equivalent: <strong className="text-yellow-400">৳{plan.priceBDT} BDT</strong>
+                            </div>
+
+                            {discountPercent && (
+                              <div className="mt-2">
+                                <span className="inline-block px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-red-600/25 text-red-400 border border-red-500/40">
+                                  Save {discountPercent}% Offer Price
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Features List */}
+                          <div className="space-y-1.5 mb-5 text-[11px] text-slate-300">
+                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">
+                              Included in this license:
+                            </div>
+                            {plan.features.map((feat, idx) => (
+                              <div key={idx} className="flex items-start gap-1.5">
+                                <Check className="w-3.5 h-3.5 text-yellow-400 shrink-0 mt-0.5" />
+                                <span className="leading-tight">{feat}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
 
-                        <Link
-                          href={`/checkout?tool=${plan.toolId}&plan=${plan.id}`}
-                          className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shrink-0 ${
-                            plan.isPopular
-                              ? "bg-yellow-400 hover:bg-yellow-300 text-black shadow-neon-yellow"
-                              : "bg-red-600 hover:bg-red-500 text-white shadow-neon-red"
-                          }`}
-                        >
-                          <Zap className="w-3.5 h-3.5" />
-                          <span>Buy Now</span>
-                        </Link>
+                        {/* CTA Button & Subtext */}
+                        <div className="pt-2 border-t border-white/10 space-y-2 mt-auto">
+                          <Link
+                            href={`/checkout?tool=${plan.toolId}&plan=${plan.id}`}
+                            className={`w-full py-2.5 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all text-center shadow-lg ${
+                              plan.isPopular
+                                ? "bg-yellow-400 hover:bg-yellow-300 text-black shadow-neon-yellow"
+                                : "bg-white/10 hover:bg-yellow-400 hover:text-black text-white border border-white/15"
+                            }`}
+                          >
+                            <Zap className="w-3.5 h-3.5" />
+                            <span>Select &amp; Buy Plan</span>
+                          </Link>
+
+                          <div className="text-[10px] text-center font-mono text-slate-400">
+                            Auto Delivery via bKash / Rocket
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
-                {/* Bottom Payment Numbers Bar */}
-                <div className="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300 font-mono">
-                  <span>
-                    bKash: <strong className="text-yellow-400">{settings.bkashMerchantNumber}</strong>
-                  </span>
-                  <span>
-                    Rocket: <strong className="text-red-400">{settings.rocketMerchantNumber}</strong>
-                  </span>
-                  <Link href="/dashboard" className="text-yellow-400 hover:underline font-sans font-bold">
-                    Or Buy with Wallet &rarr;
+                {/* Bottom Payment Numbers & Wallet Link */}
+                <div className="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-300 font-mono">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <span>
+                      bKash: <strong className="text-yellow-400 select-all">{settings.bkashMerchantNumber}</strong>
+                    </span>
+                    <span>
+                      Rocket: <strong className="text-red-400 select-all">{settings.rocketMerchantNumber}</strong>
+                    </span>
+                  </div>
+                  <Link 
+                    href="/dashboard" 
+                    className="text-xs font-bold text-yellow-400 hover:text-yellow-300 hover:underline flex items-center gap-1 font-sans"
+                  >
+                    <span>Or Buy instantly with Wallet Balance</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
 

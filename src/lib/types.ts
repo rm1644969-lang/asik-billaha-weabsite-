@@ -196,3 +196,14 @@ export interface WalletDeposit {
   createdAt: string;
   approvedAt?: string;
 }
+
+export interface UserAccount {
+  id: string;
+  name: string;
+  email: string;
+  password?: string;
+  role: "customer" | "admin";
+  walletBalanceUSD: number;
+  walletBalanceBDT: number;
+  createdAt: string;
+}

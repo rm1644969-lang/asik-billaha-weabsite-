@@ -2,126 +2,167 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Terminal, Lock, Mail, ArrowRight, ShieldCheck, User } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Terminal, Lock, Mail, ArrowRight, ShieldCheck, User, Sparkles, CheckCircle2 } from "lucide-react";
 import { useNexusStore } from "@/lib/store";
 
 export default function LoginPage() {
+  return (
+    <React.Suspense fallback={
+      <div className="py-24 text-center text-yellow-400 font-mono">Loading login...</div>
+    }>
+      <LoginContent />
+    </React.Suspense>
+  );
+}
+
+function LoginContent() {
   const router = useRouter();
-  const { switchUserRole } = useNexusStore();
-  const [email, setEmail] = useState("shakil.dev@gmail.com");
-  const [password, setPassword] = useState("••••••••");
-  const [role, setRole] = useState<"customer" | "admin">("customer");
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect") || "/dashboard";
+
+  const { loginUser, switchUserRole } = useNexusStore();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    switchUserRole(role);
-    if (role === "admin") {
-      router.push("/admin");
+    setError(null);
+    if (!email.trim() || !email.includes("@")) {
+      setError("Please enter a valid Gmail address.");
+      return;
+    }
+
+    setLoading(true);
+    const res = loginUser(email, password);
+    setLoading(false);
+
+    if (res.success) {
+      router.push(redirectUrl);
     } else {
-      router.push("/dashboard");
+      setError(res.error || "Login failed.");
     }
   };
 
+  const handleQuickDemoCustomer = () => {
+    loginUser("member@gmail.com", "123456");
+    router.push(redirectUrl);
+  };
+
+  const handleQuickDemoAdmin = () => {
+    switchUserRole("admin");
+    router.push("/admin");
+  };
+
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-[#070707]">
       <div className="w-full max-w-md space-y-6">
         
-        {/* Logo */}
+        {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-cyan-500 p-[1px] shadow-neon-purple mb-2">
-            <div className="w-full h-full bg-[#080c2e] rounded-[15px] flex items-center justify-center">
-              <Terminal className="w-6 h-6 text-cyan-400" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 via-red-600 to-black p-[2px] shadow-neon-yellow mb-2">
+            <div className="w-full h-full bg-[#0a0a0a] rounded-[13px] flex items-center justify-center">
+              <Terminal className="w-7 h-7 text-yellow-400" />
             </div>
           </div>
-          <h1 className="text-3xl font-black text-white">Sign In to Nexus</h1>
-          <p className="text-xs text-slate-400">
-            Access your purchased licenses, downloads, and payments.
+          <h1 className="text-3xl font-black text-white">
+            Sign In to Toolsbd<span className="text-red-500">.com</span>
+          </h1>
+          <p className="text-xs text-slate-300">
+            Sign in with your Gmail to purchase software tools, add wallet money, and unlock HWID keys.
           </p>
         </div>
 
-        {/* Form Container */}
-        <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10 shadow-2xl">
+        {/* Login Form Container */}
+        <div className="rounded-3xl p-6 sm:p-8 space-y-6 bg-[#0c0c0c] border border-white/10 shadow-2xl relative overflow-hidden">
           
-          {/* Quick Demo Persona Switcher */}
-          <div className="p-1 rounded-xl bg-black/40 border border-white/5 grid grid-cols-2 text-xs font-bold">
-            <button
-              type="button"
-              onClick={() => {
-                setRole("customer");
-                setEmail("shakil.dev@gmail.com");
-              }}
-              className={`py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-                role === "customer"
-                  ? "bg-purple-600 text-white shadow-neon-purple"
-                  : "text-slate-400 hover:text-white"
-              }`}
-            >
-              <User className="w-3.5 h-3.5" />
-              <span>Customer Demo</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setRole("admin");
-                setEmail("admin@nexustools.io");
-              }}
-              className={`py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-                role === "admin"
-                  ? "bg-purple-600 text-white shadow-neon-purple"
-                  : "text-slate-400 hover:text-white"
-              }`}
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Owner Admin</span>
-            </button>
-          </div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/10 rounded-full blur-2xl pointer-events-none" />
+
+          {error && (
+            <div className="p-3.5 rounded-xl bg-red-950/80 border border-red-500 text-white text-xs font-bold">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleLogin} className="space-y-4 text-xs">
             <div>
-              <label className="font-bold text-slate-300 block mb-1.5">Email Address</label>
+              <label className="font-black text-slate-300 uppercase tracking-wider block mb-1.5">
+                Gmail Address
+              </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-yellow-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="email"
                   required
+                  placeholder="yourname@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium placeholder:text-slate-500"
                 />
               </div>
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="font-bold text-slate-300">Password</label>
-                <a href="#" className="text-purple-400 hover:underline text-[11px]">Forgot?</a>
-              </div>
+              <label className="font-black text-slate-300 uppercase tracking-wider block mb-1.5">
+                Password
+              </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-red-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   required
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium placeholder:text-slate-500"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 text-white font-bold text-sm shadow-neon-purple hover:opacity-95 flex items-center justify-center gap-2 transition-all mt-2"
+              disabled={loading}
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black font-black text-xs sm:text-sm shadow-neon-yellow hover:opacity-95 flex items-center justify-center gap-2 transition-all mt-2"
             >
-              <span>Sign In as {role === "admin" ? "Owner Admin" : "Customer"}</span>
+              <span>{loading ? "Signing In..." : "Sign In & Continue"}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
+          {/* Quick Demo Switchers */}
+          <div className="pt-2 border-t border-white/10 space-y-2">
+            <span className="text-[10px] uppercase font-black text-slate-500 block text-center tracking-wider">
+              Quick 1-Click Access
+            </span>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <button
+                type="button"
+                onClick={handleQuickDemoCustomer}
+                className="py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-yellow-400 font-bold flex items-center justify-center gap-1.5 transition-all"
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>Customer Demo</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleQuickDemoAdmin}
+                className="py-2 px-3 rounded-xl bg-red-950/60 hover:bg-red-900/60 border border-red-500/50 text-red-300 font-bold flex items-center justify-center gap-1.5 transition-all"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-red-400" />
+                <span>Owner Admin</span>
+              </button>
+            </div>
+          </div>
+
           <p className="text-center text-xs text-slate-400">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-cyan-400 font-bold hover:underline">
-              Create Account
+            Don&apos;t have an account yet?{" "}
+            <Link 
+              href={`/register${redirectUrl ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
+              className="text-yellow-400 font-black hover:underline"
+            >
+              Register with Gmail
             </Link>
           </p>
 
