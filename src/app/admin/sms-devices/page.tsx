@@ -135,13 +135,14 @@ export default function AdminSmsDevicesPage() {
           </button>
 
           <a
-            href="https://github.com/rm1644969-lang/asik-billaha-weabsite-/releases"
+            href="https://github.com/rm1644969-lang/asik-billaha-weabsite-/releases/download/v1.0.0-gateway/toolsbd-paysync.apk"
             target="_blank"
             rel="noreferrer"
+            download="toolsbd-paysync.apk"
             className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black text-xs font-black shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
-            <span>Download Gateway APK</span>
+            <span>Download Gateway APK (7.7 MB)</span>
           </a>
         </div>
       </div>

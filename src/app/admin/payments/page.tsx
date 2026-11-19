@@ -107,6 +107,44 @@ export default function AdminPaymentsPage() {
         </form>
       </div>
 
+      {/* DEDICATED ANDROID COMPANION APP BANNER */}
+      <div className="glass-panel rounded-3xl p-6 border border-emerald-500/30 bg-emerald-950/20 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shrink-0">
+            <Smartphone className="w-6 h-6" />
+          </div>
+          <div>
+            <h4 className="text-sm font-black text-white flex items-center gap-2">
+              <span>Toolsbd PaySync — Companion Android Gateway App</span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-900/60 text-emerald-300 border border-emerald-500/30">
+                ACTIVE
+              </span>
+            </h4>
+            <p className="text-xs text-slate-300 mt-0.5">
+              আপনার ফোনে এই অ্যাপটি ইনস্টল রাখলে কাস্টমার টাকা পাঠালেই SMS পড়ে স্বয়ংক্রিয়ভাবে অর্ডার অ্যাপ্রুভ হয়ে যাবে।
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 w-full md:w-auto shrink-0">
+          <a
+            href="/admin/sms-devices"
+            className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold transition-all text-center"
+          >
+            Gateway Settings
+          </a>
+          <a
+            href="https://github.com/rm1644969-lang/asik-billaha-weabsite-/releases/download/v1.0.0-gateway/toolsbd-paysync.apk"
+            target="_blank"
+            rel="noreferrer"
+            download="toolsbd-paysync.apk"
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black text-xs font-black shadow-lg shadow-amber-500/20 transition-all text-center flex items-center justify-center gap-2"
+          >
+            <span>Download .APK (7.7 MB)</span>
+          </a>
+        </div>
+      </div>
+
       {/* Search & Filter */}
       <div className="glass-panel rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row gap-4 items-center justify-between border border-white/10">
         <div className="relative w-full md:w-80">
@@ -121,7 +159,7 @@ export default function AdminPaymentsPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          {["ALL", "bKash", "Nagad"].map((p) => (
+          {["ALL", "bKash", "Rocket"].map((p) => (
             <button
               key={p}
               onClick={() => setProviderFilter(p)}
