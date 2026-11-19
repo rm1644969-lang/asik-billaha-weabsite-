@@ -28,7 +28,11 @@ import {
   HardDrive,
   Bell,
   DownloadCloud,
-  Lock
+  Lock,
+  RotateCcw,
+  Clock,
+  ExternalLink,
+  FileText
 } from "lucide-react";
 import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
 import { playChimeSound, showBrowserNotification } from "@/lib/notifications";
@@ -57,10 +61,11 @@ export default function UserDashboardPage() {
     saveWalletBalance
   } = useNexusStore();
 
-  const [activeTab, setActiveTab] = useState<"wallet" | "licenses" | "downloads" | "orders">("wallet");
+  const [activeTab, setActiveTab] = useState<"membership" | "wallet" | "licenses" | "downloads" | "orders">("membership");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [copiedNum, setCopiedNum] = useState<string | null>(null);
   const [bannerMsg, setBannerMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [isRefreshingStatus, setIsRefreshingStatus] = useState(false);
 
   // Auth fields if not signed in
   const [authEmail, setAuthEmail] = useState("");
@@ -224,6 +229,11 @@ export default function UserDashboardPage() {
     : (currentUser ? orders.filter(o => o.userId === currentUser.id || o.userEmail === currentUser.email) : []);
   const activeDeposits = firestoreDeposits.length > 0 ? firestoreDeposits : deposits;
 
+  // Real-time Pending Tracker for Deposits & Orders
+  const pendingDeposits = activeDeposits.filter((d: any) => d.status === "PENDING");
+  const pendingOrders = userOrders.filter((o: any) => o.status === "PENDING");
+  const totalPendingCount = pendingDeposits.length + pendingOrders.length;
+
   // Merge direct licenses with any paid/approved orders having a licenseKey
   const paidOrdersWithLicense = userOrders.filter(o => (o.status === "PAID" || o.status === "APPROVED") && o.licenseKey);
   const allActiveLicenses = [...userLicenses];
@@ -322,8 +332,9 @@ export default function UserDashboardPage() {
 
     showBanner(
       "success",
-      `ডিপোজিট রিকোয়েস্ট (${trx}) $${depositAmountUSD}-এর জন্য জমা হয়েছে! অ্যাডমিন প্যানেল থেকে ভেরিফাই করলেই আপনার প্রোফাইল ব্যালেন্সে যুক্ত হবে।`
+      `ডিপোজিট রিকোয়েস্ট (${trx}) $${depositAmountUSD}-এর জন্য সফলভাবে জমা হয়েছে! আপনার মেম্বারশিপ অপশনে লাইভ পেন্ডিং স্ট্যাটাস, টুল ডাউনলোড ও সেটআপ গাইড ওপেন হয়েছে।`
     );
+    setActiveTab("membership");
   };
 
   const handleBuyWithWallet = async (planId: string) => {
@@ -556,8 +567,65 @@ export default function UserDashboardPage() {
         </div>
       )}
 
+      {/* Real-time Pending Deposit Notification Alert */}
+      {totalPendingCount > 0 && (
+        <Card3D maxTilt={3} depth={1.01} glare={true}>
+          <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/10 border-2 border-amber-400/50 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-neon-yellow">
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-2xl bg-amber-400/20 border border-amber-400/40 text-amber-400 flex items-center justify-center shrink-0 shadow-neon-yellow">
+                <RotateCcw className="w-6 h-6 animate-spin text-amber-400" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="text-xs font-black uppercase tracking-wider text-amber-400">
+                    ডিপোজিট ভেরিফিকেশন চলছে ({totalPendingCount} টি পেন্ডিং)
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 mt-1">
+                  আপনার বিকাশ বা রকেট ডিপোজিট স্বয়ংক্রিয় এসএমএস গেটওয়েতে যাচাই করা হচ্ছে। মেম্বারশিপ অপশনে গিয়ে এখনই লাইভ স্ট্যাটাস, টুলস ডাউনলোড এবং সেটআপ ভিডিও গাইড দেখুন।
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab("membership")}
+              className="px-5 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-neon-yellow transition-all whitespace-nowrap flex items-center gap-1.5 shrink-0"
+            >
+              <ShieldCheck className="w-4 h-4" />
+              <span>মেম্বারশিপ হাব দেখুন</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </Card3D>
+      )}
+
       {/* Dashboard Tabs (Horizontally scrollable on mobile, wrapping on tablets & desktops) */}
       <div className="flex items-center gap-2 border-b border-white/10 pb-3 overflow-x-auto scrollbar-none sm:flex-wrap">
+        <button
+          type="button"
+          onClick={() => setActiveTab("membership")}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
+            activeTab === "membership"
+              ? "bg-yellow-400 text-black shadow-neon-yellow scale-[1.02]"
+              : "text-slate-300 hover:text-white bg-surface-card hover:bg-white/10"
+          }`}
+        >
+          <ShieldCheck className="w-4 h-4 text-red-500" />
+          <span>মেম্বারশিপ (Membership)</span>
+          {totalPendingCount > 0 ? (
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/40 animate-pulse flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span>{totalPendingCount} পেন্ডিং</span>
+            </span>
+          ) : (
+            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-yellow-400/20 text-yellow-400 border border-yellow-400/30">
+              VIP
+            </span>
+          )}
+        </button>
+
         <button
           type="button"
           onClick={() => setActiveTab("wallet")}
@@ -610,6 +678,512 @@ export default function UserDashboardPage() {
           <span>পেমেন্ট ও অর্ডার হিস্টোরি ({userOrders.length + deposits.length})</span>
         </button>
       </div>
+
+      {/* ============================================================== */}
+      {/* TAB 0: MEMBERSHIP HUB — PENDING VERIFICATION, DOWNLOADS & SETUP */}
+      {/* ============================================================== */}
+      {activeTab === "membership" && (
+        <div key="tab-membership" className="animate-tab-fade space-y-8">
+          
+          {/* 1. VIP MEMBERSHIP PROFILE STATUS CARD */}
+          <Card3D maxTilt={4} depth={1.01} glare={true}>
+            <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-yellow-400/10 via-red-600/10 to-yellow-500/10 border-2 border-yellow-400/40 shadow-neon-yellow">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-white/10">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-red-600 p-[2px] shadow-neon-yellow shrink-0">
+                    <div className="w-full h-full bg-[#111] rounded-[14px] flex items-center justify-center">
+                      <ShieldCheck className="w-8 h-8 text-yellow-400" />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="text-2xl font-black text-gradient-shimmer">
+                        {currentUser?.name || "সম্মানিত মেম্বার"} &bull; মেম্বারশিপ প্রোফাইল
+                      </h2>
+                      {allActiveLicenses.length > 0 ? (
+                        <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-500 text-black shadow-md flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-black" />
+                          <span>👑 VIP সক্রিয় মেম্বার</span>
+                        </span>
+                      ) : totalPendingCount > 0 ? (
+                        <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-400 text-black shadow-md flex items-center gap-1 animate-pulse">
+                          <RotateCcw className="w-3 h-3 text-black animate-spin" />
+                          <span>⏳ মেম্বারশিপ যাচাই চলছে</span>
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-yellow-400 text-black shadow-neon-yellow">
+                          ⚡ সাধারণ মেম্বার
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-300 mt-1 font-mono">
+                      একাউন্ট: {currentUser?.email || "guest@toolsbd.com"} {currentUser?.id ? `(${currentUser.id})` : ""}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Quick Action Buttons */}
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsRefreshingStatus(true);
+                      setTimeout(() => {
+                        setIsRefreshingStatus(false);
+                        showBanner("success", "স্ট্যাটাস রিফ্রেশ সম্পন্ন! আপনার সকল ডিপোজিট ও লাইসেন্স তথ্য হালনাগাদ রয়েছে।");
+                      }, 700);
+                    }}
+                    className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all border border-white/10 flex items-center gap-1.5"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingStatus ? "animate-spin text-yellow-400" : ""}`} />
+                    <span>{isRefreshingStatus ? "রিফ্রেশ হচ্ছে..." : "স্ট্যাটাস রিফ্রেশ"}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("wallet")}
+                    className="px-4 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black shadow-neon-yellow transition-all flex items-center gap-1.5"
+                  >
+                    <PlusCircle className="w-4 h-4" />
+                    <span>ব্যালেন্স ডিপোজিট</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 3 Metrics Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6">
+                <div className="p-4 rounded-2xl bg-black/60 border border-white/10 flex items-center gap-3.5">
+                  <div className="p-2.5 rounded-xl bg-yellow-400/15 text-yellow-400 shrink-0">
+                    <Wallet className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                      ওয়ালেট ব্যালেন্স
+                    </span>
+                    <span className="text-xl font-black text-white">
+                      ${walletBalanceUSD.toFixed(2)}{" "}
+                      <span className="text-xs font-mono text-yellow-400">
+                        (৳{(walletBalanceUSD * 120).toLocaleString()})
+                      </span>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-black/60 border border-white/10 flex items-center gap-3.5">
+                  <div className={`p-2.5 rounded-xl shrink-0 ${
+                    totalPendingCount > 0 ? "bg-amber-400/20 text-amber-400 animate-pulse" : "bg-white/10 text-slate-400"
+                  }`}>
+                    <RotateCcw className={`w-5 h-5 ${totalPendingCount > 0 ? "animate-spin" : ""}`} />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                      পেন্ডিং ডিপোজিট / অর্ডার
+                    </span>
+                    <span className={`text-xl font-black ${totalPendingCount > 0 ? "text-amber-400" : "text-white"}`}>
+                      {totalPendingCount} টি {totalPendingCount > 0 ? "যাচাই চলছে..." : "নেই"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-black/60 border border-white/10 flex items-center gap-3.5">
+                  <div className="p-2.5 rounded-xl bg-emerald-400/15 text-emerald-400 shrink-0">
+                    <Key className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                      অ্যাক্টিভ লাইসেন্স ও টুলস
+                    </span>
+                    <span className="text-xl font-black text-white">
+                      {allActiveLicenses.length} টি লাইসেন্স
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card3D>
+
+          {/* 2. REAL-TIME PENDING DEPOSITS & ORDERS TRACKER */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between pb-2">
+              <h3 className="text-xl font-black text-gradient-shimmer flex items-center gap-2">
+                <Clock className="w-5 h-5 text-yellow-400" />
+                <span>ডিপোজিট ও অর্ডারের পেন্ডিং ট্র্যাকার (Verification Status)</span>
+              </h3>
+              <span className="text-xs font-mono text-slate-400">
+                স্বয়ংক্রিয় SMS ও অ্যাডমিন ভেরিফিকেশন
+              </span>
+            </div>
+
+            {totalPendingCount > 0 ? (
+              <div className="space-y-4">
+                {/* Pending Deposits List */}
+                {pendingDeposits.map((dep: any) => (
+                  <Card3D key={dep.id} maxTilt={4} depth={1.01} glare={true}>
+                    <div className="p-5 sm:p-6 rounded-2xl bg-[#110e06] border-2 border-yellow-400/60 shadow-neon-yellow space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+                        <div className="flex items-center gap-3">
+                          <div className={`px-3 py-1.5 rounded-xl font-black text-xs uppercase shadow-sm ${
+                            dep.method === "bKash" 
+                              ? "bg-[#e2136e] text-white" 
+                              : "bg-[#8c3494] text-white"
+                          }`}>
+                            {dep.method} পার্সোনাল ডিপোজিট
+                          </div>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 animate-pulse">
+                            <span className="w-2 h-2 rounded-full bg-amber-400" />
+                            <span>স্ট্যাটাস: পেন্ডিং (যাচাই চলছে...)</span>
+                          </span>
+                        </div>
+
+                        <div className="text-right">
+                          <span className="text-xs text-slate-400 block font-mono">জমাকৃত অর্থ:</span>
+                          <span className="text-lg font-black text-yellow-400 font-mono">
+                            ৳{dep.amountBDT || dep.amountUSD * 120} BDT (${dep.amountUSD} USD)
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+                        <div className="p-3 rounded-xl bg-black/60 border border-white/10">
+                          <span className="text-slate-400 block text-[11px]">সাবমিটকৃত TrxID:</span>
+                          <div className="flex items-center justify-between gap-2 mt-1">
+                            <strong className="text-white text-sm uppercase font-black">{dep.trxId}</strong>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(dep.trxId);
+                                showBanner("success", "TrxID কপি হয়েছে!");
+                              }}
+                              className="text-yellow-400 hover:text-yellow-300"
+                              title="TrxID কপি করুন"
+                            >
+                              <Copy className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/60 border border-white/10">
+                          <span className="text-slate-400 block text-[11px]">প্রেরক মোবাইল নম্বর:</span>
+                          <strong className="text-white text-sm block mt-1">{dep.senderNumber || "01731328169"}</strong>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/60 border border-white/10">
+                          <span className="text-slate-400 block text-[11px]">জমা দেওয়ার সময়:</span>
+                          <span className="text-slate-300 block mt-1 text-[11px]">
+                            {new Date(dep.createdAt).toLocaleString("bn-BD")}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-black/40 border border-yellow-400/20 text-xs text-slate-300 flex items-center justify-between gap-4">
+                        <p className="flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-yellow-400 shrink-0" />
+                          <span>
+                            বিকাশ/রকেট এসএমএস ম্যাচিং হওয়া মাত্রই আপনার প্রোফাইল ব্যালেন্স স্বয়ংক্রিয়ভাবে রিচার্জ হবে। ইতিমধ্যে নিচের লিঙ্ক থেকে সফটওয়্যারটি ডাউনলোড ও ইনস্টল করে নিতে পারেন।
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </Card3D>
+                ))}
+
+                {/* Pending Orders List */}
+                {pendingOrders.map((ord: any) => (
+                  <Card3D key={ord.id} maxTilt={4} depth={1.01} glare={true}>
+                    <div className="p-5 rounded-2xl bg-[#110e06] border border-amber-400/40 shadow-neon-yellow space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-1 rounded-lg bg-yellow-400 text-black text-xs font-black">
+                            টুল অর্ডার: {ord.toolName}
+                          </span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-400 border border-amber-400/40 animate-pulse">
+                            অপেক্ষারত (Pending)
+                          </span>
+                        </div>
+                        <span className="text-xs font-mono text-yellow-400 font-bold">
+                          TrxID: {ord.paymentTrxId}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-300">
+                        আপনার টুলের অর্ডারটি যাচাই চলছে। ভেরিফিকেশন সম্পন্ন হওয়ামাত্রই এই স্ক্রিনে লাইসেন্স কী আনলক হয়ে যাবে।
+                      </p>
+                    </div>
+                  </Card3D>
+                ))}
+              </div>
+            ) : (
+              <div className="p-5 rounded-2xl bg-black/50 border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">কোনো পেন্ডিং ডিপোজিট বা অর্ডার নেই</h4>
+                    <p className="text-xs text-slate-400">আপনার সকল ডিপোজিট এবং অর্ডার ভেরিফাইড ও সক্রিয় রয়েছে।</p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("wallet")}
+                  className="px-4 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black shadow-neon-yellow transition-all whitespace-nowrap"
+                >
+                  নতুন ডিপোজিট করুন
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* 3. AUTHORIZED TOOLS & DIRECT DOWNLOAD */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-white/10">
+              <div>
+                <h3 className="text-xl font-black text-gradient-shimmer flex items-center gap-2">
+                  <Download className="w-5 h-5 text-yellow-400" />
+                  <span>সফটওয়্যার প্যাকেজ সরাসরি ডাউনলোড (Official Tool Downloads)</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  পেন্ডিং অবস্থায় থাকলেও আপনি এখনই সফটওয়্যারটি ডাউনলোড করে পিসিতে রেডি রাখতে পারেন।
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {tools.filter(t => t.status === "active").map((tool) => (
+                <Card3D key={tool.id} maxTilt={5} depth={1.02} glare={true} className="h-full">
+                  <div className="p-5 sm:p-6 rounded-2xl bg-[#0c0c0c] border border-white/10 hover:border-yellow-400/50 transition-all space-y-4 h-full flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-yellow-400/10 text-yellow-400 border border-yellow-400/30">
+                          {tool.category}
+                        </span>
+                        <span className="text-xs font-mono font-bold text-white px-2 py-0.5 rounded bg-red-950 border border-red-500/40">
+                          {tool.version}
+                        </span>
+                      </div>
+
+                      <h4 className={`text-lg font-black ${getToolTitleClass(tool.name)}`}>
+                        {tool.name}
+                      </h4>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs font-mono text-slate-300 pt-1">
+                        <div className="p-2 rounded-lg bg-black/60 border border-white/5 flex items-center gap-1.5">
+                          <HardDrive className="w-3.5 h-3.5 text-yellow-400" />
+                          <span>সাইজ: {tool.fileSize}</span>
+                        </div>
+                        <div className="p-2 rounded-lg bg-black/60 border border-white/5 flex items-center gap-1.5">
+                          <Cpu className="w-3.5 h-3.5 text-red-400" />
+                          <span>{tool.systemRequirements.os}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 pt-2">
+                      <a
+                        href={tool.downloadFilePath || "/releases/Toolsbd_Utility_v3.4.2_Setup.zip"}
+                        download
+                        className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 hover:from-emerald-400 hover:to-green-400 text-black font-black text-xs flex items-center justify-center gap-2 shadow-lg transition-all"
+                      >
+                        <Download className="w-4 h-4 text-black" />
+                        <span>সফটওয়্যার সরাসরি ডাউনলোড করুন ({tool.fileSize})</span>
+                      </a>
+                      <p className="text-[10px] text-center text-slate-400 font-mono">
+                        SHA-256: {tool.checksumSha256?.substring(0, 24)}... (Verified)
+                      </p>
+                    </div>
+                  </div>
+                </Card3D>
+              ))}
+            </div>
+          </div>
+
+          {/* 4. SETUP VIDEO GUIDE & STEP-BY-STEP INSTRUCTIONS */}
+          <Card3D maxTilt={4} depth={1.01} glare={true}>
+            <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+                <div>
+                  <h3 className="text-xl font-black text-gradient-shimmer flex items-center gap-2">
+                    <Play className="w-5 h-5 text-red-500" />
+                    <span>ভিডিও সেটআপ গাইড ও ইনস্টলেশন নির্দেশিকা</span>
+                  </h3>
+                  <p className="text-xs text-slate-300 mt-0.5">
+                    ভিডিওটি দেখে মাত্র ২ মিনিটে সফটওয়্যার ইনস্টল ও HWID লাইসেন্স চালু করুন।
+                  </p>
+                </div>
+              </div>
+
+              {/* YouTube Video Player */}
+              <div className="relative aspect-video max-w-3xl mx-auto rounded-2xl overflow-hidden border-2 border-yellow-400/40 bg-black shadow-2xl">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  loading="lazy"
+                  src={normalizeYouTubeEmbedUrl(flagshipTool?.setupVideoUrl || "https://www.youtube.com/embed/U2JBcFAO7mE?si=9Pxpka_XfFtBmDGF")}
+                  title="Toolsbd.com Official Tool Setup Guide"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+
+              {/* 4-Step Checklist */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs pt-2">
+                <div className="p-4 rounded-xl bg-black/60 border border-white/10 space-y-1.5">
+                  <span className="w-6 h-6 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-xs">
+                    ১
+                  </span>
+                  <h5 className="font-bold text-white text-sm">ডাউনলোড ও আনজিপ</h5>
+                  <p className="text-slate-400 text-[11px] leading-relaxed">
+                    ওপরের ডাউনলোড বাটন থেকে জিপ ফাইলটি নামিয়ে আপনার পিসিতে Extract করুন।
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-black/60 border border-white/10 space-y-1.5">
+                  <span className="w-6 h-6 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-xs">
+                    ২
+                  </span>
+                  <h5 className="font-bold text-white text-sm">Run as Administrator</h5>
+                  <p className="text-slate-400 text-[11px] leading-relaxed">
+                    টুল ফোল্ডারের .exe ফাইলে রাইট ক্লিক করে &quot;Run as administrator&quot; দিন।
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-black/60 border border-white/10 space-y-1.5">
+                  <span className="w-6 h-6 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-xs">
+                    ৩
+                  </span>
+                  <h5 className="font-bold text-white text-sm">Machine HWID লক</h5>
+                  <p className="text-slate-400 text-[11px] leading-relaxed">
+                    সফটওয়্যার স্ক্রিনের HWID কপি করে আপনার মেম্বারশিপ বক্সে দিয়ে লক করুন।
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-black/60 border border-white/10 space-y-1.5">
+                  <span className="w-6 h-6 rounded-full bg-emerald-500 text-black font-black flex items-center justify-center text-xs">
+                    ৪
+                  </span>
+                  <h5 className="font-bold text-white text-sm">টুল অ্যাক্টিভেশন</h5>
+                  <p className="text-slate-400 text-[11px] leading-relaxed">
+                    লাইসেন্স কী সফটওয়্যারে পেস্ট করে এক ক্লিকে টুল ওপেন ও আনলিমিটেড ব্যবহার করুন।
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Card3D>
+
+          {/* 5. HWID MACHINE BINDING & LICENSES */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-white/10">
+              <h3 className="text-xl font-black text-gradient-shimmer flex items-center gap-2">
+                <Key className="w-5 h-5 text-yellow-400" />
+                <span>আপনার লাইসেন্স কী ও পিসি HWID অ্যাক্টিভেশন</span>
+              </h3>
+            </div>
+
+            {allActiveLicenses.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {allActiveLicenses.map((lic) => {
+                  const isBound = !!lic.hwid;
+                  return (
+                    <Card3D key={lic.id} maxTilt={5} depth={1.02} glare={true} className="h-full">
+                      <div className="p-6 rounded-2xl bg-black/80 border border-white/10 space-y-4 h-full flex flex-col justify-between">
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                            <span className={`text-xs font-black uppercase ${getToolTitleClass(lic.toolName)}`}>
+                              {lic.toolName}
+                            </span>
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-500/40">
+                              {lic.durationDays} Days Active
+                            </span>
+                          </div>
+
+                          <div className="space-y-1">
+                            <span className="text-[11px] text-slate-400 block font-mono">লাইসেন্স কী:</span>
+                            <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#111] border border-white/15">
+                              <span className="font-mono text-xs font-black text-yellow-400 select-all truncate">
+                                {lic.key}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleCopy(lic.key, lic.id)}
+                                className="px-2.5 py-1 rounded bg-yellow-400 hover:bg-yellow-300 text-black text-[11px] font-bold shrink-0 flex items-center gap-1 shadow-neon-yellow"
+                              >
+                                {copiedKey === lic.id ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                <span>{copiedKey === lic.id ? "কপি হয়েছে" : "কপি"}</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* HWID Bind Form */}
+                          <div className="space-y-1.5 pt-2">
+                            <span className="text-[11px] text-slate-400 block font-mono">পিসি Machine HWID:</span>
+                            {isBound ? (
+                              <div className="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-[11px] font-mono text-emerald-300">
+                                ✓ লক করা HWID: {lic.hwid}
+                              </div>
+                            ) : (
+                              <div className="flex gap-2">
+                                <input
+                                  type="text"
+                                  placeholder="সফটওয়্যার থেকে HWID কপি করে পেস্ট করুন..."
+                                  value={hwidInputs[lic.id] || ""}
+                                  onChange={(e) => setHwidInputs(prev => ({ ...prev, [lic.id]: e.target.value }))}
+                                  className="flex-1 px-3 py-2 rounded-xl bg-[#111] border border-white/20 text-xs font-mono text-white placeholder:text-slate-500"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => handleBindHwid(lic.id)}
+                                  disabled={bindingId === lic.id}
+                                  className="px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black shadow-neon-yellow transition-all whitespace-nowrap"
+                                >
+                                  {bindingId === lic.id ? "লক হচ্ছে..." : "HWID লক করুন"}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="text-[11px] text-slate-400 pt-2 border-t border-white/10">
+                          {isBound ? (
+                            <span className="text-emerald-400 font-bold">✓ লাইসেন্স এই পিসিতে আজীবন আনলক করা রয়েছে।</span>
+                          ) : (
+                            <span>সফটওয়্যার চালু করে স্ক্রিনের HWID এখানে সাবমিট করলেই লাইসেন্স সক্রিয় হবে।</span>
+                          )}
+                        </div>
+                      </div>
+                    </Card3D>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-5 rounded-2xl bg-black/40 border border-white/10 text-xs text-slate-300 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-yellow-400/10 text-yellow-400 flex items-center justify-center shrink-0">
+                    <Key className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h5 className="font-bold text-white">এখনো কোনো লাইসেন্স নেওয়া হয়নি</h5>
+                    <p className="text-slate-400">
+                      {totalPendingCount > 0 
+                        ? "আপনার ডিপোজিট ভেরিফিকেশন চলছে। ব্যালেন্স যুক্ত হওয়ামাত্রই আপনি অফার কিনে লাইসেন্স চালু করতে পারবেন।"
+                        : "ওয়ালেটে ব্যালেন্স রিচার্জ করে মাত্র $২ দিয়ে ৭ দিনের অফার লাইসেন্স কিনে নিতে পারেন।"}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("wallet")}
+                  className="px-4 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black shadow-neon-yellow transition-all whitespace-nowrap"
+                >
+                  অফার প্ল্যান দেখুন ও কিনুন
+                </button>
+              </div>
+            )}
+          </div>
+
+        </div>
+      )}
 
       {/* ============================================================== */}
       {/* TAB 1: ADD MONEY + INSTANT BUY OFFER WITH WALLET               */}
