@@ -3,14 +3,18 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import ToolCard from "@/components/ToolCard";
+import Card3D from "@/components/Card3D";
+import CyberCanvas3D from "@/components/CyberCanvas3D";
 import { useNexusStore } from "@/lib/store";
+import { sampleTools } from "@/lib/mockData";
 import { Search, Layers, Sparkles, Check, Zap } from "lucide-react";
 
 export default function ToolsMarketplacePage() {
   const { tools, plans, settings } = useNexusStore();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredTools = tools.filter((tool) => {
+  const allTools = tools && tools.length >= 3 ? tools : sampleTools;
+  const filteredTools = allTools.filter((tool) => {
     return (
       tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       tool.tagline.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -19,15 +23,19 @@ export default function ToolsMarketplacePage() {
   });
 
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
+    <div className="relative py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12 overflow-hidden">
       
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
+      {/* 3D Ambient Cyber Canvas in Background */}
+      <CyberCanvas3D className="absolute -top-10 left-0 right-0 h-[480px] pointer-events-none opacity-50 z-0" />
+
+      <div className="relative z-10 space-y-12">
+        {/* Header */}
+        <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-yellow-400/15 border border-yellow-400/40 text-yellow-300 text-xs font-black">
           <Sparkles className="w-3.5 h-3.5 text-red-500" />
           <span>Toolsbd.com Official Release</span>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black text-white">
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-gradient-gold-fire">
           Software Tool &amp; Offer Price List
         </h1>
         <p className="text-slate-300 text-base leading-relaxed">
@@ -83,56 +91,57 @@ export default function ToolsMarketplacePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {plans.filter(p => p.enabled).map((plan) => (
-                  <div
-                    key={plan.id}
-                    className="relative rounded-2xl p-5 border transition-all flex flex-col justify-between gap-4 bg-[#121212] border-white/10 hover:border-yellow-400/50"
-                  >
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-base sm:text-lg font-black text-white">
-                          {plan.durationDays} DAYS OFFER 🔥
-                        </span>
-                        {plan.originalPriceUSD && (
-                          <span className="text-xs text-slate-500 line-through font-mono">
-                            ${plan.originalPriceUSD}
+                  <Card3D key={plan.id} maxTilt={7} depth={1.03} glare={true} className="h-full">
+                    <div
+                      className="relative rounded-2xl p-5 border transition-all flex flex-col justify-between gap-4 bg-[#121212] border-white/10 hover:border-yellow-400/50 h-full"
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-base sm:text-lg font-black text-white">
+                            {plan.durationDays} DAYS OFFER 🔥
                           </span>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-baseline gap-1.5 pt-1">
-                        <span className="text-3xl font-black text-yellow-400 leading-none">
-                          ${plan.priceUSD}
-                        </span>
-                        <span className="text-xs font-black text-white">USD 🔥</span>
-                        <span className="text-xs font-mono text-slate-400 ml-1">
-                          (৳{plan.priceBDT})
-                        </span>
+                          {plan.originalPriceUSD && (
+                            <span className="text-xs text-slate-500 line-through font-mono">
+                              ${plan.originalPriceUSD}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-baseline gap-1.5 pt-1">
+                          <span className="text-3xl font-black text-yellow-400 leading-none">
+                            ${plan.priceUSD}
+                          </span>
+                          <span className="text-xs font-black text-white">USD 🔥</span>
+                          <span className="text-xs font-mono text-slate-400 ml-1">
+                            (৳{plan.priceBDT})
+                          </span>
+                        </div>
+
+                        <div className="space-y-1.5 pt-2 text-[11px] text-slate-300">
+                          {plan.features.slice(0, 3).map((feat, idx) => (
+                            <div key={idx} className="flex items-center gap-1.5">
+                              <Check className="w-3 h-3 text-yellow-400 shrink-0" />
+                              <span className="truncate">{feat}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
 
-                      <div className="space-y-1.5 pt-2 text-[11px] text-slate-300">
-                        {plan.features.slice(0, 3).map((feat, idx) => (
-                          <div key={idx} className="flex items-center gap-1.5">
-                            <Check className="w-3 h-3 text-yellow-400 shrink-0" />
-                            <span className="truncate">{feat}</span>
-                          </div>
-                        ))}
+                      <div className="pt-3 border-t border-white/10">
+                        <Link
+                          href={`/checkout?tool=tool-otp-utility&plan=${plan.id}`}
+                          className={`w-full py-2.5 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all ${
+                            plan.isPopular
+                              ? "bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black shadow-neon-yellow hover:opacity-95"
+                              : "bg-white/10 hover:bg-white/20 text-white"
+                          }`}
+                        >
+                          <Zap className="w-3.5 h-3.5" />
+                          <span>Buy Now</span>
+                        </Link>
                       </div>
                     </div>
-
-                    <div className="pt-3 border-t border-white/10">
-                      <Link
-                        href={`/checkout?tool=tool-otp-utility&plan=${plan.id}`}
-                        className={`w-full py-2.5 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all ${
-                          plan.isPopular
-                            ? "bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black shadow-neon-yellow hover:opacity-95"
-                            : "bg-white/10 hover:bg-white/20 text-white"
-                        }`}
-                      >
-                        <Zap className="w-3.5 h-3.5" />
-                        <span>Buy Now</span>
-                      </Link>
-                    </div>
-                  </div>
+                  </Card3D>
                 ))}
               </div>
 
@@ -164,6 +173,7 @@ export default function ToolsMarketplacePage() {
         </div>
       )}
 
+      </div>
     </div>
   );
 }

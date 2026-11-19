@@ -33,6 +33,8 @@ import {
 import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
 import { playChimeSound, showBrowserNotification } from "@/lib/notifications";
 import { getToolTitleClass } from "@/lib/toolStyles";
+import Card3D from "@/components/Card3D";
+import CyberCanvas3D from "@/components/CyberCanvas3D";
 
 export default function UserDashboardPage() {
   const { 
@@ -368,9 +370,13 @@ export default function UserDashboardPage() {
   };
 
   return (
-    <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+    <div className="relative py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 overflow-hidden">
       
-      {/* If Guest: Login / Register Form */}
+      {/* 3D Ambient Cyber Mesh in Background */}
+      <CyberCanvas3D className="absolute -top-10 left-0 right-0 h-[480px] pointer-events-none opacity-40 z-0" />
+
+      <div className="relative z-10 space-y-8">
+        {/* If Guest: Login / Register Form */}
       {!isLoggedIn || !currentUser ? (
         <div className="rounded-3xl p-6 sm:p-8 bg-[#0c0c0c] border border-yellow-400/40 shadow-neon-yellow space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/10">
@@ -812,10 +818,10 @@ export default function UserDashboardPage() {
                 const daysRemaining = Math.max(0, Math.ceil((expiresDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
 
                 return (
-                  <div
-                    key={lic.id}
-                    className="glass-panel rounded-3xl p-6 sm:p-7 space-y-5 border border-white/10 hover:border-yellow-400/50 transition-all shadow-xl"
-                  >
+                  <Card3D key={lic.id} maxTilt={6} depth={1.02} glare={true} className="h-full">
+                    <div
+                      className="glass-panel rounded-3xl p-6 sm:p-7 space-y-5 border border-white/10 hover:border-yellow-400/50 transition-all shadow-xl h-full"
+                    >
                     {/* Header */}
                     <div className="flex items-center justify-between pb-3 border-b border-white/10">
                       <div>
@@ -963,7 +969,8 @@ export default function UserDashboardPage() {
                       </div>
                     )}
 
-                  </div>
+                    </div>
+                  </Card3D>
                 );
               })}
             </div>
@@ -1238,10 +1245,10 @@ export default function UserDashboardPage() {
               const isVideoOpen = !closedVideoIds[lic.id];
 
               return (
-                <div
-                  key={lic.id}
-                  className="rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-[#14120a] via-[#0d0c07] to-[#070707] border-2 border-yellow-400/50 shadow-neon-yellow space-y-6"
-                >
+                <Card3D key={lic.id} maxTilt={4} depth={1.01} glare={true}>
+                  <div
+                    className="rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-[#14120a] via-[#0d0c07] to-[#070707] border-2 border-yellow-400/50 shadow-neon-yellow space-y-6"
+                  >
                   
                   {/* Top Bar of Membership Card */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
@@ -1434,8 +1441,8 @@ export default function UserDashboardPage() {
                     </div>
 
                   </div>
-
-                </div>
+                  </div>
+                </Card3D>
               );
             })}
           </div>
@@ -1464,6 +1471,7 @@ export default function UserDashboardPage() {
 
       </section>
 
+      </div>
     </div>
   );
 }

@@ -16,6 +16,7 @@ import {
   Clock
 } from "lucide-react";
 import { getToolTitleClass, getToolBadgeStyle } from "@/lib/toolStyles";
+import Card3D from "@/components/Card3D";
 
 interface ToolCardProps {
   tool: Tool;
@@ -34,30 +35,31 @@ export default function ToolCard({ tool }: ToolCardProps) {
     : 240;
 
   return (
-    <div className={`group relative rounded-2xl p-[1px] transition-all duration-500 shadow-xl ${
-      isComingSoon 
-        ? "bg-gradient-to-b from-white/10 via-yellow-500/10 to-transparent border border-white/5" 
-        : "bg-gradient-to-b from-white/20 via-yellow-500/20 to-red-600/30 hover:from-yellow-400 hover:via-red-500 hover:to-transparent hover:shadow-neon-yellow"
-    }`}>
+    <Card3D maxTilt={7} depth={1.03} glare={true} className="h-full">
+      <div className={`group relative rounded-2xl p-[1px] transition-all duration-500 shadow-xl h-full preserve-3d ${
+        isComingSoon 
+          ? "bg-gradient-to-b from-white/15 via-white/5 to-transparent border border-white/10 hover:border-yellow-400/40 hover:shadow-neon-yellow/30" 
+          : "bg-gradient-to-b from-yellow-400/50 via-red-500/30 to-yellow-600/20 hover:from-yellow-400 hover:via-red-500 hover:to-yellow-400 hover:shadow-neon-yellow"
+      }`}>
       
       {/* Background card with glass effect */}
-      <div className="relative rounded-2xl bg-[#0c0c0c]/95 backdrop-blur-xl p-6 h-full flex flex-col justify-between overflow-hidden border border-white/10">
+      <div className="relative rounded-2xl bg-[#0c0c0c]/95 backdrop-blur-xl p-6 h-full flex flex-col justify-between overflow-hidden border border-white/10 preserve-3d">
         
         {/* Glow ambient circle on card hover */}
         {!isComingSoon && (
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-yellow-500/15 rounded-full blur-3xl group-hover:bg-red-600/20 transition-colors pointer-events-none" />
+          <div className="absolute -top-24 -right-24 w-52 h-52 bg-yellow-500/20 rounded-full blur-3xl group-hover:bg-red-600/25 transition-colors pointer-events-none" />
         )}
 
         <div>
           {/* Header & Badges */}
           <div className="flex items-center justify-between gap-2 mb-4">
-            <span className={`text-[11px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${brandStyle.badgeBg} ${brandStyle.badgeText} ${brandStyle.badgeBorder}`}>
+            <span className={`text-[11px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border shadow-sm ${brandStyle.badgeBg} ${brandStyle.badgeText} ${brandStyle.badgeBorder}`}>
               {tool.category || brandStyle.brandTag}
             </span>
             <div className={`flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full ${
               isComingSoon 
-                ? "bg-yellow-400/10 text-yellow-400 border border-yellow-400/30" 
-                : "text-white bg-red-950/80 border border-red-500/50"
+                ? "bg-yellow-400/10 text-yellow-400 border border-yellow-400/40 shadow-sm" 
+                : "text-white bg-red-950/80 border border-red-500/60 shadow-neon-red/50"
             }`}>
               {isComingSoon ? (
                 <>
@@ -66,7 +68,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
                 </>
               ) : (
                 <>
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                   <span>{tool.version}</span>
                 </>
               )}
@@ -74,7 +76,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
           </div>
 
           {/* Banner Image / Thumbnail */}
-          <div className="relative w-full h-48 sm:h-52 rounded-xl overflow-hidden mb-5 border border-white/10 group-hover:border-yellow-400/50 transition-colors shadow-lg">
+          <div className="relative w-full h-48 sm:h-52 rounded-xl overflow-hidden mb-5 border border-white/10 group-hover:border-yellow-400/60 transition-all shadow-lg group-hover:shadow-neon-yellow/30">
             <Image
               src={tool.bannerUrl}
               alt={tool.name}
@@ -86,8 +88,8 @@ export default function ToolCard({ tool }: ToolCardProps) {
             
             {/* Overlay if Coming Soon */}
             {isComingSoon && (
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center">
-                <span className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/85 border border-yellow-400/60 text-yellow-400 text-xs font-black tracking-widest uppercase shadow-2xl">
+              <div className="absolute inset-0 bg-black/45 backdrop-blur-[2px] flex items-center justify-center">
+                <span className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/90 border border-yellow-400/70 text-yellow-400 text-xs font-black tracking-widest uppercase shadow-2xl">
                   <Lock className="w-4 h-4 text-yellow-400" />
                   <span>Coming Soon</span>
                 </span>
@@ -95,19 +97,19 @@ export default function ToolCard({ tool }: ToolCardProps) {
             )}
 
             <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
-              <span className="flex items-center gap-1 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/20 font-semibold">
+              <span className="flex items-center gap-1 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/20 font-semibold shadow-sm">
                 <Cpu className="w-3.5 h-3.5 text-yellow-400" />
                 <span>{tool.systemRequirements.os}</span>
               </span>
-              <span className="bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/20 text-yellow-400 font-mono text-[11px] font-bold">
+              <span className="bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/20 text-yellow-400 font-mono text-[11px] font-bold shadow-sm">
                 {tool.fileSize}
               </span>
             </div>
           </div>
 
           {/* Title & Tagline with Distinctive Masked Gradient Colors */}
-          <h3 className="text-xl font-black mb-2 transition-transform duration-300">
-            <span className={toolTitleClass}>
+          <h3 className="text-xl sm:text-2xl font-black mb-2 tracking-tight transition-transform duration-300">
+            <span className={`${toolTitleClass} select-none`}>
               {tool.name}
             </span>
           </h3>
@@ -119,7 +121,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
           <ul className="space-y-1.5 mb-6 text-xs text-slate-200">
             {tool.features.slice(0, 3).map((feat, idx) => (
               <li key={idx} className="flex items-center gap-2">
-                <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${isComingSoon ? "text-slate-500" : "text-yellow-400"}`} />
+                <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${isComingSoon ? "text-slate-500" : "text-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,0.6)]"}`} />
                 <span className="truncate">{feat}</span>
               </li>
             ))}
@@ -134,7 +136,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
                 <span className="text-slate-400 font-medium">Release Status</span>
                 <span className="text-yellow-400 font-bold font-mono">In Active Development ⏳</span>
               </div>
-              <div className={`w-full py-3.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 cursor-not-allowed select-none ${brandStyle.badgeBg} ${brandStyle.badgeText} ${brandStyle.badgeBorder}`}>
+              <div className={`w-full py-3.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 cursor-not-allowed select-none shadow-md ${brandStyle.badgeBg} ${brandStyle.badgeText} ${brandStyle.badgeBorder}`}>
                 <Lock className="w-4 h-4" />
                 <span>Coming Soon (শীঘ্রই আসছে)</span>
               </div>
@@ -145,7 +147,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
                 <div>
                   <span className="text-[11px] text-slate-400 font-medium">Offer Price Starting From</span>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-3xl font-black text-yellow-400">
+                    <span className="text-3xl font-black text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.5)]">
                       ${lowestPriceUSD}
                     </span>
                     <span className="text-xs text-white font-bold">/ 7 Days 🔥</span>
@@ -155,7 +157,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="inline-flex items-center gap-1 text-[11px] text-white font-bold bg-red-950 px-2 py-1 rounded border border-red-500/50">
+                  <span className="inline-flex items-center gap-1 text-[11px] text-white font-bold bg-red-950 px-2 py-1 rounded border border-red-500/50 shadow-sm">
                     <Sparkles className="w-3 h-3 text-yellow-400" />
                     <span>bKash &bull; Rocket</span>
                   </span>
@@ -165,7 +167,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
               <div className="grid grid-cols-2 gap-2">
                 <Link
                   href={`/tools/${tool.slug}`}
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-white bg-white/10 hover:bg-white/15 border border-white/15 transition-all text-center"
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-white bg-white/10 hover:bg-white/15 border border-white/15 transition-all text-center hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <span>Details</span>
                   <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
@@ -173,7 +175,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
 
                 <Link
                   href={`/tools/${tool.slug}#plans`}
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-black text-black bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 shadow-md hover:shadow-neon-yellow transition-all text-center"
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-black text-black bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 shadow-md hover:shadow-neon-yellow transition-all text-center hover:-translate-y-0.5 active:translate-y-0"
                 >
                   <span>Get License</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -184,6 +186,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
         </div>
 
       </div>
-    </div>
+      </div>
+    </Card3D>
   );
 }

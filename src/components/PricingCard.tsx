@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { PricePlan } from "@/lib/types";
 import { Check, Zap, Sparkles, ShieldCheck } from "lucide-react";
+import Card3D from "@/components/Card3D";
 
 interface PricingCardProps {
   plan: PricePlan;
@@ -18,9 +19,10 @@ export default function PricingCard({ plan, toolSlug }: PricingCardProps) {
   const checkoutUrl = `/checkout?tool=${plan.toolId}&plan=${plan.id}`;
 
   return (
-    <div
-      className="relative rounded-3xl p-[1px] transition-all duration-300 bg-gradient-to-b from-white/20 via-white/5 to-transparent hover:from-yellow-400/50 hover:to-white/10"
-    >
+    <Card3D maxTilt={7} depth={1.03} glare={true} className="h-full">
+      <div
+        className="relative rounded-3xl p-[1px] transition-all duration-300 bg-gradient-to-b from-white/20 via-white/5 to-transparent hover:from-yellow-400/50 hover:to-white/10 h-full"
+      >
       <div className="relative rounded-3xl bg-[#0a0a0a]/95 backdrop-blur-xl p-7 h-full flex flex-col justify-between overflow-hidden border border-white/10">
         <div>
           {/* Header */}
@@ -39,7 +41,7 @@ export default function PricingCard({ plan, toolSlug }: PricingCardProps) {
           {/* Price */}
           <div className="mb-6 pb-6 border-b border-white/10">
             <div className="flex items-baseline gap-2">
-              <span className="text-5xl font-black text-yellow-400 tracking-tight">
+              <span className="text-5xl font-black text-yellow-400 tracking-tight drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]">
                 ${plan.priceUSD}
               </span>
               <span className="text-white text-sm font-black uppercase">USD 🔥</span>
@@ -92,6 +94,7 @@ export default function PricingCard({ plan, toolSlug }: PricingCardProps) {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </Card3D>
   );
 }

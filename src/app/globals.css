@@ -99,7 +99,7 @@ body {
 }
 
 /* ============================================================== */
-/* DYNAMIC BRAND SHIMMERING & MASKED TEXT GRADIENTS               */
+/* DYNAMIC BRAND SHIMMERING & MASKED TEXT GRADIENTS WITH 3D GLOW   */
 /* ============================================================== */
 @keyframes toolTextShimmer {
   0% {
@@ -113,24 +113,48 @@ body {
   }
 }
 
-/* 1. FAST OTP — FB Auto Resender Pro: Gold / Cyan / Facebook Electric Blue */
+@keyframes neonGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.6)) drop-shadow(0 0 20px rgba(239, 68, 68, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.85)) drop-shadow(0 0 35px rgba(239, 68, 68, 0.6));
+  }
+}
+
+@keyframes cyberLightSweep {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
+
+/* 1. FAST OTP — FB Auto Resender Pro: Brilliant Gold, Electric Cyan & Facebook Royal Blue */
 .text-gradient-fb {
-  background: linear-gradient(90deg, #facc15 0%, #38bdf8 30%, #2563eb 60%, #60a5fa 85%, #facc15 100%);
+  background: linear-gradient(90deg, #facc15 0%, #38bdf8 25%, #1d4ed8 50%, #60a5fa 75%, #fde047 100%);
   background-size: 250% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: toolTextShimmer 4s ease infinite;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.65)) drop-shadow(0 0 22px rgba(250, 204, 21, 0.45));
+  animation: toolTextShimmer 3.5s ease-in-out infinite;
   display: inline-block;
+  font-weight: 900;
+  letter-spacing: -0.02em;
 }
 
 /* 2. TikTok OTP Resender Pro: Electric Neon Cyan & TikTok Magenta / Hot Pink */
 .text-gradient-tiktok {
-  background: linear-gradient(90deg, #00f2fe 0%, #4facfe 25%, #ff007f 55%, #fe2c55 80%, #00f2fe 100%);
+  background: linear-gradient(90deg, #00f2fe 0%, #4facfe 25%, #ff007f 50%, #fe2c55 75%, #00f2fe 100%);
   background-size: 250% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: toolTextShimmer 3.5s ease infinite;
+  filter: drop-shadow(0 0 12px rgba(254, 44, 85, 0.75)) drop-shadow(0 0 24px rgba(0, 242, 254, 0.5));
+  animation: toolTextShimmer 3.2s ease-in-out infinite;
   display: inline-block;
+  font-weight: 900;
+  letter-spacing: -0.02em;
 }
 
 /* 3. Instagram OTP Resender Pro: Iconic Instagram Sunset (Purple -> Pink -> Red -> Orange -> Yellow) */
@@ -139,6 +163,49 @@ body {
   background-size: 250% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: toolTextShimmer 4.5s ease infinite;
+  filter: drop-shadow(0 0 12px rgba(225, 48, 108, 0.8)) drop-shadow(0 0 24px rgba(247, 119, 55, 0.5));
+  animation: toolTextShimmer 3.8s ease-in-out infinite;
   display: inline-block;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+/* 4. Flagship Gold & Ruby Fire Masked Gradient */
+.text-gradient-gold-fire {
+  background: linear-gradient(90deg, #ffffff 0%, #facc15 25%, #f97316 50%, #ef4444 75%, #facc15 100%);
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.55));
+  animation: toolTextShimmer 4s ease-in-out infinite;
+  display: inline-block;
+  font-weight: 900;
+}
+
+/* 3D Perspective & Depth Helpers */
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.translate-z-10 {
+  transform: translateZ(10px);
+}
+.translate-z-20 {
+  transform: translateZ(20px);
+}
+.translate-z-30 {
+  transform: translateZ(30px);
+}
+.translate-z-40 {
+  transform: translateZ(40px);
+}
+
+/* 3D Neon Glow Card Shadows */
+.shadow-3d-gold {
+  box-shadow: 0 12px 35px -8px rgba(250, 204, 21, 0.25), 0 0 15px rgba(250, 204, 21, 0.15);
+}
+.shadow-3d-cyan {
+  box-shadow: 0 12px 35px -8px rgba(56, 189, 248, 0.3), 0 0 15px rgba(0, 242, 254, 0.2);
+}
+.shadow-3d-magenta {
+  box-shadow: 0 12px 35px -8px rgba(254, 44, 85, 0.3), 0 0 15px rgba(255, 0, 127, 0.2);
 }

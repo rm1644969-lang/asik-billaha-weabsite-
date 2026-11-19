@@ -6,7 +6,10 @@ import Image from "next/image";
 import Hero3D from "@/components/Hero3D";
 import ToolCard from "@/components/ToolCard";
 import StatsSection from "@/components/StatsSection";
+import Card3D from "@/components/Card3D";
+import CyberCanvas3D from "@/components/CyberCanvas3D";
 import { useNexusStore } from "@/lib/store";
+import { sampleTools } from "@/lib/mockData";
 import { 
   Send, 
   ArrowRight, 
@@ -49,7 +52,7 @@ export default function HomePage() {
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-white">
               Professional Software Tools &{" "}
-              <span className="bg-gradient-to-r from-yellow-400 via-white to-red-500 bg-clip-text text-transparent">
+              <span className="text-gradient-gold-fire">
                 Automated Licensing
               </span>
             </h1>
@@ -107,16 +110,20 @@ export default function HomePage() {
       {/* ============================================================== */}
       {/* SECTION 2: OUR OFFICIAL SOFTWARE TOOLS                          */}
       {/* ============================================================== */}
-      <section id="official-tools" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-20">
+      <section id="official-tools" className="relative py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-20 overflow-hidden">
         
-        {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 pb-4 border-b border-white/10">
+        {/* 3D Ambient Cyber Canvas Background */}
+        <CyberCanvas3D className="absolute top-0 left-0 right-0 h-[450px] pointer-events-none opacity-40 z-0" />
+
+        <div className="relative z-10 space-y-8">
+          {/* Section Header */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 pb-4 border-b border-white/10">
           <div>
             <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-yellow-400 mb-1.5">
               <Layers className="w-4 h-4 text-red-500" />
               <span>Flagship Release &bull; Official Software Tools</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gradient-gold-fire">
               আমাদের অফিসিয়াল সফটওয়্যার টুলস
             </h2>
             <p className="text-slate-300 text-xs sm:text-sm mt-1">
@@ -128,18 +135,19 @@ export default function HomePage() {
             href="/tools"
             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-yellow-400 hover:text-yellow-300 transition-colors"
           >
-            <span>সবগুলো টুল দেখুন ({tools.length})</span>
+            <span>সবগুলো টুল দেখুন ({Math.max(tools.length, 3)})</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
-        {/* Tools Grid (Currently 1 Flagship Tool — Clean & Prominent) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {tools.map((tool) => (
+        {/* Tools Grid (Flagship + Coming Soon Tools side by side) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+          {(tools && tools.length >= 3 ? tools : sampleTools).map((tool) => (
             <ToolCard key={tool.id} tool={tool} />
           ))}
         </div>
 
+        </div>
       </section>
 
       {/* ============================================================== */}
@@ -151,41 +159,43 @@ export default function HomePage() {
       {/* SECTION 4: TELEGRAM VIP CTA                                     */}
       {/* ============================================================== */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-3xl p-[2px] bg-gradient-to-r from-yellow-400 via-red-600 to-yellow-500 shadow-neon-yellow overflow-hidden">
-          <div className="relative rounded-3xl bg-[#090909] px-6 py-10 sm:px-12 sm:py-12 text-center space-y-4">
-            
-            <div className="w-14 h-14 rounded-2xl bg-red-600/20 border border-red-500 flex items-center justify-center mx-auto shadow-neon-red">
-              <Send className="w-7 h-7 text-yellow-400" />
+        <Card3D maxTilt={5} depth={1.01} glare={true}>
+          <div className="relative rounded-3xl p-[2px] bg-gradient-to-r from-yellow-400 via-red-600 to-yellow-500 shadow-neon-yellow overflow-hidden">
+            <div className="relative rounded-3xl bg-[#090909] px-6 py-10 sm:px-12 sm:py-12 text-center space-y-4">
+              
+              <div className="w-14 h-14 rounded-2xl bg-red-600/20 border border-red-500 flex items-center justify-center mx-auto shadow-neon-red">
+                <Send className="w-7 h-7 text-yellow-400" />
+              </div>
+
+              <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+                Join Toolsbd.com Telegram Community
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
+                Get immediate tool updates, version releases, setup help, and 24/7 direct support from our official community.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                <a
+                  href={settings.telegramGroupUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-7 py-3 rounded-xl text-xs sm:text-sm font-black text-white bg-gradient-to-r from-red-600 to-red-700 hover:opacity-95 shadow-neon-red flex items-center justify-center gap-2 transition-all"
+                >
+                  <Send className="w-4 h-4" />
+                  <span>Join Official Telegram</span>
+                </a>
+
+                <Link
+                  href="/tools"
+                  className="w-full sm:w-auto px-7 py-3 rounded-xl text-xs sm:text-sm font-black text-black bg-yellow-400 hover:bg-yellow-300 shadow-neon-yellow transition-all text-center"
+                >
+                  <span>Explore Tools Marketplace</span>
+                </Link>
+              </div>
+
             </div>
-
-            <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-              Join Toolsbd.com Telegram Community
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
-              Get immediate tool updates, version releases, setup help, and 24/7 direct support from our official community.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-              <a
-                href={settings.telegramGroupUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto px-7 py-3 rounded-xl text-xs sm:text-sm font-black text-white bg-gradient-to-r from-red-600 to-red-700 hover:opacity-95 shadow-neon-red flex items-center justify-center gap-2 transition-all"
-              >
-                <Send className="w-4 h-4" />
-                <span>Join Official Telegram</span>
-              </a>
-
-              <Link
-                href="/tools"
-                className="w-full sm:w-auto px-7 py-3 rounded-xl text-xs sm:text-sm font-black text-black bg-yellow-400 hover:bg-yellow-300 shadow-neon-yellow transition-all text-center"
-              >
-                <span>Explore Tools Marketplace</span>
-              </Link>
-            </div>
-
           </div>
-        </div>
+        </Card3D>
       </section>
 
     </div>

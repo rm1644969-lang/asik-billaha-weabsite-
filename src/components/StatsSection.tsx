@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Users, Key, Zap, Send } from "lucide-react";
+import Card3D from "@/components/Card3D";
 
 export default function StatsSection() {
   const stats = [
@@ -46,33 +47,34 @@ export default function StatsSection() {
           {stats.map((stat, idx) => {
             const Icon = stat.icon;
             return (
-              <div 
-                key={idx}
-                className="relative rounded-2xl p-5 bg-[#0e0e0e] border border-white/10 hover:border-yellow-400/40 transition-all group overflow-hidden"
-              >
-                {/* Glow dot */}
+              <Card3D key={idx} maxTilt={9} depth={1.04} glare={true}>
                 <div 
-                  className="absolute -top-12 -right-12 w-28 h-28 rounded-full blur-2xl opacity-35 group-hover:opacity-75 transition-opacity pointer-events-none"
-                  style={{ backgroundColor: stat.glowColor }}
-                />
+                  className="relative rounded-2xl p-5 bg-[#0e0e0e] border border-white/10 hover:border-yellow-400/40 transition-all group overflow-hidden h-full"
+                >
+                  {/* Glow dot */}
+                  <div 
+                    className="absolute -top-12 -right-12 w-28 h-28 rounded-full blur-2xl opacity-35 group-hover:opacity-75 transition-opacity pointer-events-none"
+                    style={{ backgroundColor: stat.glowColor }}
+                  />
 
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover:scale-110 transition-transform">
-                    <Icon className="w-5 h-5 text-yellow-400" />
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover:scale-110 transition-transform">
+                      <Icon className="w-5 h-5 text-yellow-400" />
+                    </div>
+                    <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                      {stat.label}
+                    </span>
                   </div>
-                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                    {stat.label}
-                  </span>
-                </div>
 
-                <div className={`text-3xl sm:text-4xl font-black tracking-tight ${stat.textColor}`}>
-                  {stat.value}
-                </div>
+                  <div className={`text-3xl sm:text-4xl font-black tracking-tight ${stat.textColor} group-hover:scale-105 transition-transform drop-shadow-[0_0_12px_rgba(250,204,21,0.4)]`}>
+                    {stat.value}
+                  </div>
 
-                <p className="text-xs text-slate-400 mt-1 font-medium">
-                  {stat.subtext}
-                </p>
-              </div>
+                  <p className="text-xs text-slate-400 mt-1 font-medium">
+                    {stat.subtext}
+                  </p>
+                </div>
+              </Card3D>
             );
           })}
         </div>

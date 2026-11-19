@@ -30,6 +30,8 @@ import {
 import { playChimeSound, showBrowserNotification } from "@/lib/notifications";
 import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
 import { getToolTitleClass } from "@/lib/toolStyles";
+import Card3D from "@/components/Card3D";
+import CyberCanvas3D from "@/components/CyberCanvas3D";
 
 export default function CheckoutPage() {
   return (
@@ -327,15 +329,19 @@ function CheckoutContent() {
     : settings.rocketMerchantNumber;
 
   return (
-    <div className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-6 sm:space-y-8">
+    <div className="relative py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-6 sm:space-y-8 overflow-hidden">
       
-      {/* Top Breadcrumb / Title */}
-      <div className="text-center space-y-2">
+      {/* 3D Ambient Cyber Mesh Background */}
+      <CyberCanvas3D className="absolute -top-10 left-0 right-0 h-[480px] pointer-events-none opacity-40 z-0" />
+
+      <div className="relative z-10 space-y-6 sm:space-y-8">
+        {/* Top Breadcrumb / Title */}
+        <div className="text-center space-y-2">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/40 text-yellow-400 text-xs font-black uppercase tracking-wider">
           <Sparkles className="w-3.5 h-3.5" />
           <span>Toolsbd.com Instant Checkout</span>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+        <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-gradient-gold-fire">
           {isSuccess 
             ? "🎉 লাইসেন্স কনফার্মেশন ও টুল ডাউনলোড" 
             : isPending 
@@ -373,31 +379,32 @@ function CheckoutContent() {
               {plans.filter(p => p.toolId === selectedTool.id && p.enabled).map((plan) => {
                 const isSelected = selectedPlan.id === plan.id;
                 return (
-                  <button
-                    key={plan.id}
-                    type="button"
-                    onClick={() => setSelectedPlan(plan)}
-                    className={`relative rounded-2xl p-4 border text-left transition-all ${
-                      isSelected
-                        ? "bg-gradient-to-b from-[#1c180e] to-[#121008] border-2 border-yellow-400 shadow-neon-yellow scale-[1.02]"
-                        : "bg-[#111111] border-white/10 hover:border-yellow-400/40 text-slate-300"
-                    }`}
-                  >
-                    <span className="text-xs font-black uppercase block text-yellow-400">
-                      {plan.name}
-                    </span>
-                    <div className="flex items-baseline gap-1.5 my-1">
-                      <span className="text-2xl font-black text-white leading-none">
-                        ${plan.priceUSD}
+                  <Card3D key={plan.id} maxTilt={6} depth={1.03} glare={true} className="h-full">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPlan(plan)}
+                      className={`relative rounded-2xl p-4 border text-left transition-all w-full h-full ${
+                        isSelected
+                          ? "bg-gradient-to-b from-[#1c180e] to-[#121008] border-2 border-yellow-400 shadow-neon-yellow"
+                          : "bg-[#111111] border-white/10 hover:border-yellow-400/40 text-slate-300"
+                      }`}
+                    >
+                      <span className="text-xs font-black uppercase block text-yellow-400">
+                        {plan.name}
                       </span>
-                      <span className="text-xs font-mono font-bold text-yellow-400">
-                        (৳{plan.priceBDT} BDT)
+                      <div className="flex items-baseline gap-1.5 my-1">
+                        <span className="text-2xl font-black text-white leading-none">
+                          ${plan.priceUSD}
+                        </span>
+                        <span className="text-xs font-mono font-bold text-yellow-400">
+                          (৳{plan.priceBDT} BDT)
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-slate-400 block font-normal">
+                        ✓ Single PC Permanent Lock
                       </span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 block font-normal">
-                      ✓ Single PC Permanent Lock
-                    </span>
-                  </button>
+                    </button>
+                  </Card3D>
                 );
               })}
             </div>
@@ -942,6 +949,7 @@ function CheckoutContent() {
         </div>
       )}
 
+      </div>
     </div>
   );
 }

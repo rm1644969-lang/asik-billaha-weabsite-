@@ -94,6 +94,12 @@ export function useNexusStore() {
           }
         });
         const reconciledTools = Array.from(toolMap.values());
+        // Guarantee all official flagship sample tools exist
+        sampleTools.forEach(st => {
+          if (!reconciledTools.some(t => t.id === st.id)) {
+            reconciledTools.push(st);
+          }
+        });
         setTools(reconciledTools);
         try {
           localStorage.setItem("toolsbd_v4_tools", JSON.stringify(reconciledTools));
