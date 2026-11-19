@@ -27,15 +27,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Set up Gradle 8.4
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.4'
 
-      - name: Grant Execute Permission to Gradlew
-        run: chmod +x ./android/gradlew
-
-      - name: Build APK with Gradle
+      - name: Accept Android SDK Licenses & Build APK
         working-directory: ./android
-        run: ./gradlew assembleDebug --stacktrace
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
+          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          gradle assembleDebug --stacktrace
 
       - name: Rename APK Output
         run: |
