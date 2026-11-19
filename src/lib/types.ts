@@ -8,7 +8,7 @@ export interface Tool {
   version: string;
   bannerUrl: string;
   iconUrl?: string;
-  status: "active" | "maintenance" | "beta" | "updated";
+  status: "active" | "maintenance" | "beta" | "updated" | "coming_soon";
   isFeatured?: boolean;
   setupVideoUrl: string;
   downloadFilePath: string;

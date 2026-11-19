@@ -19,7 +19,8 @@ import {
   Sparkles,
   Zap,
   HardDrive,
-  MonitorCheck
+  MonitorCheck,
+  Lock
 } from "lucide-react";
 
 export default function ToolDetailsPage() {
@@ -41,6 +42,29 @@ export default function ToolDetailsPage() {
         <Link href="/tools" className="inline-block px-5 py-2.5 rounded-xl bg-purple-600 text-white text-xs font-bold">
           Back to Tools
         </Link>
+      </div>
+    );
+  }
+
+  if (tool.status === "coming_soon") {
+    return (
+      <div className="py-24 text-center max-w-lg mx-auto space-y-5 px-4">
+        <div className="w-16 h-16 rounded-2xl bg-yellow-400/10 border border-yellow-400/40 text-yellow-400 flex items-center justify-center mx-auto shadow-neon-yellow">
+          <Lock className="w-8 h-8" />
+        </div>
+        <h2 className="text-3xl font-black text-white">{tool.name}</h2>
+        <span className="inline-block px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-yellow-400 text-black">
+          COMING SOON (শীঘ্রই আসছে)
+        </span>
+        <p className="text-slate-300 text-sm leading-relaxed">
+          This automated software utility is currently under active development. It will be available for purchase and download very soon.
+        </p>
+        <div className="pt-2">
+          <Link href="/tools" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-neon-yellow transition-all">
+            <span>Explore Available Tools</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
     );
   }

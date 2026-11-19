@@ -51,115 +51,115 @@ export default function ToolsMarketplacePage() {
         </div>
       )}
 
-      {/* Side-by-Side Layout: Tool on Left + Price List on Right */}
+      {/* Tools Grid (Flagship + Coming Soon Tools) */}
       {filteredTools.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <div className="space-y-12">
           
-          {/* Left: Tool Card */}
-          <div className="lg:col-span-5 flex flex-col">
-            <ToolCard tool={filteredTools[0]} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+            {filteredTools.map((tool) => (
+              <ToolCard key={tool.id} tool={tool} />
+            ))}
           </div>
 
-          {/* Right: TOOLS OFFER PRICE List */}
-          <div className="lg:col-span-7 flex flex-col">
-            <div className="relative rounded-2xl p-[1px] bg-gradient-to-b from-yellow-400 via-red-500/70 to-yellow-600/40 shadow-neon-yellow h-full">
-              <div className="rounded-2xl bg-[#0b0b0b]/95 backdrop-blur-xl p-6 sm:p-7 h-full flex flex-col justify-between space-y-6 border border-white/10">
-                
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
-                  <div>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-600/20 border border-red-500 text-yellow-400 text-[10px] font-black uppercase tracking-widest mb-2">
-                      <Sparkles className="w-3 h-3" />
-                      <span>Special Offer</span>
-                    </span>
-                    <h2 className="text-2xl sm:text-3xl font-black text-white">
-                      TOOLS OFFER PRICE 🔊
-                    </h2>
-                  </div>
-                  <div className="text-left sm:text-right text-xs font-mono text-slate-300">
-                    <span className="block text-yellow-400 font-black">Instant HWID Key</span>
-                    <span>bKash &bull; Rocket Auto</span>
-                  </div>
+          {/* Special TOOLS OFFER PRICE List */}
+          <div className="relative rounded-2xl p-[1px] bg-gradient-to-b from-yellow-400 via-red-500/70 to-yellow-600/40 shadow-neon-yellow">
+            <div className="rounded-2xl bg-[#0b0b0b]/95 backdrop-blur-xl p-6 sm:p-8 space-y-6 border border-white/10">
+              
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-600/20 border border-red-500 text-yellow-400 text-[10px] font-black uppercase tracking-widest mb-2">
+                    <Sparkles className="w-3 h-3" />
+                    <span>Special Offer</span>
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white">
+                    TOOLS OFFER PRICE 🔊
+                  </h2>
                 </div>
+                <div className="text-left sm:text-right text-xs font-mono text-slate-300">
+                  <span className="block text-yellow-400 font-black">Instant HWID Key</span>
+                  <span>bKash &bull; Rocket Auto</span>
+                </div>
+              </div>
 
-                <div className="space-y-4 flex-1 flex flex-col justify-center">
-                  {plans.filter(p => p.enabled).map((plan) => (
-                    <div
-                      key={plan.id}
-                      className={`relative rounded-2xl p-4 sm:p-5 border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-                        plan.isPopular
-                          ? "bg-gradient-to-r from-yellow-400/15 via-red-600/10 to-black border-yellow-400 shadow-neon-yellow"
-                          : "bg-[#121212] border-white/10 hover:border-yellow-400/50"
-                      }`}
-                    >
-                      {plan.isPopular && (
-                        <span className="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-600 text-white border border-yellow-400 shadow-md">
-                          ★ Most Popular
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {plans.filter(p => p.enabled).map((plan) => (
+                  <div
+                    key={plan.id}
+                    className={`relative rounded-2xl p-5 border transition-all flex flex-col justify-between gap-4 ${
+                      plan.isPopular
+                        ? "bg-gradient-to-b from-yellow-400/15 via-red-600/10 to-black border-yellow-400 shadow-neon-yellow"
+                        : "bg-[#121212] border-white/10 hover:border-yellow-400/50"
+                    }`}
+                  >
+                    {plan.isPopular && (
+                      <span className="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-600 text-white border border-yellow-400 shadow-md">
+                        ★ Most Popular
+                      </span>
+                    )}
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-base sm:text-lg font-black text-white">
+                          {plan.durationDays} DAYS OFFER 🔥
                         </span>
-                      )}
-
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <span className="text-base sm:text-lg font-black text-white">
-                            {plan.durationDays} DAYS OFFER 🔥
+                        {plan.originalPriceUSD && (
+                          <span className="text-xs text-slate-500 line-through font-mono">
+                            ${plan.originalPriceUSD}
                           </span>
-                          {plan.originalPriceUSD && (
-                            <span className="text-xs text-slate-500 line-through font-mono">
-                              ${plan.originalPriceUSD}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-300">
-                          {plan.features.slice(0, 3).map((feat, idx) => (
-                            <span key={idx} className="inline-flex items-center gap-1">
-                              <Check className="w-3 h-3 text-yellow-400 shrink-0" />
-                              <span>{feat}</span>
-                            </span>
-                          ))}
-                        </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-baseline gap-1.5 pt-1">
+                        <span className="text-3xl font-black text-yellow-400 leading-none">
+                          ${plan.priceUSD}
+                        </span>
+                        <span className="text-xs font-black text-white">USD 🔥</span>
+                        <span className="text-xs font-mono text-slate-400 ml-1">
+                          (৳{plan.priceBDT})
+                        </span>
                       </div>
 
-                      <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/10">
-                        <div className="text-left sm:text-right">
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-3xl font-black text-yellow-400 leading-none">
-                              ${plan.priceUSD}
-                            </span>
-                            <span className="text-xs font-black text-white">🔥</span>
+                      <div className="space-y-1.5 pt-2 text-[11px] text-slate-300">
+                        {plan.features.slice(0, 3).map((feat, idx) => (
+                          <div key={idx} className="flex items-center gap-1.5">
+                            <Check className="w-3 h-3 text-yellow-400 shrink-0" />
+                            <span className="truncate">{feat}</span>
                           </div>
-                          <span className="text-[11px] font-mono text-slate-400 block mt-0.5">
-                            ৳{plan.priceBDT} BDT
-                          </span>
-                        </div>
-
-                        <Link
-                          href={`/checkout?tool=${plan.toolId}&plan=${plan.id}`}
-                          className={`px-4 py-3 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shrink-0 ${
-                            plan.isPopular
-                              ? "bg-yellow-400 hover:bg-yellow-300 text-black shadow-neon-yellow"
-                              : "bg-red-600 hover:bg-red-500 text-white shadow-neon-red"
-                          }`}
-                        >
-                          <Zap className="w-3.5 h-3.5" />
-                          <span>Buy Now</span>
-                        </Link>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </div>
 
-                <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300 font-mono">
-                  <span>
-                    bKash: <strong className="text-yellow-400">{settings.bkashMerchantNumber}</strong>
-                  </span>
-                  <span>
-                    Rocket: <strong className="text-red-400">{settings.rocketMerchantNumber}</strong>
-                  </span>
-                  <Link href="/dashboard" className="text-yellow-400 hover:underline font-sans font-bold">
-                    Or Buy with Wallet &rarr;
-                  </Link>
-                </div>
-
+                    <div className="pt-3 border-t border-white/10">
+                      <Link
+                        href={`/checkout?tool=tool-otp-utility&plan=${plan.id}`}
+                        className={`w-full py-2.5 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all ${
+                          plan.isPopular
+                            ? "bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black shadow-neon-yellow hover:opacity-95"
+                            : "bg-white/10 hover:bg-white/20 text-white"
+                        }`}
+                      >
+                        <Zap className="w-3.5 h-3.5" />
+                        <span>Buy Now</span>
+                      </Link>
+                    </div>
+                  </div>
+                ))}
               </div>
+
+              <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-300 font-mono">
+                <div className="flex items-center gap-4">
+                  <span>
+                    bKash Personal: <strong className="text-yellow-400">{settings.bkashMerchantNumber}</strong>
+                  </span>
+                  <span>
+                    Rocket Personal: <strong className="text-red-400">{settings.rocketMerchantNumber}</strong>
+                  </span>
+                </div>
+                <Link href="/dashboard" className="text-yellow-400 hover:underline font-sans font-bold">
+                  Or Buy with Wallet &rarr;
+                </Link>
+              </div>
+
             </div>
           </div>
 

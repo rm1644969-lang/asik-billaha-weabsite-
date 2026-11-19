@@ -125,6 +125,74 @@ export const sampleTools: Tool[] = [
     plans: samplePlans,
     createdAt: "2026-01-10T10:00:00Z",
     updatedAt: "2026-03-01T15:30:00Z"
+  },
+  {
+    id: "tool-tiktok-otp",
+    name: "TikTok OTP Resender Pro",
+    slug: "tiktok-otp-resender",
+    category: "Social Automation",
+    tagline: "High-speed automated TikTok OTP verification & resender utility with zero-delay engine",
+    description: "Automated TikTok OTP workflow suite engineered for high concurrency, instant bypass verification, and automated token management. Coming soon to Toolsbd.com.",
+    version: "COMING SOON",
+    bannerUrl: "/images/tiktok-otp-banner.svg",
+    status: "coming_soon",
+    isFeatured: false,
+    setupVideoUrl: "https://www.youtube.com/embed/U2JBcFAO7mE?si=9Pxpka_XfFtBmDGF",
+    downloadFilePath: "",
+    downloadFileName: "TikTok_OTP_v1.0_Setup.zip",
+    fileSize: "Pending Release",
+    checksumSha256: "TBD",
+    features: [
+      "Real-time TikTok automated OTP request & verification",
+      "Multi-account parallel thread routing engine",
+      "Cryptographic single-machine HWID security lock"
+    ],
+    systemRequirements: {
+      os: "Windows 10 / 11 (64-bit)",
+      ram: "4 GB Minimum",
+      processor: "Intel / AMD 64-bit",
+      netFramework: ".NET Desktop Runtime 8.0"
+    },
+    screenshots: [
+      "/images/tiktok-otp-banner.svg"
+    ],
+    plans: [],
+    createdAt: "2026-03-01T10:00:00Z",
+    updatedAt: "2026-03-01T10:00:00Z"
+  },
+  {
+    id: "tool-instagram-otp",
+    name: "Instagram OTP Resender Pro",
+    slug: "instagram-otp-resender",
+    category: "Social Automation",
+    tagline: "Automated Instagram verification & resender engine with anti-detection and proxy support",
+    description: "Enterprise automated Instagram OTP automation software with proxy rotation, session persistence, and instant hardware-locked licenses. Under active development.",
+    version: "COMING SOON",
+    bannerUrl: "/images/instagram-otp-banner.svg",
+    status: "coming_soon",
+    isFeatured: false,
+    setupVideoUrl: "https://www.youtube.com/embed/U2JBcFAO7mE?si=9Pxpka_XfFtBmDGF",
+    downloadFilePath: "",
+    downloadFileName: "Instagram_OTP_v1.0_Setup.zip",
+    fileSize: "Pending Release",
+    checksumSha256: "TBD",
+    features: [
+      "Ultra-fast Instagram OTP resend automation",
+      "Anti-detection rotation & proxy pool management",
+      "Single PC HWID license protection"
+    ],
+    systemRequirements: {
+      os: "Windows 10 / 11 (64-bit)",
+      ram: "4 GB Minimum",
+      processor: "Intel / AMD 64-bit",
+      netFramework: ".NET Desktop Runtime 8.0"
+    },
+    screenshots: [
+      "/images/instagram-otp-banner.svg"
+    ],
+    plans: [],
+    createdAt: "2026-03-01T10:00:00Z",
+    updatedAt: "2026-03-01T10:00:00Z"
   }
 ];
 

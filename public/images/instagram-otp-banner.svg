@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="igBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e0a12" />
+      <stop offset="100%" stop-color="#050508" />
+    </linearGradient>
+    <linearGradient id="igGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f09433" />
+      <stop offset="25%" stop-color="#e6683c" />
+      <stop offset="50%" stop-color="#dc2743" />
+      <stop offset="75%" stop-color="#cc2366" />
+      <stop offset="100%" stop-color="#bc1888" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#igBg)"/>
+  
+  <!-- Subtle Grid Lines -->
+  <path d="M0 50 H800 M0 100 H800 M0 150 H800 M0 200 H800 M0 250 H800 M0 300 H800 M0 350 H800 M0 400 H800" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <path d="M100 0 V450 M200 0 V450 M300 0 V450 M400 0 V450 M500 0 V450 M600 0 V450 M700 0 V450" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+
+  <!-- Ambient Glows -->
+  <circle cx="220" cy="220" r="160" fill="#e6683c" opacity="0.12" filter="blur(60px)"/>
+  <circle cx="580" cy="220" r="160" fill="#bc1888" opacity="0.12" filter="blur(60px)"/>
+
+  <!-- Mock App Window Card -->
+  <rect x="120" y="70" width="560" height="310" rx="20" fill="#110d14" stroke="#ffffff" stroke-opacity="0.1" stroke-width="2"/>
+  
+  <!-- Window Header -->
+  <rect x="120" y="70" width="560" height="42" rx="20" fill="#1b1420"/>
+  <circle cx="150" cy="91" r="5" fill="#EF4444"/>
+  <circle cx="168" cy="91" r="5" fill="#FACC15"/>
+  <circle cx="186" cy="91" r="5" fill="#10B981"/>
+  <text x="400" y="96" fill="#aa99b0" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" letter-spacing="2">INSTAGRAM OTP RESENDER PRO &bull; v1.0</text>
+
+  <!-- Instagram Camera Icon -->
+  <g transform="translate(180, 150)">
+    <rect x="0" y="0" width="90" height="90" rx="24" fill="url(#igGlow)"/>
+    <rect x="8" y="8" width="74" height="74" rx="18" fill="none" stroke="#ffffff" stroke-width="6"/>
+    <circle cx="45" cy="45" r="18" fill="none" stroke="#ffffff" stroke-width="6"/>
+    <circle cx="64" cy="26" r="4.5" fill="#ffffff"/>
+  </g>
+
+  <!-- Terminal Lines Mock -->
+  <rect x="310" y="150" width="330" height="24" rx="6" fill="#201726"/>
+  <rect x="310" y="186" width="260" height="24" rx="6" fill="#201726"/>
+  <rect x="310" y="222" width="290" height="24" rx="6" fill="#201726"/>
+  <rect x="310" y="265" width="160" height="34" rx="8" fill="#30203a"/>
+
+  <!-- Centered Lock & Coming Soon Ribbon -->
+  <rect x="250" y="325" width="300" height="38" rx="19" fill="#000000" fill-opacity="0.85" stroke="#FACC15" stroke-width="2"/>
+  <text x="400" y="350" fill="#FACC15" font-family="system-ui, sans-serif" font-size="14" font-weight="900" text-anchor="middle" letter-spacing="3">🔒 COMING SOON</text>
+</svg>

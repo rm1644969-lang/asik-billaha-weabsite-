@@ -94,6 +94,12 @@ export function useNexusStore() {
           }
           return t;
         });
+        // Ensure newly introduced sample tools (e.g. TikTok & Instagram Coming Soon) are present
+        sampleTools.forEach(st => {
+          if (!updatedTools.some((t: Tool) => t.id === st.id)) {
+            updatedTools.push(st);
+          }
+        });
         setTools(updatedTools);
       }
       if (storedPlans) setPlans(JSON.parse(storedPlans));
