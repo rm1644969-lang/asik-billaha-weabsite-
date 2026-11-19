@@ -27,6 +27,9 @@ import {
 } from "lucide-react";
 import { useNexusStore } from "@/lib/store";
 import Footer from "@/components/Footer";
+import CyberCursor from "@/components/CyberCursor";
+import MouseParticles from "@/components/MouseParticles";
+import CuteRobotCompanion from "@/components/CuteRobotCompanion";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -394,6 +397,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <span>Admin</span>
         </Link>
       </nav>
+
+      {/* Interactive Global Cyber Cursor */}
+      <CyberCursor />
+
+      {/* Website-wide Cyber Sparkle Mouse Particles */}
+      <MouseParticles />
+
+      {/* Interactive Floating Cute Cyber Robot Assistant */}
+      <CuteRobotCompanion />
 
     </div>
   );
