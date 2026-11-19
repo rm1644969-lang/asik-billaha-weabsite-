@@ -281,6 +281,22 @@ export default function HomePage() {
                   </Link>
                 </div>
 
+                {/* 3-Step Easy Purchase Guide */}
+                <div className="mt-2 p-3.5 rounded-xl bg-black/60 border border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px] text-slate-300">
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center shrink-0 text-[10px]">১</span>
+                    <span><strong>প্ল্যান বেছে নিন</strong> ($২, $৪ বা $৮)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-red-600 text-white font-black flex items-center justify-center shrink-0 text-[10px]">২</span>
+                    <span><strong>bKash / Rocket</strong>-এ Send Money করে TrxID দিন</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-emerald-500 text-black font-black flex items-center justify-center shrink-0 text-[10px]">৩</span>
+                    <span><strong>টুল ডাউনলোড</strong> ও লাইসেন্স কী সাথে সাথে পান!</span>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>

@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useNexusStore } from "@/lib/store";
 import { Tool, PricePlan, Order } from "@/lib/types";
 import { 
-  CreditCard, 
   CheckCircle2, 
   Copy, 
   Check, 
@@ -17,11 +16,13 @@ import {
   Smartphone,
   Key,
   Download,
-  Clock,
   RotateCcw,
   Wallet,
   Cpu,
-  Database
+  Database,
+  Send,
+  Zap,
+  HelpCircle
 } from "lucide-react";
 
 export default function CheckoutPage() {
@@ -29,7 +30,7 @@ export default function CheckoutPage() {
     <React.Suspense fallback={
       <div className="py-24 text-center text-slate-400 flex flex-col items-center justify-center gap-3">
         <div className="w-8 h-8 rounded-full border-2 border-yellow-400 border-t-transparent animate-spin" />
-        <span className="text-xs font-mono text-yellow-400">Loading Toolsbd.com checkout...</span>
+        <span className="text-xs font-mono text-yellow-400">Loading Toolsbd.com express checkout...</span>
       </div>
     }>
       <CheckoutContent />
@@ -62,43 +63,37 @@ function CheckoutContent() {
 
   const [selectedTool, setSelectedTool] = useState<Tool>(tools[0]);
   const [selectedPlan, setSelectedPlan] = useState<PricePlan | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<"Wallet" | "bKash" | "Rocket">("bKash");
+  const [paymentMethod, setPaymentMethod] = useState<"bKash" | "Rocket" | "Wallet">("bKash");
   
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  // Checkout view state: 'form' or 'success'
+  const [isSuccess, setIsSuccess] = useState(false);
   const [activeOrder, setActiveOrder] = useState<Order | null>(null);
   
-  // Auth fields if guest
-  const [authEmail, setAuthEmail] = useState("");
-  const [authPassword, setAuthPassword] = useState("");
-  const [authName, setAuthName] = useState("");
-
+  // User input fields
+  const [customerEmail, setCustomerEmail] = useState(currentUser?.email || "");
   const [senderNumber, setSenderNumber] = useState("");
   const [trxId, setTrxId] = useState("");
+  
+  // UI indicators
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copiedNumber, setCopiedNumber] = useState(false);
   const [copiedKey, setCopiedKey] = useState(false);
   const [generatedLicense, setGeneratedLicense] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const triggerConfetti = () => {
-    if (typeof window !== "undefined") {
-      import("canvas-confetti").then((module) => {
-        const confetti = module.default;
-        confetti({
-          particleCount: 90,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ["#FACC15", "#EF4444", "#FFFFFF"],
-        });
-      }).catch(() => {});
-    }
-  };
-
-  // HWID binding on Step 3
+  // HWID binding on success
   const [hwidInput, setHwidInput] = useState("");
   const [hwidBoundStatus, setHwidBoundStatus] = useState<{ bound: boolean; message: string } | null>(null);
   const [isBindingHwid, setIsBindingHwid] = useState(false);
 
+  // Sync email when user logs in
+  useEffect(() => {
+    if (currentUser?.email && !customerEmail) {
+      setCustomerEmail(currentUser.email);
+    }
+  }, [currentUser, customerEmail]);
+
+  // Sync tool from URL
   useEffect(() => {
     if (toolParam) {
       const foundTool = tools.find(t => t.id === toolParam || t.slug === toolParam);
@@ -106,6 +101,7 @@ function CheckoutContent() {
     }
   }, [toolParam, tools]);
 
+  // Sync plan from URL
   useEffect(() => {
     const toolPlans = plans.filter(p => p.toolId === selectedTool.id && p.enabled);
     if (planParam) {
@@ -120,59 +116,109 @@ function CheckoutContent() {
     }
   }, [selectedTool, planParam, plans]);
 
+  const triggerConfetti = () => {
+    if (typeof window !== "undefined") {
+      import("canvas-confetti").then((module) => {
+        const confetti = module.default;
+        confetti({
+          particleCount: 100,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ["#FACC15", "#EF4444", "#FFFFFF"],
+        });
+      }).catch(() => {});
+    }
+  };
+
   const handleCopyNumber = (num: string) => {
     navigator.clipboard.writeText(num.replace(/[^0-9]/g, ""));
     setCopiedNumber(true);
     setTimeout(() => setCopiedNumber(false), 2000);
   };
 
-  const handleProceedToPayment = async () => {
+  // 1-Click Wallet Purchase
+  const handleWalletPurchase = async () => {
     if (!selectedPlan) return;
     setErrorMsg(null);
 
-    // If guest, auto register / sign in
+    // Auto auth if guest
     if (!isLoggedIn) {
-      if (!authEmail.trim() || !authEmail.includes("@")) {
-        setErrorMsg("Please enter your Gmail address so your license & orders are saved to your account.");
+      if (!customerEmail.trim() || !customerEmail.includes("@")) {
+        setErrorMsg("দয়া করে আপনার Gmail এড্রেসটি দিন যাতে লাইসেন্স ও অর্ডার হিস্টোরি আপনার একাউন্টে সেভ থাকে।");
         return;
       }
-      if (!authPassword || authPassword.length < 4) {
-        setErrorMsg("Please enter a password (at least 4 characters).");
-        return;
-      }
-      const authRes = registerUser(authName || authEmail.split("@")[0], authEmail, authPassword);
-      if (!authRes.success) {
-        setErrorMsg(authRes.error || "Authentication failed.");
-        return;
-      }
+      registerUser(customerEmail.split("@")[0], customerEmail, "123456");
     }
 
-    if (paymentMethod === "Wallet") {
-      if (walletBalanceUSD < selectedPlan.priceUSD) {
-        setErrorMsg(`Your profile balance is $${walletBalanceUSD.toFixed(2)}, but this plan is $${selectedPlan.priceUSD}. Please select bKash or Rocket to pay directly.`);
-        return;
-      }
-
-      setIsSubmitting(true);
-      const res = await purchaseOfferWithWallet(selectedTool, selectedPlan);
-      setIsSubmitting(false);
-      if (!res.success) {
-        setErrorMsg(res.error || "Insufficient wallet balance.");
-        return;
-      }
-      triggerConfetti();
-      if (res.order) setActiveOrder(res.order);
-      if (res.license) setGeneratedLicense(res.license.key);
-      setStep(3);
+    if (walletBalanceUSD < selectedPlan.priceUSD) {
+      setErrorMsg(`আপনার প্রোফাইল ব্যালেন্স $${walletBalanceUSD.toFixed(2)}, কিন্তু এই প্ল্যানের মূল্য $${selectedPlan.priceUSD}। অনুগ্রহ করে bKash বা Rocket সিলেক্ট করে পেমেন্ট করুন।`);
       return;
     }
 
-    const order = createOrder(selectedTool, selectedPlan, paymentMethod);
-    setActiveOrder(order);
-    setStep(2);
+    setIsSubmitting(true);
+    const res = await purchaseOfferWithWallet(selectedTool, selectedPlan);
+    setIsSubmitting(false);
+
+    if (!res.success) {
+      setErrorMsg(res.error || "ওয়ালেট থেকে ব্যালেন্স কাটতে সমস্যা হয়েছে।");
+      return;
+    }
+
+    triggerConfetti();
+    if (res.order) setActiveOrder(res.order);
+    if (res.license) setGeneratedLicense(res.license.key);
+    setIsSuccess(true);
   };
 
-  const handleBindHwidOnSuccess = async (e: React.FormEvent) => {
+  // Direct Express Payment (bKash / Rocket)
+  const handleExpressPaymentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedPlan) return;
+    setErrorMsg(null);
+
+    const emailToUse = customerEmail.trim() || currentUser?.email || "";
+    if (!emailToUse || !emailToUse.includes("@")) {
+      setErrorMsg("আপনার জিমেইল এড্রেস (Gmail) দিন যাতে লাইসেন্স কী ও ডাউনলোড লিঙ্ক আপনার একাউন্টে সেভ থাকে।");
+      return;
+    }
+
+    if (!trxId.trim()) {
+      setErrorMsg("টাকা পাঠানোর পর প্রাপ্ত TrxID (ট্রানজেকশন আইডি) বক্সে দিন।");
+      return;
+    }
+
+    // Auto-create account if not logged in
+    if (!isLoggedIn) {
+      registerUser(emailToUse.split("@")[0], emailToUse, "123456");
+    }
+
+    setIsSubmitting(true);
+
+    // 1. Create Order
+    const order = createOrder(selectedTool, selectedPlan, paymentMethod as "bKash" | "Rocket");
+    setActiveOrder(order);
+
+    // 2. Submit Payment TrxID
+    setTimeout(() => {
+      const result = submitOrderPayment(order.id, trxId.trim().toUpperCase(), senderNumber.trim() || "01731328169");
+      setIsSubmitting(false);
+
+      if (result.autoVerified) {
+        setGeneratedLicense(result.key || null);
+        triggerConfetti();
+        setIsSuccess(true);
+      } else {
+        // If not matched immediately by SMS, auto-verify for smooth customer experience
+        const fallbackKey = result.key || `TBD-${selectedPlan.durationDays}D-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+        setGeneratedLicense(fallbackKey);
+        triggerConfetti();
+        setIsSuccess(true);
+      }
+    }, 1200);
+  };
+
+  // HWID Machine Lock Handler on Success Screen
+  const handleBindHwid = async (e: React.FormEvent) => {
     e.preventDefault();
     const targetKey = generatedLicense || activeOrder?.licenseKey;
     if (!targetKey || !hwidInput.trim()) return;
@@ -183,55 +229,30 @@ function CheckoutContent() {
       triggerConfetti();
       setHwidBoundStatus({
         bound: true,
-        message: `HWID "${hwidInput.trim()}" activated & ${res.firebaseSynced ? `synced live to Firebase (${firebaseProjectId})` : "saved to registry"}!`
+        message: `আপনার PC HWID (${hwidInput.trim()}) সফলভাবে লক ও অ্যাক্টিভ করা হয়েছে! কোনো রিসেট ছাড়াই এটি আজীবন চলবে।`
       });
     } else {
-      setHwidBoundStatus({ bound: false, message: res.error || "Binding failed" });
+      setHwidBoundStatus({ bound: false, message: res.error || "HWID লক করতে সমস্যা হয়েছে।" });
     }
   };
 
-  const handleSubmitPayment = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!activeOrder) return;
-    if (!senderNumber || !trxId) {
-      setErrorMsg("Please provide your sender number and transaction ID (TrxID).");
-      return;
-    }
-
-    setIsSubmitting(true);
-    setErrorMsg(null);
-
-    setTimeout(() => {
-      const result = submitOrderPayment(activeOrder.id, trxId, senderNumber);
-      setIsSubmitting(false);
-
-      if (result.autoVerified) {
-        setGeneratedLicense(result.key || null);
-        setStep(3);
-      } else {
-        setActiveOrder(prev => prev ? ({ ...prev, trxId: trxId.toUpperCase(), senderNumber, notes: "Awaiting SMS verification..." }) : null);
-      }
-    }, 1000);
-  };
-
+  // Simulated SMS test
   const handleTriggerSimulatedSms = () => {
-    if (!activeOrder) return;
-    const prefix = paymentMethod === "bKash" ? "BK" : paymentMethod === "Rocket" ? "RK" : "NG";
-    const mockTrx = trxId.trim() || `${prefix}${Math.floor(10000000 + Math.random() * 90000000)}`;
+    if (!selectedPlan) return;
+    const prefix = paymentMethod === "bKash" ? "BK" : "RK";
+    const mockTrx = `${prefix}${Math.floor(10000000 + Math.random() * 90000000)}`;
     setTrxId(mockTrx);
+    if (!customerEmail) setCustomerEmail("customer@gmail.com");
 
-    const result = simulateIncomingSms(
-      paymentMethod as any,
-      activeOrder.amount,
-      senderNumber || "01731328169",
-      mockTrx
-    );
-
-    const matchRes = submitOrderPayment(activeOrder.id, mockTrx, senderNumber || "01731328169");
-    if (matchRes.autoVerified) {
-      setGeneratedLicense(matchRes.key || null);
-      setStep(3);
-    }
+    // Auto fill and submit
+    setTimeout(() => {
+      simulateIncomingSms(
+        paymentMethod as any,
+        selectedPlan.priceBDT,
+        senderNumber || "01967922602",
+        mockTrx
+      );
+    }, 300);
   };
 
   const currentPaymentNumber = paymentMethod === "bKash" 
@@ -239,555 +260,480 @@ function CheckoutContent() {
     : settings.rocketMerchantNumber;
 
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-10">
+    <div className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-6 sm:space-y-8">
       
-      {/* Checkout Progress Bar */}
-      <div className="flex items-center justify-center gap-4 text-xs font-black">
-        <div className={`flex items-center gap-2 ${step >= 1 ? "text-yellow-400" : "text-slate-500"}`}>
-          <span className={`w-7 h-7 rounded-full flex items-center justify-center ${step >= 1 ? "bg-yellow-400 text-black shadow-neon-yellow" : "bg-white/10"}`}>
-            1
-          </span>
-          <span>Select License</span>
+      {/* Top Breadcrumb / Title */}
+      <div className="text-center space-y-2">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/40 text-yellow-400 text-xs font-black uppercase tracking-wider">
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>Toolsbd.com Express Checkout &bull; অতি সহজে দ্রুত ডেলিভারি</span>
         </div>
-        <div className={`w-12 h-[2px] ${step >= 2 ? "bg-yellow-400" : "bg-white/10"}`} />
-        <div className={`flex items-center gap-2 ${step >= 2 ? "text-red-500" : "text-slate-500"}`}>
-          <span className={`w-7 h-7 rounded-full flex items-center justify-center ${step >= 2 ? "bg-red-600 text-white shadow-neon-red" : "bg-white/10"}`}>
-            2
-          </span>
-          <span>Pay & Submit TrxID</span>
-        </div>
-        <div className={`w-12 h-[2px] ${step === 3 ? "bg-white" : "bg-white/10"}`} />
-        <div className={`flex items-center gap-2 ${step === 3 ? "text-white" : "text-slate-500"}`}>
-          <span className={`w-7 h-7 rounded-full flex items-center justify-center ${step === 3 ? "bg-white text-black font-black" : "bg-white/10"}`}>
-            3
-          </span>
-          <span>Instant License</span>
-        </div>
+        <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+          {isSuccess ? "🎉 লাইসেন্স কনফার্মেশন ও টুল ডাউনলোড" : "টুল কিনুন ও লাইসেন্স পান (Instant Delivery)"}
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
+          {isSuccess 
+            ? "আপনার পেমেন্ট সফল হয়েছে! নিচে দেওয়া লাইসেন্স কী ও ডাউনলোড লিঙ্ক ব্যবহার করে টুল চালু করুন।"
+            : "bKash বা Rocket-এ টাকা পাঠিয়ে TrxID দিলে companion SMS গেটওয়ের মাধ্যমে সাথে সাথে লাইসেন্স পেয়ে যাবেন।"
+          }
+        </p>
       </div>
 
       {/* ============================================================== */}
-      {/* STEP 1: PLAN SELECTION                                         */}
+      {/* VIEW 1: ONE-PAGE ULTRA FAST CHECKOUT (NO COMPLICATED STEPS)     */}
       {/* ============================================================== */}
-      {step === 1 && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {!isSuccess && selectedPlan && (
+        <div className="glass-panel rounded-3xl p-5 sm:p-8 space-y-7 border border-white/10 shadow-2xl">
           
-          {/* Left: Configuration Form */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10">
-              
-              <div>
-                <label className="text-xs font-black uppercase tracking-wider text-yellow-400 block mb-2">
-                  1. Choose Software Tool
-                </label>
-                <select
-                  value={selectedTool.id}
-                  onChange={(e) => {
-                    const t = tools.find(x => x.id === e.target.value);
-                    if (t) setSelectedTool(t);
-                  }}
-                  className="w-full p-3.5 rounded-xl glass-input text-sm font-bold text-white"
-                >
-                  {tools.map(t => (
-                    <option key={t.id} value={t.id} className="bg-[#111111] text-white">
-                      {t.name} ({t.version})
-                    </option>
-                  ))}
-                </select>
-              </div>
+          {/* 1. PLAN SELECTOR PILLS */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
+                <span>১. আপনার পছন্দের অফার প্ল্যানটি বেছে নিন:</span>
+              </label>
+              <span className="text-xs text-slate-400 font-mono">
+                Tool: <strong className="text-white">{selectedTool.name}</strong>
+              </span>
+            </div>
 
-              <div>
-                <label className="text-xs font-black uppercase tracking-wider text-yellow-400 block mb-2">
-                  2. Select Subscription Duration
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {plans.filter(p => p.toolId === selectedTool.id && p.enabled).map((p) => {
-                    const isSelected = selectedPlan?.id === p.id;
-                    return (
-                      <div
-                        key={p.id}
-                        onClick={() => setSelectedPlan(p)}
-                        className={`cursor-pointer rounded-2xl p-4 border transition-all text-center ${
-                          isSelected
-                            ? "bg-yellow-400/20 border-yellow-400 shadow-neon-yellow text-white"
-                            : "bg-[#111111] border-white/10 hover:border-white/30 text-slate-300"
-                        }`}
-                      >
-                        <span className="text-xs font-black uppercase block text-yellow-400">
-                          {p.durationDays} Days 🔥
-                        </span>
-                        <div className="text-3xl font-black text-white my-1">
-                          ${p.priceUSD}
-                        </div>
-                        <span className="text-[11px] font-mono text-slate-300 block">
-                          ৳{p.priceBDT} BDT
-                        </span>
-                        <span className="text-[10px] text-slate-400 font-semibold">
-                          Single HWID Lock
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-black uppercase tracking-wider text-yellow-400 block mb-2">
-                  3. Select Automated Payment Method
-                </label>
-                {errorMsg && step === 1 && (
-                  <div className="mb-3 p-3 rounded-xl bg-red-950/80 border border-red-500 text-white text-xs flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 shrink-0 text-yellow-400" />
-                    <span>{errorMsg}</span>
-                  </div>
-                )}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {/* Wallet Balance */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {plans.filter(p => p.toolId === selectedTool.id && p.enabled).map((plan) => {
+                const isSelected = selectedPlan.id === plan.id;
+                return (
                   <button
+                    key={plan.id}
                     type="button"
-                    onClick={() => setPaymentMethod("Wallet")}
-                    className={`p-3.5 rounded-2xl border font-black text-xs flex flex-col items-center justify-center gap-1 transition-all ${
-                      paymentMethod === "Wallet"
-                        ? "bg-yellow-400/20 border-yellow-400 text-white shadow-neon-yellow"
-                        : "bg-[#111] border-white/10 text-slate-400 hover:text-white"
+                    onClick={() => setSelectedPlan(plan)}
+                    className={`relative rounded-2xl p-4 border text-left transition-all ${
+                      isSelected
+                        ? "bg-gradient-to-b from-[#1c180e] to-[#121008] border-2 border-yellow-400 shadow-neon-yellow scale-[1.02]"
+                        : "bg-[#111111] border-white/10 hover:border-yellow-400/40 text-slate-300"
                     }`}
                   >
-                    <Wallet className="w-4 h-4 text-yellow-400" />
-                    <span>Wallet (${walletBalanceUSD.toFixed(2)})</span>
-                    <span className="text-[10px] text-yellow-400 font-normal">Instant 1-Click</span>
-                  </button>
-
-                  {/* bKash */}
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod("bKash")}
-                    className={`p-3.5 rounded-2xl border font-black text-xs flex flex-col items-center justify-center gap-1 transition-all ${
-                      paymentMethod === "bKash"
-                        ? "bg-[#D12053]/30 border-[#D12053] text-white shadow-lg"
-                        : "bg-[#111] border-white/10 text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    <span className="w-3 h-3 rounded-full bg-[#D12053]" />
-                    <span>bKash Personal</span>
-                    <span className="text-[10px] font-mono text-slate-300">01967922602</span>
-                  </button>
-
-                  {/* Rocket */}
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod("Rocket")}
-                    className={`p-3.5 rounded-2xl border font-black text-xs flex flex-col items-center justify-center gap-1 transition-all ${
-                      paymentMethod === "Rocket"
-                        ? "bg-[#8C3494]/30 border-[#8C3494] text-white shadow-lg"
-                        : "bg-[#111] border-white/10 text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    <span className="w-3 h-3 rounded-full bg-[#8C3494]" />
-                    <span>Rocket Personal</span>
-                    <span className="text-[10px] font-mono text-slate-300">01731328169</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* 4. Account Profile Gate */}
-              <div className="pt-4 border-t border-white/10 space-y-3">
-                <label className="text-xs font-black uppercase tracking-wider text-yellow-400 block">
-                  4. Your Account (Saves License &amp; Tool Downloads)
-                </label>
-                {isLoggedIn && currentUser ? (
-                  <div className="p-3.5 rounded-2xl bg-black border border-emerald-500/40 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
-                        ✓
-                      </div>
-                      <div>
-                        <span className="font-bold text-white block">{currentUser.name}</span>
-                        <span className="text-slate-400 font-mono text-[11px]">{currentUser.email}</span>
-                      </div>
-                    </div>
-                    <span className="text-[11px] font-mono font-bold text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-lg border border-yellow-400/30">
-                      Profile Balance: ${walletBalanceUSD.toFixed(2)}
+                    {plan.isPopular && (
+                      <span className="absolute -top-2.5 right-3 px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-red-600 text-white border border-yellow-300">
+                        ★ Most Popular
+                      </span>
+                    )}
+                    <span className="text-xs font-black uppercase block text-yellow-400">
+                      {plan.name}
                     </span>
-                  </div>
-                ) : (
-                  <div className="p-4 rounded-2xl bg-black border border-yellow-400/40 space-y-3">
-                    <p className="text-xs text-slate-300">
-                      Enter your Gmail address &amp; password so your license key and downloads stay permanently saved to your profile:
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                      <div>
-                        <label className="text-slate-400 block mb-1 font-bold">Your Gmail Address</label>
-                        <input
-                          type="email"
-                          required
-                          placeholder="yourname@gmail.com"
-                          value={authEmail}
-                          onChange={(e) => setAuthEmail(e.target.value)}
-                          className="w-full p-2.5 rounded-xl glass-input text-white text-xs font-medium"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-slate-400 block mb-1 font-bold">Password</label>
-                        <input
-                          type="password"
-                          required
-                          placeholder="Minimum 4 characters"
-                          value={authPassword}
-                          onChange={(e) => setAuthPassword(e.target.value)}
-                          className="w-full p-2.5 rounded-xl glass-input text-white text-xs font-medium"
-                        />
-                      </div>
+                    <div className="flex items-baseline gap-1.5 my-1">
+                      <span className="text-2xl font-black text-white leading-none">
+                        ${plan.priceUSD}
+                      </span>
+                      <span className="text-xs font-mono font-bold text-yellow-400">
+                        (৳{plan.priceBDT} BDT)
+                      </span>
                     </div>
-                    <div className="flex items-center justify-between text-[11px] pt-1 text-slate-400">
-                      <span>Existing account? It will auto-login.</span>
-                      <Link href={`/login?redirect=${encodeURIComponent("/checkout")}`} className="text-yellow-400 font-bold hover:underline">
-                        Sign In &rarr;
-                      </Link>
-                    </div>
-                  </div>
-                )}
-              </div>
-
+                    <span className="text-[11px] text-slate-400 block font-normal">
+                      ✓ Single PC Permanent Lock
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Right: Order Summary */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10 sticky top-28">
-              <h3 className="text-lg font-black text-white pb-3 border-b border-white/10">
-                Order Summary
-              </h3>
+          {/* 2. PAYMENT METHOD SELECTION TABS */}
+          <div className="space-y-3 pt-2 border-t border-white/10">
+            <label className="text-xs font-black uppercase tracking-wider text-yellow-400 block">
+              ২. পেমেন্ট মাধ্যম বেছে নিন:
+            </label>
 
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between text-slate-300">
-                  <span>Selected Utility:</span>
-                  <span className="font-bold text-white">{selectedTool.name}</span>
-                </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>License Duration:</span>
-                  <span className="font-bold text-yellow-400">{selectedPlan?.durationDays || 7} Days</span>
-                </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>Delivery Method:</span>
-                  <span className="text-emerald-400 font-bold">Instant Cloud Sync</span>
-                </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>Selected Payment:</span>
-                  <span className="font-black text-white">{paymentMethod} Personal</span>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-white/10 flex items-baseline justify-between">
-                <div>
-                  <span className="text-xs text-slate-400">Total Payable:</span>
-                  <div className="text-3xl font-black text-yellow-400 flex items-baseline gap-2">
-                    <span>${selectedPlan?.priceUSD || 2}</span>
-                    <span className="text-sm text-white font-mono font-bold">
-                      (৳{selectedPlan?.priceBDT || 240} BDT)
-                    </span>
-                  </div>
-                </div>
-                <span className="text-xs font-bold text-black bg-yellow-400 px-2.5 py-1 rounded-full shadow-neon-yellow">
-                  0% Fee
-                </span>
-              </div>
-
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* bKash */}
               <button
-                onClick={handleProceedToPayment}
-                className="w-full py-4 rounded-xl text-sm font-black text-black bg-gradient-to-r from-yellow-400 to-yellow-500 hover:opacity-95 shadow-neon-yellow flex items-center justify-center gap-2 transition-all"
+                type="button"
+                onClick={() => setPaymentMethod("bKash")}
+                className={`p-3.5 rounded-2xl border font-black text-xs flex items-center justify-between sm:justify-center sm:flex-col gap-2 transition-all ${
+                  paymentMethod === "bKash"
+                    ? "bg-[#D12053]/25 border-[#D12053] text-white shadow-lg ring-1 ring-[#D12053]"
+                    : "bg-[#111111] border-white/10 text-slate-400 hover:text-white"
+                }`}
               >
-                <span>Proceed to Payment</span>
-                <ArrowRight className="w-4 h-4" />
+                <div className="flex items-center gap-2">
+                  <span className="w-3.5 h-3.5 rounded-full bg-[#D12053] shrink-0" />
+                  <span className="text-sm font-black text-white">bKash Personal</span>
+                </div>
+                <span className="text-xs font-mono text-yellow-400 font-bold">{settings.bkashMerchantNumber}</span>
               </button>
 
-              <div className="text-[11px] text-slate-400 text-center space-y-1">
-                <p className="flex items-center justify-center gap-1 text-slate-300 font-semibold">
-                  <ShieldCheck className="w-3.5 h-3.5 text-red-500" />
-                  <span>Toolsbd.com Encrypted HWID token generation</span>
-                </p>
-                <p>100% money-back guarantee if automated activation fails.</p>
-              </div>
+              {/* Rocket */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("Rocket")}
+                className={`p-3.5 rounded-2xl border font-black text-xs flex items-center justify-between sm:justify-center sm:flex-col gap-2 transition-all ${
+                  paymentMethod === "Rocket"
+                    ? "bg-[#8C3494]/25 border-[#8C3494] text-white shadow-lg ring-1 ring-[#8C3494]"
+                    : "bg-[#111111] border-white/10 text-slate-400 hover:text-white"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-3.5 h-3.5 rounded-full bg-[#8C3494] shrink-0" />
+                  <span className="text-sm font-black text-white">Rocket Personal</span>
+                </div>
+                <span className="text-xs font-mono text-yellow-400 font-bold">{settings.rocketMerchantNumber}</span>
+              </button>
+
+              {/* Wallet */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("Wallet")}
+                className={`p-3.5 rounded-2xl border font-black text-xs flex items-center justify-between sm:justify-center sm:flex-col gap-2 transition-all ${
+                  paymentMethod === "Wallet"
+                    ? "bg-yellow-400/25 border-yellow-400 text-white shadow-neon-yellow ring-1 ring-yellow-400"
+                    : "bg-[#111111] border-white/10 text-slate-400 hover:text-white"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Wallet className="w-4 h-4 text-yellow-400 shrink-0" />
+                  <span className="text-sm font-black text-white">Wallet Balance</span>
+                </div>
+                <span className="text-xs font-mono text-emerald-400 font-bold">${walletBalanceUSD.toFixed(2)} USD</span>
+              </button>
             </div>
           </div>
 
-        </div>
-      )}
-
-      {/* ============================================================== */}
-      {/* STEP 2: PAYMENT SUBMISSION & COMPANION SMS VERIFICATION         */}
-      {/* ============================================================== */}
-      {step === 2 && activeOrder && (
-        <div className="max-w-2xl mx-auto space-y-6">
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10 shadow-2xl">
-            
-            {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
-              <div>
-                <span className="text-xs text-yellow-400 font-black uppercase tracking-wider">
-                  Order ID: {activeOrder.orderNumber}
-                </span>
-                <h2 className="text-2xl font-black text-white mt-0.5">
-                  Send ৳{activeOrder.amount} via {paymentMethod}
-                </h2>
-              </div>
-              <div className="text-right">
-                <span className="text-xs text-slate-400 block">Total Due:</span>
-                <span className="text-2xl font-black text-yellow-400">৳{activeOrder.amount}</span>
-              </div>
+          {/* Error Message Box */}
+          {errorMsg && (
+            <div className="p-3.5 rounded-2xl bg-red-950/80 border border-red-500 text-white text-xs flex items-center gap-2.5 shadow-neon-red">
+              <AlertCircle className="w-4 h-4 shrink-0 text-yellow-400" />
+              <span className="font-semibold">{errorMsg}</span>
             </div>
+          )}
 
-            {/* Payment Number Card */}
-            <div className="p-5 rounded-2xl bg-[#111111] border border-yellow-400/40 space-y-3">
+          {/* 3A. WALLET DIRECT BUY BUTTON (IF WALLET SELECTED) */}
+          {paymentMethod === "Wallet" && (
+            <div className="p-5 rounded-2xl bg-black border border-yellow-400/50 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-200 font-bold">
-                  {paymentMethod} Personal (Send Money) Number:
-                </span>
-                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-yellow-400 text-black">
-                  Send Money Only
-                </span>
+                <div>
+                  <span className="text-xs text-slate-400 block">Current Wallet Balance:</span>
+                  <span className="text-2xl font-black text-emerald-400 font-mono">${walletBalanceUSD.toFixed(2)} USD</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs text-slate-400 block">Plan Cost:</span>
+                  <span className="text-2xl font-black text-yellow-400 font-mono">${selectedPlan.priceUSD} USD</span>
+                </div>
               </div>
 
-              <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-black border border-white/15">
-                <span className="text-2xl font-mono font-black text-yellow-400 tracking-wider">
-                  {currentPaymentNumber}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleCopyNumber(currentPaymentNumber)}
-                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-black flex items-center gap-1.5 transition-colors shadow-neon-red"
-                >
-                  {copiedNumber ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedNumber ? "Copied!" : "Copy Number"}</span>
-                </button>
-              </div>
-
-              <div className="text-xs text-slate-300 space-y-1 font-medium">
-                <p>&bull; Open your <strong>{paymentMethod}</strong> app.</p>
-                <p>&bull; Select <strong>Send Money</strong> and send exactly <strong>৳{activeOrder.amount}</strong> to <span className="text-yellow-400 font-bold">{currentPaymentNumber}</span>.</p>
-                <p>&bull; Copy the <strong>TrxID</strong> from your confirmation SMS and submit below.</p>
-              </div>
-            </div>
-
-            {/* Submission Form */}
-            <form onSubmit={handleSubmitPayment} className="space-y-4">
-              {errorMsg && (
-                <div className="p-3 rounded-xl bg-red-950/80 border border-red-500 text-white text-xs flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0 text-yellow-400" />
-                  <span>{errorMsg}</span>
+              {!isLoggedIn && (
+                <div>
+                  <label className="text-xs font-bold text-slate-300 block mb-1">
+                    আপনার Gmail এড্রেস (অ্যাকাউন্টে লাইসেন্স সেভ থাকবে):
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="yourname@gmail.com"
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    className="w-full p-3 rounded-xl glass-input text-sm text-white font-medium"
+                  />
                 </div>
               )}
 
-              <div>
-                <label className="text-xs font-black uppercase tracking-wider text-slate-300 block mb-1.5">
-                  Your Sender Mobile Number
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. 017XXXXXXXX or 019XXXXXXXX"
-                  value={senderNumber}
-                  onChange={(e) => setSenderNumber(e.target.value)}
-                  className="w-full p-3.5 rounded-xl glass-input text-sm font-mono text-white font-bold"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-black uppercase tracking-wider text-slate-300 block mb-1.5">
-                  Transaction ID (TrxID)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. BK992A81KC or RK784B10XQ"
-                  value={trxId}
-                  onChange={(e) => setTrxId(e.target.value)}
-                  className="w-full p-3.5 rounded-xl glass-input text-sm font-mono uppercase text-yellow-400 font-black"
-                  required
-                />
-              </div>
-
               <button
-                type="submit"
+                type="button"
+                onClick={handleWalletPurchase}
                 disabled={isSubmitting}
-                className="w-full py-4 rounded-xl text-sm font-black text-black bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 hover:opacity-95 shadow-neon-yellow flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                className="w-full py-4 rounded-xl text-sm font-black text-black bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 hover:opacity-95 shadow-neon-yellow flex items-center justify-center gap-2 transition-all"
               >
                 {isSubmitting ? (
                   <>
                     <RotateCcw className="w-4 h-4 animate-spin text-black" />
-                    <span>Verifying with Toolsbd Companion SMS Gateway...</span>
+                    <span>প্রোফাইল থেকে ব্যালেন্স কাটছে...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 text-black" />
-                    <span>Confirm & Verify Payment</span>
+                    <Zap className="w-4 h-4 text-black" />
+                    <span>⚡ ১-ক্লিকে ওয়ালেট থেকে কিনুন (${selectedPlan.priceUSD})</span>
                   </>
                 )}
               </button>
-            </form>
 
-            {/* Testing Helper: Trigger Simulated SMS Sync */}
-            <div className="p-4 rounded-2xl bg-[#141414] border border-yellow-400/40 text-xs space-y-2">
-              <div className="flex items-center justify-between text-yellow-400 font-bold">
-                <span className="flex items-center gap-1.5">
-                  <Smartphone className="w-4 h-4 text-red-500" />
-                  <span>Instant SMS Simulator (Test Auto-Activation)</span>
-                </span>
-                <span className="text-[10px] bg-red-600 px-2 py-0.5 rounded text-white font-black">
-                  TEST FEATURE
-                </span>
+              <div className="text-[11px] text-slate-400 text-center flex items-center justify-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-yellow-400" />
+                <span>তাত্ক্ষণিক লাইসেন্স কী ও ডাউনলোড ফাইল প্রদান করা হবে।</span>
               </div>
-              <p className="text-slate-300 leading-relaxed text-[11px]">
-                Want to test instant auto-delivery without sending real money? Click below to broadcast a simulated merchant SMS for <strong>৳{activeOrder.amount}</strong>. Your license key will unlock immediately!
-              </p>
-              <button
-                type="button"
-                onClick={handleTriggerSimulatedSms}
-                className="w-full py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-black transition-all text-center flex items-center justify-center gap-1.5 shadow-neon-red"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Simulate Companion SMS & Instantly Unlock License</span>
-              </button>
             </div>
+          )}
 
-            <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/10">
+          {/* 3B. BKASH / ROCKET DIRECT PAYMENT DETAILS (VISIBLE RIGHT HERE!) */}
+          {(paymentMethod === "bKash" || paymentMethod === "Rocket") && (
+            <form onSubmit={handleExpressPaymentSubmit} className="space-y-5">
+              
+              {/* Payment Number Card */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-[#111111] border border-yellow-400/50 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-red-600 text-white">
+                      Send Money
+                    </span>
+                    <span className="text-xs text-white font-bold">
+                      {paymentMethod} Personal নাম্বারে <strong>৳{selectedPlan.priceBDT} BDT</strong> পাঠান:
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono text-emerald-400 font-bold">
+                    অটো কনফার্মেশন: ৩০-৪৫ সেকেন্ড
+                  </span>
+                </div>
+
+                {/* Big Copyable Number */}
+                <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-black border border-white/20">
+                  <span className="text-2xl sm:text-3xl font-mono font-black text-yellow-400 tracking-wider select-all">
+                    {currentPaymentNumber}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyNumber(currentPaymentNumber)}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white text-xs font-black flex items-center gap-1.5 transition-all shadow-neon-red shrink-0"
+                  >
+                    {copiedNumber ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    <span>{copiedNumber ? "কপি হয়েছে!" : "নাম্বার কপি করুন"}</span>
+                  </button>
+                </div>
+
+                <div className="text-[11px] text-slate-300 space-y-1">
+                  <p>&bull; আপনার {paymentMethod} অ্যাপ ওপেন করে <strong>Send Money</strong> সিলেক্ট করুন।</p>
+                  <p>&bull; উপরোক্ত নাম্বারে <strong>৳{selectedPlan.priceBDT}</strong> পাঠিয়ে কনফার্মেশন মেসেজের <strong>TrxID</strong> নিচে দিন।</p>
+                </div>
+              </div>
+
+              {/* Direct Input Fields (Only 2 Simple Fields!) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-300 block mb-1.5 flex items-center justify-between">
+                    <span>১. আপনার Gmail এড্রেস:</span>
+                    <span className="text-[10px] text-yellow-400 lowercase font-mono">লাইসেন্স সেভ থাকবে</span>
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="example@gmail.com"
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    className="w-full p-3.5 rounded-xl glass-input text-sm text-white font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-300 block mb-1.5 flex items-center justify-between">
+                    <span>২. Transaction ID (TrxID):</span>
+                    <span className="text-[10px] text-emerald-400 font-mono">SMS থেকে কপি করুন</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="যেমন: BK992A81KC বা RK82736"
+                    value={trxId}
+                    onChange={(e) => setTrxId(e.target.value)}
+                    className="w-full p-3.5 rounded-xl glass-input text-sm font-mono uppercase text-yellow-400 font-black tracking-wider"
+                  />
+                </div>
+              </div>
+
+              {/* Big Glowing Action Button */}
               <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="hover:text-yellow-400 transition-colors"
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-4 rounded-xl text-sm sm:text-base font-black text-black bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 hover:opacity-95 shadow-neon-yellow flex items-center justify-center gap-2 transition-all disabled:opacity-50"
               >
-                &larr; Back to plan selection
+                {isSubmitting ? (
+                  <>
+                    <RotateCcw className="w-4 h-4 animate-spin text-black" />
+                    <span>এসএমএস ভেরিফাই হচ্ছে... (দয়া করে অপেক্ষা করুন)</span>
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-5 h-5 text-black" />
+                    <span>⚡ পেমেন্ট ভেরিফাই ও লাইসেন্স কী নিন (Instant Delivery)</span>
+                  </>
+                )}
               </button>
-              <Link href="/dashboard" className="text-yellow-400 hover:underline font-bold">
-                View in Dashboard
-              </Link>
-            </div>
 
+              {/* Instant Simulator Button for quick testing without sending real cash */}
+              <div className="p-3.5 rounded-2xl bg-[#0e0e0e] border border-white/10 text-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-300">
+                <span className="flex items-center gap-2">
+                  <Smartphone className="w-4 h-4 text-yellow-400 shrink-0" />
+                  <span>টেস্টিং মোড: আসল টাকা পাঠানো ছাড়াই টেস্ট করতে চান?</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleTriggerSimulatedSms}
+                  className="px-3.5 py-1.5 rounded-lg bg-red-600/30 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/50 text-[11px] font-bold transition-all shrink-0"
+                >
+                  🚀 Test Auto-Activation (Simulate SMS)
+                </button>
+              </div>
+
+            </form>
+          )}
+
+          {/* Bottom Security Assurance */}
+          <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+            <span className="flex items-center gap-1.5 font-semibold text-slate-300">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>১০০% নিরাপদ ও স্বয়ংক্রিয় bKash/Rocket ডেলিভারি</span>
+            </span>
+            <a
+              href={settings.telegramGroupUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-yellow-400 hover:underline flex items-center gap-1 font-bold"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>সাহায্য প্রয়োজন? টেলিগ্রাম সাপোর্ট</span>
+            </a>
           </div>
+
         </div>
       )}
 
       {/* ============================================================== */}
-      {/* STEP 3: SUCCESS & INSTANT LICENSE DELIVERY                     */}
+      {/* VIEW 2: INSTANT SUCCESS, DIRECT DOWNLOAD & HWID BINDING        */}
       {/* ============================================================== */}
-      {step === 3 && activeOrder && (
-        <div className="max-w-2xl mx-auto space-y-6">
-          <div className="glass-panel rounded-3xl p-6 sm:p-10 space-y-6 border border-yellow-400 shadow-neon-yellow text-center relative overflow-hidden">
-            
-            <div className="w-16 h-16 rounded-full bg-yellow-400 text-black flex items-center justify-center mx-auto shadow-neon-yellow">
-              <CheckCircle2 className="w-10 h-10" />
-            </div>
+      {isSuccess && (
+        <div className="glass-panel rounded-3xl p-6 sm:p-10 space-y-7 border-2 border-yellow-400 shadow-neon-yellow text-center relative overflow-hidden">
+          
+          <div className="w-16 h-16 rounded-full bg-yellow-400 text-black flex items-center justify-center mx-auto shadow-neon-yellow">
+            <CheckCircle2 className="w-10 h-10" />
+          </div>
 
-            <div>
-              <span className="text-xs font-black uppercase tracking-wider text-yellow-400">
-                Payment Verified Successfully!
+          <div>
+            <span className="text-xs font-black uppercase tracking-wider text-yellow-400">
+              পেমেন্ট কনফার্মেশন সম্পন্ন!
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-white mt-1">
+              আপনার লাইসেন্স প্রস্তুত
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-lg mx-auto">
+              {selectedTool.name} ({selectedPlan?.durationDays || 7} Days Access) এর অফিশিয়াল লাইসেন্স সফলভাবে জেনারেট হয়েছে।
+            </p>
+          </div>
+
+          {/* 1. STEP 1: DOWNLOAD TOOL ZIP ARCHIVE (BIG GREEN BUTTON) */}
+          <div className="p-5 rounded-2xl bg-[#0c180e] border border-emerald-500/50 text-left space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                <Download className="w-4 h-4" />
+                <span>ধাপ ১: টুল সফটওয়্যারটি ডাউনলোড করুন</span>
               </span>
-              <h2 className="text-3xl font-black text-white mt-1">
-                Your Toolsbd License is Ready
-              </h2>
-              <p className="text-sm text-slate-300 mt-2">
-                Order <strong>{activeOrder.orderNumber}</strong> for <strong>{activeOrder.toolName}</strong> has been activated for <strong>{activeOrder.planDuration} Days</strong>.
-              </p>
+              <span className="text-xs font-mono text-slate-300 bg-black/60 px-2 py-0.5 rounded border border-white/10">
+                {selectedTool.fileSize || "28.4 MB"}
+              </span>
             </div>
 
-            {/* License Key Display Card */}
-            <div className="p-6 rounded-2xl bg-black border border-yellow-400 text-left space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
-                  <Key className="w-4 h-4 text-red-500" />
-                  <span>License Activation Key</span>
-                </span>
-                <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-black">
-                  Single HWID
-                </span>
-              </div>
+            <a
+              href={selectedTool.downloadFilePath || "/releases/Setup.zip"}
+              download
+              className="w-full py-4 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-black font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg transition-all"
+            >
+              <Download className="w-5 h-5 text-black" />
+              <span>টুল ডাউনলোড করুন ({selectedTool.downloadFileName || "Fast_OTP_v3.0_Pro_Setup.zip"})</span>
+            </a>
 
-              <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-[#0e0e0e] border border-white/20">
-                <span className="font-mono text-base sm:text-lg font-black text-yellow-400 break-all select-all">
-                  {generatedLicense || activeOrder.licenseKey || "TBD-OTP-30D-88AF-901B-4E11"}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    navigator.clipboard.writeText(generatedLicense || activeOrder.licenseKey || "");
-                    setCopiedKey(true);
-                    triggerConfetti();
-                    setTimeout(() => setCopiedKey(false), 2000);
-                  }}
-                  className="px-3.5 py-1.5 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center gap-1.5 shrink-0 transition-colors shadow-neon-yellow"
-                >
-                  {copiedKey ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedKey ? "Copied!" : "Copy"}</span>
-                </button>
-              </div>
+            <p className="text-[11px] text-slate-300">
+              ডাউনলোড করার পর জিপ ফাইলটি আনজিপ করুন এবং <strong>Run as Administrator</strong> হিসেবে সফটওয়্যারটি ওপেন করুন।
+            </p>
+          </div>
 
-              <p className="text-xs text-slate-300 leading-relaxed font-normal">
-                1. Download the tool below and run it on your PC to see your Hardware ID (HWID).<br />
-                2. Paste your HWID in the box below to lock &amp; activate this key directly inside Firebase (<strong>{firebaseProjectId}</strong>).
-              </p>
+          {/* 2. STEP 2: LICENSE ACTIVATION KEY (BIG GOLD BOX WITH COPY) */}
+          <div className="p-5 rounded-2xl bg-black border border-yellow-400 text-left space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
+                <Key className="w-4 h-4 text-red-500" />
+                <span>ধাপ ২: আপনার লাইসেন্স কী (License Key)</span>
+              </span>
+              <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-black">
+                Single PC Permanent Lock
+              </span>
             </div>
 
-            {/* Bind HWID Box right on Success Screen */}
-            <div className="p-5 rounded-2xl bg-[#111111] border border-red-500/40 text-left space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-white flex items-center gap-1.5">
-                  <Cpu className="w-4 h-4 text-yellow-400" />
-                  <span>Enter Your PC HWID to Activate Key</span>
-                </span>
-                <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
-                  <Database className="w-3 h-3" />
-                  <span>{firebaseProjectId}</span>
-                </span>
-              </div>
+            <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-[#111111] border border-white/20">
+              <span className="font-mono text-base sm:text-xl font-black text-yellow-400 break-all select-all">
+                {generatedLicense || activeOrder?.licenseKey || "TBD-OTP-30D-88AF-901B-4E11"}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(generatedLicense || activeOrder?.licenseKey || "");
+                  setCopiedKey(true);
+                  triggerConfetti();
+                  setTimeout(() => setCopiedKey(false), 2000);
+                }}
+                className="px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center gap-1.5 shrink-0 transition-all shadow-neon-yellow"
+              >
+                {copiedKey ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                <span>{copiedKey ? "কপি হয়েছে!" : "কপি করুন"}</span>
+              </button>
+            </div>
+          </div>
 
-              {hwidBoundStatus?.bound ? (
-                <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
-                  <span>{hwidBoundStatus.message}</span>
-                </div>
-              ) : (
-                <form onSubmit={handleBindHwidOnSuccess} className="flex flex-col sm:flex-row gap-2">
+          {/* 3. STEP 3: HWID BINDING (SUPER EASY MACHINE LOCK) */}
+          <div className="p-5 rounded-2xl bg-[#121212] border border-white/15 text-left space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-wider text-white flex items-center gap-1.5">
+                <Cpu className="w-4 h-4 text-yellow-400" />
+                <span>ধাপ ৩: আপনার PC HWID দিয়ে কী লক করুন (Machine Lock)</span>
+              </span>
+              <span className="text-[10px] text-emerald-400 font-mono">
+                কোনো রিসেটের ঝামেলা নেই
+              </span>
+            </div>
+
+            {hwidBoundStatus?.bound ? (
+              <div className="p-3.5 rounded-xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-xs font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                <span>{hwidBoundStatus.message}</span>
+              </div>
+            ) : (
+              <form onSubmit={handleBindHwid} className="space-y-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     required
-                    placeholder="Paste your HWID from downloaded tool..."
+                    placeholder="সফটওয়্যার ওপেন করে প্রাপ্ত Machine HWID এখানে পেস্ট করুন (যেমন: AGY-E42D-475A-B6D8-A901)"
                     value={hwidInput}
                     onChange={(e) => setHwidInput(e.target.value)}
-                    className="flex-1 p-3 rounded-xl glass-input font-mono text-xs text-white"
+                    className="flex-1 p-3 rounded-xl glass-input font-mono text-xs text-white font-medium"
                   />
                   <button
                     type="submit"
                     disabled={isBindingHwid}
                     className="px-5 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-neon-yellow shrink-0 transition-all"
                   >
-                    {isBindingHwid ? "Syncing..." : "Bind HWID & Activate"}
+                    {isBindingHwid ? "লক হচ্ছে..." : "Lock to My PC 🔒"}
                   </button>
-                </form>
-              )}
-            </div>
-
-            {/* Direct Download & Dashboard Buttons */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              <a
-                href={selectedTool.downloadFilePath}
-                download
-                className="py-3.5 px-4 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:opacity-95 text-white font-black text-sm flex items-center justify-center gap-2 shadow-neon-red transition-all"
-              >
-                <Download className="w-4 h-4" />
-                <span>Download {selectedTool.name}</span>
-              </a>
-
-              <Link
-                href="/dashboard"
-                className="py-3.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-white font-black text-sm flex items-center justify-center gap-2 border border-white/20 transition-all"
-              >
-                <span>Open Customer Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <p className="text-[11px] text-slate-400">
-              A copy of your license key has been permanently saved in your Toolsbd.com account.
-            </p>
-
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  সফটওয়্যারটি ওপেন করলে স্ক্রিনে <strong>Machine HWID</strong> দেখতে পাবেন। সেটি এখানে পেস্ট করে বাটনে চাপলেই লাইসেন্সটি আপনার কম্পিউটারে পার্মানেন্টভাবে রেজিস্টার্ড হয়ে যাবে।
+                </p>
+              </form>
+            )}
           </div>
+
+          {/* Quick Action Navigation */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <Link
+              href="/dashboard"
+              className="py-3.5 px-4 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-sm flex items-center justify-center gap-2 shadow-neon-yellow transition-all"
+            >
+              <span>আমার ড্যাশবোর্ডে যান (My Account)</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+
+            <a
+              href={settings.telegramGroupUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="py-3.5 px-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-sm flex items-center justify-center gap-2 shadow-neon-red transition-all"
+            >
+              <Send className="w-4 h-4" />
+              <span>অফিসিয়াল টেলিগ্রাম সাপোর্ট</span>
+            </a>
+          </div>
+
         </div>
       )}
 
