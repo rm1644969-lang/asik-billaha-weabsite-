@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { playChimeSound, showBrowserNotification } from "@/lib/notifications";
 import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
+import { getToolTitleClass } from "@/lib/toolStyles";
 
 export default function CheckoutPage() {
   return (
@@ -364,7 +365,7 @@ function CheckoutContent() {
                 <span>১. আপনার পছন্দের অফার প্ল্যানটি বেছে নিন:</span>
               </label>
               <span className="text-xs text-slate-400 font-mono">
-                Tool: <strong className="text-white">{selectedTool.name}</strong>
+                Tool: <strong className={getToolTitleClass(selectedTool.name)}>{selectedTool.name}</strong>
               </span>
             </div>
 
@@ -672,7 +673,7 @@ function CheckoutContent() {
             </div>
             <div className="flex justify-between text-slate-400">
               <span>Tool &amp; Plan:</span>
-              <strong className="text-yellow-400">{selectedTool.name} ({selectedPlan?.durationDays} Days)</strong>
+              <strong className={getToolTitleClass(selectedTool.name)}>{selectedTool.name} ({selectedPlan?.durationDays} Days)</strong>
             </div>
             <div className="flex justify-between text-slate-400">
               <span>Payable Amount:</span>
@@ -751,7 +752,7 @@ function CheckoutContent() {
               আপনার লাইসেন্স প্রস্তুত
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-lg mx-auto">
-              {selectedTool.name} ({selectedPlan?.durationDays || 7} Days Access) এর অফিশিয়াল লাইসেন্স সফলভাবে জেনারেট হয়েছে।
+              <strong className={getToolTitleClass(selectedTool.name)}>{selectedTool.name}</strong> ({selectedPlan?.durationDays || 7} Days Access) এর অফিশিয়াল লাইসেন্স সফলভাবে জেনারেট হয়েছে।
             </p>
           </div>
 

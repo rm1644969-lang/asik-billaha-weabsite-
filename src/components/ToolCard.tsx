@@ -15,6 +15,7 @@ import {
   Lock,
   Clock
 } from "lucide-react";
+import { getToolTitleClass, getToolBadgeStyle } from "@/lib/toolStyles";
 
 interface ToolCardProps {
   tool: Tool;
@@ -22,6 +23,9 @@ interface ToolCardProps {
 
 export default function ToolCard({ tool }: ToolCardProps) {
   const isComingSoon = tool.status === "coming_soon";
+  const brandStyle = getToolBadgeStyle(tool.name);
+  const toolTitleClass = getToolTitleClass(tool.name);
+
   const lowestPriceUSD = tool.plans && tool.plans.length > 0 
     ? Math.min(...tool.plans.map(p => p.priceUSD))
     : 2;
@@ -47,12 +51,8 @@ export default function ToolCard({ tool }: ToolCardProps) {
         <div>
           {/* Header & Badges */}
           <div className="flex items-center justify-between gap-2 mb-4">
-            <span className={`text-[11px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${
-              isComingSoon 
-                ? "bg-white/10 text-slate-300 border border-white/15" 
-                : "bg-yellow-400/15 text-yellow-300 border border-yellow-400/40"
-            }`}>
-              {isComingSoon ? "Coming Soon" : tool.category}
+            <span className={`text-[11px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${brandStyle.badgeBg} ${brandStyle.badgeText} ${brandStyle.badgeBorder}`}>
+              {tool.category || brandStyle.brandTag}
             </span>
             <div className={`flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full ${
               isComingSoon 
@@ -105,9 +105,11 @@ export default function ToolCard({ tool }: ToolCardProps) {
             </div>
           </div>
 
-          {/* Title & Tagline */}
-          <h3 className={`text-xl font-black text-white mb-2 ${!isComingSoon && "group-hover:text-yellow-400 transition-colors"}`}>
-            {tool.name}
+          {/* Title & Tagline with Distinctive Masked Gradient Colors */}
+          <h3 className="text-xl font-black mb-2 transition-transform duration-300">
+            <span className={toolTitleClass}>
+              {tool.name}
+            </span>
           </h3>
           <p className="text-sm text-slate-300 line-clamp-2 mb-4 leading-relaxed font-normal">
             {tool.tagline}
@@ -132,8 +134,8 @@ export default function ToolCard({ tool }: ToolCardProps) {
                 <span className="text-slate-400 font-medium">Release Status</span>
                 <span className="text-yellow-400 font-bold font-mono">In Active Development ⏳</span>
               </div>
-              <div className="w-full py-3.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider text-yellow-400 bg-yellow-400/10 border border-yellow-400/40 flex items-center justify-center gap-2 cursor-not-allowed select-none">
-                <Lock className="w-4 h-4 text-yellow-400" />
+              <div className={`w-full py-3.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 cursor-not-allowed select-none ${brandStyle.badgeBg} ${brandStyle.badgeText} ${brandStyle.badgeBorder}`}>
+                <Lock className="w-4 h-4" />
                 <span>Coming Soon (শীঘ্রই আসছে)</span>
               </div>
             </div>

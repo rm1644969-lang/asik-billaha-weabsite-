@@ -22,6 +22,7 @@ import {
   MonitorCheck,
   Lock
 } from "lucide-react";
+import { getToolTitleClass } from "@/lib/toolStyles";
 
 export default function ToolDetailsPage() {
   const params = useParams();
@@ -134,7 +135,7 @@ export default function ToolDetailsPage() {
         {/* Right Column: Title, Quick Specs & Instant CTA */}
         <div className="lg:col-span-5 space-y-6">
           <div>
-            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            <h1 className={`text-3xl sm:text-4xl font-black tracking-tight ${getToolTitleClass(tool.name)}`}>
               {tool.name}
             </h1>
             <p className="text-slate-300 text-sm mt-3 leading-relaxed">

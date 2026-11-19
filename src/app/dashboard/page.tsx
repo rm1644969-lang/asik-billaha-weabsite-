@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
 import { playChimeSound, showBrowserNotification } from "@/lib/notifications";
+import { getToolTitleClass } from "@/lib/toolStyles";
 
 export default function UserDashboardPage() {
   const { 
@@ -818,7 +819,7 @@ export default function UserDashboardPage() {
                     {/* Header */}
                     <div className="flex items-center justify-between pb-3 border-b border-white/10">
                       <div>
-                        <span className="text-xs font-black text-yellow-400 uppercase tracking-wider">
+                        <span className={`text-xs font-black uppercase tracking-wider ${getToolTitleClass(lic.toolName)}`}>
                           {lic.toolName}
                         </span>
                         <div className="flex items-center gap-2 mt-0.5">
@@ -1012,7 +1013,7 @@ export default function UserDashboardPage() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-black text-white text-base">{t.name}</h4>
+                          <h4 className={`font-black text-base ${getToolTitleClass(t.name)}`}>{t.name}</h4>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono ${
                             isComingSoon 
                               ? "bg-white/10 text-slate-300 border border-white/15" 
@@ -1250,7 +1251,7 @@ export default function UserDashboardPage() {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-lg sm:text-xl font-black text-white">
+                          <h3 className={`text-lg sm:text-xl font-black ${getToolTitleClass(lic.toolName)}`}>
                             {lic.toolName}
                           </h3>
                           <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-red-600 text-white shadow-neon-red">
