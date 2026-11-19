@@ -236,7 +236,7 @@ export function useNexusStore() {
           name: existingData.name || cleanName,
           email: cleanEmail,
           password: existingData.password || password,
-          role: cleanEmail.includes("admin") ? "admin" : (existingData.role || "customer"),
+          role: cleanEmail === "admin@toolsbd.com" ? "admin" : (existingData.role || "customer"),
           walletBalanceUSD: existingData.walletBalanceUSD ?? 0,
           walletBalanceBDT: existingData.walletBalanceBDT ?? (Math.round((existingData.walletBalanceUSD ?? 0) * 120)),
           createdAt: existingData.createdAt || new Date().toISOString()
@@ -256,7 +256,7 @@ export function useNexusStore() {
         name: cleanName,
         email: cleanEmail,
         password,
-        role: cleanEmail.includes("admin") ? "admin" : "customer",
+        role: cleanEmail === "admin@toolsbd.com" ? "admin" : "customer",
         walletBalanceUSD: 0,
         walletBalanceBDT: 0,
         createdAt: new Date().toISOString()
@@ -288,7 +288,7 @@ export function useNexusStore() {
         name: cleanName,
         email: cleanEmail,
         password,
-        role: cleanEmail.includes("admin") ? "admin" : "customer",
+        role: cleanEmail === "admin@toolsbd.com" ? "admin" : "customer",
         walletBalanceUSD: 0,
         walletBalanceBDT: 0,
         createdAt: new Date().toISOString()
@@ -325,7 +325,7 @@ export function useNexusStore() {
           name: u.name || cleanEmail.split("@")[0],
           email: cleanEmail,
           password: u.password || password,
-          role: cleanEmail.includes("admin") ? "admin" : (u.role || "customer"),
+          role: cleanEmail === "admin@toolsbd.com" ? "admin" : (u.role || "customer"),
           walletBalanceUSD: u.walletBalanceUSD ?? 0,
           walletBalanceBDT: u.walletBalanceBDT ?? (Math.round((u.walletBalanceUSD ?? 0) * 120)),
           createdAt: u.createdAt || new Date().toISOString()
@@ -608,24 +608,39 @@ export function useNexusStore() {
     let targetOrder = orders.find(o => o.id === orderId);
     if (!targetOrder) return { autoVerified: false, error: "Order not found" };
 
-    const matchingSms = smsRecords.find(
-      sms => sms.trxId.toUpperCase() === trxId.trim().toUpperCase() && sms.amount === targetOrder!.amount
+    const cleanTrx = trxId.trim().toUpperCase();
+
+    // Security Check 1: Prevent duplicate TrxID reuse across orders
+    const isTrxAlreadyUsed = orders.some(
+      o => o.trxId?.toUpperCase() === cleanTrx && o.id !== orderId && o.status === "PAID"
     );
 
+    // Security Check 2: Match against real unspent SMS record
+    const matchingSms = !isTrxAlreadyUsed ? smsRecords.find(
+      sms => sms.trxId.toUpperCase() === cleanTrx && 
+             sms.amount === targetOrder!.amount &&
+             sms.status !== "MATCHED" &&
+             !sms.matchedOrderId
+    ) : null;
+
     const isAutoVerified = !!matchingSms;
-    const generatedKey = generateToolLicenseKey();
+    const generatedKey = isAutoVerified ? generateToolLicenseKey() : undefined;
 
     let updatedOrder: Order;
     const updatedOrders = orders.map(ord => {
       if (ord.id === orderId) {
         updatedOrder = {
           ...ord,
-          trxId: trxId.trim().toUpperCase(),
-          senderNumber,
+          trxId: cleanTrx,
+          senderNumber: senderNumber.trim(),
           status: isAutoVerified ? ("PAID" as const) : ("PENDING" as const),
           licenseKey: isAutoVerified ? generatedKey : undefined,
           paidAt: isAutoVerified ? new Date().toISOString() : undefined,
-          notes: isAutoVerified ? "Auto-verified by Companion SMS Gateway" : "Payment submitted, awaiting companion match"
+          notes: isAutoVerified 
+            ? "Auto-verified by Companion SMS Gateway" 
+            : isTrxAlreadyUsed 
+            ? "Duplicate TrxID submitted — flagged for admin review" 
+            : "Payment submitted, awaiting SMS Gateway match"
         };
         return updatedOrder;
       }
@@ -635,7 +650,7 @@ export function useNexusStore() {
     saveOrders(updatedOrders);
     if (updatedOrder!) syncOrderToFirestore(updatedOrder);
 
-    if (isAutoVerified) {
+    if (isAutoVerified && matchingSms && generatedKey) {
       const updatedSms = smsRecords.map(sms => {
         if (sms.id === matchingSms.id) {
           return { ...sms, matchedOrderId: orderId, status: "MATCHED" as const };

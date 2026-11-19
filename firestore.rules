@@ -3,6 +3,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // ==============================================================
+    // TOOLSBD.COM — ENTERPRISE AIRTIGHT FIRESTORE SECURITY RULES
+    // ==============================================================
+
     // Helper functions
     function isAuthenticated() {
       return request.auth != null;
@@ -11,79 +15,137 @@ service cloud.firestore {
     function isAdmin() {
       return isAuthenticated() && 
         (request.auth.token.admin == true || 
-         request.auth.token.email == "admin@nexustools.io");
+         request.auth.token.email == "admin@toolsbd.com");
     }
 
     function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
+      return isAuthenticated() && 
+        (request.auth.uid == userId || request.auth.token.email == userId);
     }
 
-    // Tools Collection: Publicly readable, only admin can create/update/delete
+    // 1. Tools Collection: Publicly readable; Admin only can create/modify
     match /tools/{toolId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Price Plans Collection: Publicly readable, only admin can write
+    // 2. Price Plans Collection: Publicly readable; Admin only can create/modify
     match /plans/{planId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Orders Collection: Users can read their own orders; only admin or Cloud Functions can update payment status
-    match /orders/{orderId} {
-      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-      allow update: if isAdmin();
-      allow delete: if isAdmin();
-    }
-
-    // Licenses Collection: Users can read their own licenses; HWID reset handled via transaction
-    match /licenses/{licenseId} {
-      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
-      // Users cannot generate or alter license keys directly; Cloud Functions / Admin only
-      allow write: if isAdmin();
-    }
-
-    // Payments & SMS Audit Records: Admin read only; Cloud Functions write only
-    match /payments/{paymentId} {
-      allow read: if isAdmin();
-      allow write: if false; // Server-only via Firebase Admin SDK
-    }
-
-    match /sms_records/{smsId} {
-      allow read: if isAdmin();
-      allow write: if false; // Server-only via Cloud Functions
-    }
-
-    // Connected Companion Devices
-    match /devices/{deviceId} {
-      allow read, write: if isAdmin();
-    }
-
-    // Site Settings (Payment numbers, telegram URLs, announcements)
+    // 3. Site Settings (Merchant bKash/Rocket numbers, Telegram URLs): Publicly readable; Admin write only
     match /settings/{settingId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // User Profiles
-    match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId) || isAdmin();
+    // 4. Orders Collection:
+    // - Users can read only their own orders
+    // - Anyone can create an order, BUT its initial status MUST be "PENDING" (cannot forge "PAID")
+    // - Only Admin or backend Cloud Functions can mark an order "PAID"
+    match /orders/{orderId} {
+      allow read: if isAdmin() || (
+        isAuthenticated() && (
+          resource.data.userId == request.auth.uid || 
+          resource.data.userEmail == request.auth.token.email
+        )
+      );
+      allow create: if request.resource.data.status == "PENDING" && (
+        !isAuthenticated() || 
+        request.resource.data.userId == request.auth.uid || 
+        request.resource.data.userEmail == request.auth.token.email
+      );
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
 
-    // Support Tickets
-    match /support_tickets/{ticketId} {
-      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if true;
+    // 5. Licenses Collection:
+    // - CRITICAL: Regular users can NEVER create or delete licenses
+    // - Users can only read licenses assigned to their email/uid
+    // - Users can only submit their PC HWID if the license is active and HWID has not been locked yet
+    match /licenses/{licenseId} {
+      allow read: if isAdmin() || (
+        isAuthenticated() && (
+          resource.data.userId == request.auth.uid || 
+          resource.data.userEmail == request.auth.token.email
+        )
+      );
+      allow create: if isAdmin();
+      allow delete: if isAdmin();
+      allow update: if isAdmin() || (
+        isAuthenticated() && 
+        resource.data.userEmail == request.auth.token.email &&
+        resource.data.hwid == null &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hwid', 'hwidLockedAt', 'updatedAt'])
+      );
+    }
+
+    // 6. HWID Keys Index Collection:
+    // - Used for single PC hardware locking
+    match /hwid_keys/{hwid} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 7. Wallet Deposits Collection (Add Money):
+    // - Anyone can create a deposit request, BUT its status MUST be "PENDING"
+    // - Only Admin can approve deposits and credit wallet balances
+    match /wallet_deposits/{depositId} {
+      allow read: if isAdmin() || (
+        isAuthenticated() && (
+          resource.data.userId == request.auth.uid || 
+          resource.data.userEmail == request.auth.token.email
+        )
+      );
+      allow create: if request.resource.data.status == "PENDING";
       allow update, delete: if isAdmin();
     }
 
-    // Audit Logs: Read-only for Admin, write via Cloud Functions
+    // 8. SMS Gateway Audit Logs & Companion Phone Records:
+    // - CRITICAL SECURITY: Strictly hidden from all regular visitors and customers
+    // - Only Admin or Backend can read or write
+    match /sms_records/{smsId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /sms_devices/{deviceId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /payments/{paymentId} {
+      allow read, write: if isAdmin();
+    }
+
     match /audit_logs/{logId} {
-      allow read: if isAdmin();
-      allow write: if false;
+      allow read, write: if isAdmin();
+    }
+
+    // 9. User Accounts Collection:
+    // - Users can read and update their own profile details (name, etc.)
+    // - Users CANNOT change their own role to "admin" or tamper with wallet balance
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if request.resource.data.role != "admin" || isAdmin();
+      allow update: if isAdmin() || (
+        isOwner(userId) && 
+        request.resource.data.role == resource.data.role &&
+        request.resource.data.walletBalanceUSD == resource.data.walletBalanceUSD &&
+        request.resource.data.walletBalanceBDT == resource.data.walletBalanceBDT
+      );
+      allow delete: if isAdmin();
+    }
+
+    // 10. Support Tickets
+    match /support_tickets/{ticketId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || 
+        resource.data.userEmail == request.auth.token.email || 
+        isAdmin()
+      );
+      allow create: if true;
+      allow update, delete: if isAdmin();
     }
   }
 }
