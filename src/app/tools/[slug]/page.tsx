@@ -26,7 +26,7 @@ export default function ToolDetailsPage() {
   const params = useParams();
   const slug = params?.slug as string;
   const router = useRouter();
-  const { tools, plans } = useNexusStore();
+  const { tools, plans, settings } = useNexusStore();
 
   const tool = tools.find((t) => t.slug === slug) || tools[0];
   const toolPlans = plans.filter((p) => p.toolId === tool.id && p.enabled);
@@ -54,7 +54,7 @@ export default function ToolDetailsPage() {
         <ChevronRight className="w-3.5 h-3.5" />
         <Link href="/tools" className="hover:text-white transition-colors">Tools</Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-purple-300 font-semibold">{tool.name}</span>
+        <span className="text-yellow-400 font-bold">{tool.name}</span>
       </nav>
 
       {/* Hero Header */}
@@ -73,10 +73,10 @@ export default function ToolDetailsPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#050716] via-transparent to-transparent" />
             
             <div className="absolute top-4 left-4 flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-600/90 text-white backdrop-blur-md shadow-md">
+              <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-yellow-400 text-black shadow-neon-yellow">
                 {tool.category}
               </span>
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 backdrop-blur-md">
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-950/80 text-white border border-red-500/50 backdrop-blur-md">
                 {tool.version}
               </span>
             </div>
@@ -92,7 +92,7 @@ export default function ToolDetailsPage() {
                 {tool.screenshots.map((shot, idx) => (
                   <div 
                     key={idx}
-                    className="relative aspect-video rounded-xl overflow-hidden border border-white/10 hover:border-purple-500/50 transition-colors"
+                    className="relative aspect-video rounded-xl overflow-hidden border border-white/10 hover:border-yellow-400/50 transition-colors"
                   >
                     <Image
                       src={shot}
@@ -119,18 +119,18 @@ export default function ToolDetailsPage() {
           </div>
 
           {/* Meta specs bar */}
-          <div className="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-surface-card border border-white/5 text-xs">
+          <div className="grid grid-cols-2 gap-3 p-4 rounded-2xl bg-[#0f0f0f] border border-white/10 text-xs">
             <div className="space-y-1">
               <span className="text-slate-400">Supported OS</span>
               <p className="font-semibold text-white flex items-center gap-1.5">
-                <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+                <Cpu className="w-3.5 h-3.5 text-yellow-400" />
                 <span>{tool.systemRequirements.os}</span>
               </p>
             </div>
             <div className="space-y-1">
               <span className="text-slate-400">Package Size</span>
               <p className="font-semibold text-white flex items-center gap-1.5">
-                <HardDrive className="w-3.5 h-3.5 text-purple-400" />
+                <HardDrive className="w-3.5 h-3.5 text-red-400" />
                 <span>{tool.fileSize}</span>
               </p>
             </div>
@@ -144,7 +144,7 @@ export default function ToolDetailsPage() {
             <ul className="space-y-2 text-xs text-slate-300">
               {tool.features.map((feat, i) => (
                 <li key={i} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-yellow-400 shrink-0 mt-0.5" />
                   <span>{feat}</span>
                 </li>
               ))}
@@ -155,14 +155,14 @@ export default function ToolDetailsPage() {
           <div className="pt-2">
             <a
               href="#plans"
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 hover:opacity-95 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-neon-purple transition-all"
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 hover:opacity-95 text-black font-black text-sm flex items-center justify-center gap-2 shadow-neon-yellow transition-all"
             >
-              <Zap className="w-4 h-4 text-yellow-300" />
-              <span>Choose a License Plan & Buy Now</span>
+              <Zap className="w-4 h-4 text-black" />
+              <span>Choose a License Plan &amp; Buy Now</span>
             </a>
             <p className="text-center text-[11px] text-slate-400 mt-2 flex items-center justify-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Automated bKash & Nagad instant delivery</span>
+              <span>Automated bKash &bull; Rocket instant auto delivery</span>
             </p>
           </div>
 
@@ -178,7 +178,7 @@ export default function ToolDetailsPage() {
             onClick={() => setActiveTab("overview")}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === "overview"
-                ? "bg-purple-600 text-white shadow-neon-purple"
+                ? "bg-yellow-400 text-black shadow-neon-yellow"
                 : "text-slate-400 hover:text-white"
             }`}
           >
@@ -188,17 +188,17 @@ export default function ToolDetailsPage() {
             onClick={() => setActiveTab("setup")}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === "setup"
-                ? "bg-purple-600 text-white shadow-neon-purple"
+                ? "bg-yellow-400 text-black shadow-neon-yellow"
                 : "text-slate-400 hover:text-white"
             }`}
           >
-            Setup Guide & Video
+            Setup Guide &amp; Video
           </button>
           <button
             onClick={() => setActiveTab("specs")}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === "specs"
-                ? "bg-purple-600 text-white shadow-neon-purple"
+                ? "bg-yellow-400 text-black shadow-neon-yellow"
                 : "text-slate-400 hover:text-white"
             }`}
           >
@@ -300,6 +300,27 @@ export default function ToolDetailsPage() {
           {toolPlans.map((plan) => (
             <PricingCard key={plan.id} plan={plan} toolSlug={tool.slug} />
           ))}
+        </div>
+
+        {/* Minimalist Payment Bar */}
+        <div className="p-5 rounded-2xl bg-[#0e0e0e] border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-300">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-5">
+            <span>
+              bKash Personal: <strong className="text-yellow-400 font-bold select-all">{settings.bkashMerchantNumber}</strong>
+            </span>
+            <span className="text-slate-600 hidden sm:inline">&bull;</span>
+            <span>
+              Rocket Personal: <strong className="text-red-400 font-bold select-all">{settings.rocketMerchantNumber}</strong>
+            </span>
+          </div>
+
+          <Link
+            href="/dashboard"
+            className="text-yellow-400 hover:text-yellow-300 hover:underline font-sans font-bold flex items-center gap-1.5"
+          >
+            <span>Or Buy instantly with Wallet Balance</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 
