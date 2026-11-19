@@ -22,16 +22,16 @@ export default function PricingPage() {
         <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/20 border border-red-500 text-yellow-400 text-xs font-black uppercase tracking-widest shadow-neon-red">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Special Limited Offer</span>
+          <span>সীমিত সময়ের স্পেশাল অফার</span>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-gradient-gold-fire">
-          TOOLS OFFER PRICE 🔊
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-gradient-shimmer">
+          টুলস স্পেশাল অফার প্রাইস 🔊
         </h1>
         <p className="text-slate-300 text-base sm:text-lg font-semibold leading-relaxed">
-          7 DAYS — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$2 🔥</span> &nbsp;|&nbsp; 15 DAYS — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$4 🔥</span> &nbsp;|&nbsp; 30 DAYS — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$8 🔥</span>
+          ৭ দিন — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$২ 🔥</span> &nbsp;|&nbsp; ১৫ দিন — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$৪ 🔥</span> &nbsp;|&nbsp; ৩০ দিন — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$৮ 🔥</span>
         </p>
         <p className="text-slate-400 text-sm">
-          Instant automated license delivery via bKash (<span className="text-yellow-400 font-mono font-bold">01967922602</span>) &amp; Rocket (<span className="text-red-400 font-mono font-bold">01731328169</span>).
+          বিকাশ (<span className="text-yellow-400 font-mono font-bold">01967922602</span>) ও রকেট (<span className="text-red-400 font-mono font-bold">01731328169</span>)-এ স্বয়ংক্রিয় তাৎক্ষণিক লাইসেন্স ডেলিভারি।
         </p>
       </div>
 
@@ -43,37 +43,37 @@ export default function PricingPage() {
       </div>
 
       {/* Features Included with Every Plan */}
-      <div className="rounded-3xl p-8 bg-[#0e0e0e] border border-white/10 space-y-6">
-        <h3 className="text-xl font-black text-white text-center">
-          Every License Includes
+      <div className="rounded-3xl p-8 bg-[#0e0e0e] border border-white/10 space-y-6 text-center">
+        <h3 className="text-xl font-black text-gradient-shimmer">
+          প্রতিটি লাইসেন্সের সাথে যা যা পাচ্ছেন
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-xs">
           <Card3D maxTilt={10} depth={1.04} glare={true} className="h-full">
             <div className="space-y-2 p-4 rounded-xl bg-black border border-white/10 h-full">
               <Zap className="w-5 h-5 text-yellow-400" />
-              <h4 className="font-bold text-white text-sm">Instant Delivery</h4>
-              <p className="text-slate-400">License keys are issued immediately after bKash/Rocket TrxID auto-match.</p>
+              <h4 className="font-bold text-white text-sm">তাৎক্ষণিক ডেলিভারি</h4>
+              <p className="text-slate-400">বিকাশ বা রকেট TrxID সাবমিট করার সাথে সাথেই লাইসেন্স প্রদান করা হয়।</p>
             </div>
           </Card3D>
           <Card3D maxTilt={10} depth={1.04} glare={true} className="h-full">
             <div className="space-y-2 p-4 rounded-xl bg-black border border-white/10 h-full">
               <ShieldCheck className="w-5 h-5 text-red-500" />
-              <h4 className="font-bold text-white text-sm">HWID Machine Lock</h4>
-              <p className="text-slate-400">Protects your license key against theft or unauthorized sharing.</p>
+              <h4 className="font-bold text-white text-sm">HWID মেশিন লক</h4>
+              <p className="text-slate-400">আপনার পিসির সাথে লাইসেন্স সুরক্ষিত থাকে, কেউ চুরি করতে পারবে না।</p>
             </div>
           </Card3D>
           <Card3D maxTilt={10} depth={1.04} glare={true} className="h-full">
             <div className="space-y-2 p-4 rounded-xl bg-black border border-white/10 h-full">
               <Sparkles className="w-5 h-5 text-yellow-400" />
-              <h4 className="font-bold text-white text-sm">1-Click HWID Reset</h4>
-              <p className="text-slate-400">Upgrade your PC or reinstall Windows without buying a new license.</p>
+              <h4 className="font-bold text-white text-sm">১-ক্লিকে HWID রিসেট</h4>
+              <p className="text-slate-400">পিসি পরিবর্তন বা উইন্ডোজ রিইনস্টল করলে এক ক্লিকে নতুন পিসিতে লাইসেন্স নেওয়া যায়।</p>
             </div>
           </Card3D>
           <Card3D maxTilt={10} depth={1.04} glare={true} className="h-full">
             <div className="space-y-2 p-4 rounded-xl bg-black border border-white/10 h-full">
               <HelpCircle className="w-5 h-5 text-white" />
-              <h4 className="font-bold text-white text-sm">24/7 Telegram VIP</h4>
-              <p className="text-slate-400">Direct setup and technical help from the Toolsbd.com owner anytime.</p>
+              <h4 className="font-bold text-white text-sm">২৪/৭ টেলিগ্রাম ভিআইপি</h4>
+              <p className="text-slate-400">সফটওয়্যার সেটআপ ও যেকোনো সহায়তার জন্য সার্বক্ষণিক লাইভ সাপোর্ট।</p>
             </div>
           </Card3D>
         </div>

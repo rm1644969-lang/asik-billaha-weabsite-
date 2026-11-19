@@ -172,14 +172,28 @@ body {
 
 /* 4. Flagship Gold & Ruby Fire Masked Gradient */
 .text-gradient-gold-fire {
-  background: linear-gradient(90deg, #ffffff 0%, #facc15 25%, #f97316 50%, #ef4444 75%, #facc15 100%);
+  background: linear-gradient(90deg, #facc15 0%, #38bdf8 20%, #00f2fe 40%, #ff007f 60%, #f97316 80%, #facc15 100%);
   background-size: 250% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.55));
+  filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.6)) drop-shadow(0 0 24px rgba(0, 242, 254, 0.45));
   animation: toolTextShimmer 4s ease-in-out infinite;
   display: inline-block;
   font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+/* 5. Global Heading Dynamic Color Changing Mask (Electric Neon Cyan & TikTok Magenta / Hot Pink Shimmer) */
+.text-gradient-shimmer {
+  background: linear-gradient(90deg, #00f2fe 0%, #4facfe 20%, #ff007f 45%, #fe2c55 65%, #facc15 85%, #00f2fe 100%);
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgba(254, 44, 85, 0.7)) drop-shadow(0 0 24px rgba(0, 242, 254, 0.5));
+  animation: toolTextShimmer 3.2s ease-in-out infinite;
+  display: inline-block;
+  font-weight: 900;
+  letter-spacing: -0.02em;
 }
 
 /* 3D Perspective & Depth Helpers */

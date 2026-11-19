@@ -64,7 +64,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
               {isComingSoon ? (
                 <>
                   <Clock className="w-3.5 h-3.5 text-yellow-400 animate-spin" style={{ animationDuration: "6s" }} />
-                  <span>COMING SOON</span>
+                  <span>শীঘ্রই আসছে</span>
                 </>
               ) : (
                 <>
@@ -120,24 +120,24 @@ export default function ToolCard({ tool }: ToolCardProps) {
           {isComingSoon ? (
             <div className="space-y-3">
               <div className="flex items-baseline justify-between text-xs">
-                <span className="text-slate-400 font-medium">Release Status</span>
-                <span className="text-yellow-400 font-bold font-mono">In Active Development ⏳</span>
+                <span className="text-slate-400 font-medium">রিলিজ স্ট্যাটাস</span>
+                <span className="text-yellow-400 font-bold font-mono">সক্রিয় কাজ চলছে ⏳</span>
               </div>
               <div className={`w-full py-3.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 cursor-not-allowed select-none shadow-md ${brandStyle.badgeBg} ${brandStyle.badgeText} ${brandStyle.badgeBorder}`}>
                 <Lock className="w-4 h-4" />
-                <span>Coming Soon (শীঘ্রই আসছে)</span>
+                <span>শীঘ্রই আসছে (Coming Soon)</span>
               </div>
             </div>
           ) : (
             <>
               <div className="flex items-baseline justify-between mb-4">
                 <div>
-                  <span className="text-[11px] text-slate-400 font-medium">Offer Price Starting From</span>
+                  <span className="text-[11px] text-slate-400 font-medium">অফার মূল্য শুরু মাত্র</span>
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-3xl font-black text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.5)]">
                       ${lowestPriceUSD}
                     </span>
-                    <span className="text-xs text-white font-bold">/ 7 Days 🔥</span>
+                    <span className="text-xs text-white font-bold">/ ৭ দিন 🔥</span>
                     <span className="text-[11px] text-slate-400 font-mono">
                       (৳{lowestPriceBDT})
                     </span>
@@ -146,7 +146,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
                 <div className="text-right">
                   <span className="inline-flex items-center gap-1 text-[11px] text-white font-bold bg-red-950 px-2 py-1 rounded border border-red-500/50 shadow-sm">
                     <Sparkles className="w-3 h-3 text-yellow-400" />
-                    <span>bKash &bull; Rocket</span>
+                    <span>বিকাশ &bull; রকেট</span>
                   </span>
                 </div>
               </div>
@@ -156,7 +156,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
                   href={`/tools/${tool.slug}`}
                   className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-white bg-white/10 hover:bg-white/15 border border-white/15 transition-all text-center hover:-translate-y-0.5 active:translate-y-0"
                 >
-                  <span>Details</span>
+                  <span>বিস্তারিত</span>
                   <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
                 </Link>
 
@@ -164,7 +164,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
                   href={`/tools/${tool.slug}#plans`}
                   className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-black text-black bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 shadow-md hover:shadow-neon-yellow transition-all text-center hover:-translate-y-0.5 active:translate-y-0"
                 >
-                  <span>Get License</span>
+                  <span>লাইসেন্স নিন</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>

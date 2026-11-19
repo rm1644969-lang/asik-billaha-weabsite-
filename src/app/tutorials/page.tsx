@@ -15,13 +15,13 @@ export default function TutorialsPage() {
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-yellow-400/15 border border-yellow-400/40 text-yellow-300 text-xs font-black">
           <Sparkles className="w-3.5 h-3.5 text-red-500" />
-          <span>Video Guides &amp; Knowledge Base</span>
+          <span>ভিডিও গাইড ও হেল্প সেন্টার</span>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black text-white">
-          Software Setup &amp; Tutorials
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-gradient-shimmer">
+          সফটওয়্যার সেটআপ ও টিউটোরিয়াল
         </h1>
         <p className="text-slate-300 text-base leading-relaxed">
-          Watch step-by-step video guides to install, configure, and activate your software tools.
+          আপনার পছন্দের সফটওয়্যার টুলস সহজে ইনস্টল, কনফিগার এবং লাইসেন্স অ্যাক্টিভ করার জন্য সম্পূর্ণ ভিডিও গাইড দেখুন।
         </p>
       </div>
 
@@ -60,7 +60,7 @@ export default function TutorialsPage() {
             </div>
 
             <div className="p-4 rounded-xl bg-black border border-white/10 space-y-2 text-xs">
-              <h4 className="font-black text-white">Execution Steps:</h4>
+              <h4 className="font-black text-white">ব্যবহারের সহজ ধাপসমূহ:</h4>
               <ul className="space-y-1.5 text-slate-300">
                 {tut.steps.map((st, i) => (
                   <li key={i} className="flex items-start gap-2">

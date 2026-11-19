@@ -381,19 +381,19 @@ export default function UserDashboardPage() {
         <div className="rounded-3xl p-6 sm:p-8 bg-[#0c0c0c] border border-yellow-400/40 shadow-neon-yellow space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/10">
             <div>
-              <h2 className="text-xl font-black text-white flex items-center gap-2">
+              <h2 className="text-xl font-black text-gradient-shimmer flex items-center gap-2">
                 <User className="w-5 h-5 text-yellow-400" />
-                <span>Sign In or Register with Gmail</span>
+                <span>লগইন অথবা নতুন অ্যাকাউন্ট তৈরি করুন</span>
               </h2>
               <p className="text-xs text-slate-300 mt-0.5">
-                Sign in with your Gmail to save wallet balance, purchase software offers, and unlock HWID license keys.
+                আপনার Gmail দিয়ে প্রবেশ করুন এবং সহজেই ওয়ালেটে ব্যালেন্স লোড, স্পেশাল অফার কেনা ও HWID লাইসেন্স সক্রিয় করুন।
               </p>
             </div>
             <Link
               href="/login"
               className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-yellow-400 text-xs font-bold self-start sm:self-auto"
             >
-              Sign In Existing Account &rarr;
+              লগইন পেইজে যান &rarr;
             </Link>
           </div>
 
@@ -405,17 +405,17 @@ export default function UserDashboardPage() {
 
           <form onSubmit={handleAuthSubmit} className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
             <div>
-              <label className="text-slate-400 font-bold block mb-1">Your Full Name</label>
+              <label className="text-slate-400 font-bold block mb-1">আপনার পুরো নাম</label>
               <input
                 type="text"
-                placeholder="e.g. Asik Billah"
+                placeholder="যেমন: Asik Billah"
                 value={authName}
                 onChange={(e) => setAuthName(e.target.value)}
                 className="w-full p-2.5 rounded-xl glass-input text-white"
               />
             </div>
             <div>
-              <label className="text-slate-400 font-bold block mb-1">Your Gmail Address</label>
+              <label className="text-slate-400 font-bold block mb-1">আপনার Gmail এড্রেস</label>
               <input
                 type="email"
                 required
@@ -426,11 +426,11 @@ export default function UserDashboardPage() {
               />
             </div>
             <div>
-              <label className="text-slate-400 font-bold block mb-1">Password</label>
+              <label className="text-slate-400 font-bold block mb-1">পাসওয়ার্ড</label>
               <input
                 type="password"
                 required
-                placeholder="Minimum 4 characters"
+                placeholder="কমপক্ষে ৪ অক্ষর"
                 value={authPassword}
                 onChange={(e) => setAuthPassword(e.target.value)}
                 className="w-full p-2.5 rounded-xl glass-input text-white"
@@ -441,7 +441,7 @@ export default function UserDashboardPage() {
                 type="submit"
                 className="w-full sm:w-auto px-7 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-neon-yellow transition-all"
               >
-                Sign In / Register Account
+                লগইন / রেজিস্ট্রেশন সম্পন্ন করুন
               </button>
             </div>
           </form>
@@ -459,8 +459,8 @@ export default function UserDashboardPage() {
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-2xl font-black text-white">
-                    Welcome, {currentUser.name}
+                  <h1 className="text-2xl font-black text-gradient-shimmer">
+                    স্বাগতম, {currentUser.name}
                   </h1>
                   <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-yellow-400 text-black shadow-neon-yellow">
                     Toolsbd.com
@@ -471,7 +471,7 @@ export default function UserDashboardPage() {
                   </span>
                 </div>
                 <p className="text-xs text-slate-300 mt-1 font-medium">
-                  {currentUser.email} &bull; Add Money &rarr; Buy Offer &rarr; Download Tool &rarr; Enter HWID for Key
+                  {currentUser.email} &bull; ব্যালেন্স যোগ &rarr; অফার কিনুন &rarr; টুল ডাউনলোড &rarr; HWID বসিয়ে কি চালু করুন
                 </p>
               </div>
             </div>
@@ -484,7 +484,7 @@ export default function UserDashboardPage() {
                 </div>
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Profile Balance
+                    প্রোফাইল ব্যালেন্স
                   </span>
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-2xl font-black text-yellow-400">
@@ -502,7 +502,7 @@ export default function UserDashboardPage() {
                 className="px-4 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-black shadow-neon-red transition-all flex items-center gap-1.5"
               >
                 <PlusCircle className="w-4 h-4" />
-                <span>Add Money</span>
+                <span>ব্যালেন্স যোগ করুন</span>
               </button>
 
               {/* Install PWA App */}
@@ -512,7 +512,7 @@ export default function UserDashboardPage() {
                 title="Install Toolsbd as App on Phone or PC"
               >
                 <DownloadCloud className="w-4 h-4 text-black" />
-                <span>Install App</span>
+                <span>অ্যাপ ইনস্টল</span>
               </button>
 
               {/* Notification Permission Button */}
@@ -523,7 +523,7 @@ export default function UserDashboardPage() {
                   title="Enable Push Notifications"
                 >
                   <Bell className="w-4 h-4 text-yellow-400" />
-                  <span>Alerts</span>
+                  <span>নোটিফিকেশন</span>
                 </button>
               )}
 
@@ -532,7 +532,7 @@ export default function UserDashboardPage() {
                 className="px-3 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white text-xs font-bold transition-all"
                 title="Sign Out"
               >
-                Sign Out
+                লগআউট
               </button>
             </div>
 
@@ -568,7 +568,7 @@ export default function UserDashboardPage() {
           }`}
         >
           <Wallet className="w-4 h-4" />
-          <span>Add Money &amp; Buy Offer</span>
+          <span>ব্যালেন্স লোড ও অফার কিনুন</span>
         </button>
 
         <button
@@ -581,7 +581,7 @@ export default function UserDashboardPage() {
           }`}
         >
           <Key className="w-4 h-4" />
-          <span>My Licenses &amp; HWID Key ({userLicenses.length})</span>
+          <span>আমার লাইসেন্স ও HWID কি ({userLicenses.length})</span>
         </button>
 
         <button
@@ -594,7 +594,7 @@ export default function UserDashboardPage() {
           }`}
         >
           <Download className="w-4 h-4" />
-          <span>Download Tool</span>
+          <span>টুলস ডাউনলোড</span>
         </button>
 
         <button
@@ -607,7 +607,7 @@ export default function UserDashboardPage() {
           }`}
         >
           <CreditCard className="w-4 h-4" />
-          <span>History ({userOrders.length + deposits.length})</span>
+          <span>পেমেন্ট ও অর্ডার হিস্টোরি ({userOrders.length + deposits.length})</span>
         </button>
       </div>
 
@@ -621,16 +621,16 @@ export default function UserDashboardPage() {
           <div className="lg:col-span-6 glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10">
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <div>
-                <h2 className="text-xl font-black text-white flex items-center gap-2">
+                <h2 className="text-xl font-black text-gradient-shimmer flex items-center gap-2">
                   <PlusCircle className="w-5 h-5 text-yellow-400" />
-                  <span>Step 1: Add Money to Wallet</span>
+                  <span>ধাপ ১: ওয়ালেটে ব্যালেন্স লোড করুন</span>
                 </h2>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  Send money via bKash or Rocket Personal and submit TrxID.
+                  বিকাশ অথবা রকেট পার্সোনালে টাকা পাঠিয়ে TrxID সাবমিট করুন।
                 </p>
               </div>
               <span className="text-[10px] font-mono font-bold px-2 py-1 rounded bg-yellow-400/15 text-yellow-400 border border-yellow-400/30">
-                $1 = ৳120 BDT
+                $১ = ৳১২০ BDT
               </span>
             </div>
 
@@ -640,7 +640,7 @@ export default function UserDashboardPage() {
                 depositMethod === "bKash" ? "bg-[#D12053]/20 border-[#D12053]" : "bg-black border-white/10"
               }`} onClick={() => setDepositMethod("bKash")}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-black text-white">bKash Personal</span>
+                  <span className="font-black text-white">বিকাশ পার্সোনাল</span>
                   <button
                     type="button"
                     onClick={(e) => {
@@ -649,7 +649,7 @@ export default function UserDashboardPage() {
                     }}
                     className="text-[10px] px-2 py-0.5 rounded bg-yellow-400 text-black font-black"
                   >
-                    {copiedNum === "bkash" ? "Copied" : "Copy"}
+                    {copiedNum === "bkash" ? "কপি হয়েছে" : "কপি"}
                   </button>
                 </div>
                 <span className="font-mono text-base font-black text-yellow-400">
@@ -661,7 +661,7 @@ export default function UserDashboardPage() {
                 depositMethod === "Rocket" ? "bg-[#8C3494]/25 border-[#8C3494]" : "bg-black border-white/10"
               }`} onClick={() => setDepositMethod("Rocket")}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-black text-white">Rocket Personal</span>
+                  <span className="font-black text-white">রকেট পার্সোনাল</span>
                   <button
                     type="button"
                     onClick={(e) => {
@@ -670,7 +670,7 @@ export default function UserDashboardPage() {
                     }}
                     className="text-[10px] px-2 py-0.5 rounded bg-red-600 text-white font-black"
                   >
-                    {copiedNum === "rocket" ? "Copied" : "Copy"}
+                    {copiedNum === "rocket" ? "কপি হয়েছে" : "কপি"}
                   </button>
                 </div>
                 <span className="font-mono text-base font-black text-yellow-400">
@@ -682,7 +682,7 @@ export default function UserDashboardPage() {
             {/* Quick Amount Pills */}
             <div className="space-y-2">
               <label className="text-xs font-black uppercase text-slate-300 block">
-                Select Deposit Amount (USD / BDT)
+                টাকার পরিমাণ নির্বাচন করুন (USD / BDT)
               </label>
               <div className="grid grid-cols-4 gap-2">
                 {[2, 4, 8, 15].map(amt => (
@@ -707,7 +707,7 @@ export default function UserDashboardPage() {
 
             <form onSubmit={handleDepositSubmit} className="space-y-3 text-xs">
               <div>
-                <label className="font-bold text-slate-300 block mb-1">Sender Mobile Number</label>
+                <label className="font-bold text-slate-300 block mb-1">প্রেরক মোবাইল নম্বর (Sender Number)</label>
                 <input
                   type="text"
                   placeholder="017XXXXXXXX"
@@ -718,10 +718,10 @@ export default function UserDashboardPage() {
                 />
               </div>
               <div>
-                <label className="font-bold text-slate-300 block mb-1">{depositMethod} Transaction ID (TrxID)</label>
+                <label className="font-bold text-slate-300 block mb-1">{depositMethod} ট্রানজেকশন আইডি (TrxID)</label>
                 <input
                   type="text"
-                  placeholder="e.g. BK992A81KC"
+                  placeholder="যেমন: BK992A81KC"
                   value={depositTrxId}
                   onChange={(e) => setDepositTrxId(e.target.value)}
                   className="w-full p-3 rounded-xl glass-input font-mono uppercase text-yellow-400 font-bold"
@@ -735,7 +735,7 @@ export default function UserDashboardPage() {
                   disabled={isDepositing}
                   className="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 hover:opacity-95 text-black font-black text-sm shadow-neon-yellow transition-all"
                 >
-                  {isDepositing ? "জমা হচ্ছে..." : `টাকা জমা দিন — Submit Add Money (৳${depositAmountUSD * 120})`}
+                  {isDepositing ? "যাচাই হচ্ছে..." : `টাকা জমা দিন — ব্যালেন্স যোগ করুন (৳${depositAmountUSD * 120})`}
                 </button>
               </div>
             </form>
@@ -745,13 +745,13 @@ export default function UserDashboardPage() {
           <div className="lg:col-span-6 glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-yellow-400/30">
             <div className="pb-3 border-b border-white/10">
               <span className="text-[11px] font-black uppercase tracking-widest text-red-500">
-                Instant Activation from Wallet
+                তাৎক্ষণিক লাইসেন্স ক্রয়
               </span>
-              <h2 className="text-2xl font-black text-white mt-0.5">
-                Step 2: Buy TOOLS OFFER PRICE 🔊
+              <h2 className="text-2xl font-black text-gradient-shimmer mt-0.5">
+                ধাপ ২: টুলস স্পেশাল অফার কিনুন 🔊
               </h2>
               <p className="text-xs text-slate-300 mt-1">
-                Buy with 1 click using your Wallet Balance &rarr; Download Tool &rarr; Enter HWID to lock &amp; claim your key in Firebase!
+                ওয়ালেট ব্যালেন্স দিয়ে ১-ক্লিকে কিনুন &rarr; টুলস ডাউনলোড করুন &rarr; HWID বসিয়ে লাইসেন্স সক্রিয় করুন।
               </p>
             </div>
 
@@ -764,11 +764,11 @@ export default function UserDashboardPage() {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-base font-black text-white">
-                        {plan.durationDays} DAYS OFFER 🔥
+                        {plan.durationDays} দিনের অফার 🔥
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      {flagshipTool?.name} &bull; Single HWID Lock &bull; Firebase Sync
+                      {flagshipTool?.name} &bull; সিঙ্গেল HWID লক &bull; ১০০% সুরক্ষিত
                     </p>
                   </div>
 
@@ -788,7 +788,7 @@ export default function UserDashboardPage() {
                       onClick={() => handleBuyWithWallet(plan.id)}
                       className="px-4 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black shadow-neon-yellow transition-all shrink-0"
                     >
-                      {buyingPlanId === plan.id ? "Processing..." : `Buy Now ($${plan.priceUSD})`}
+                      {buyingPlanId === plan.id ? "প্রসেসিং..." : `কিনুন ($${plan.priceUSD})`}
                     </button>
                   </div>
                 </div>
@@ -798,11 +798,11 @@ export default function UserDashboardPage() {
             <div className="p-4 rounded-2xl bg-[#111] border border-white/10 text-xs text-slate-300 space-y-1.5">
               <p className="font-black text-yellow-400 flex items-center gap-1.5">
                 <Cpu className="w-4 h-4 text-red-500" />
-                <span>How HWID Key Generation Works:</span>
+                <span>HWID লাইসেন্স কি যেভাবে কাজ করে:</span>
               </p>
-              <p>1. Add Money via bKash/Rocket &amp; buy the 7, 15, or 30 Days offer above.</p>
-              <p>2. Download the tool and open it on your PC to see your Hardware ID (HWID).</p>
-              <p>3. Go to <strong>My Licenses &amp; HWID Key</strong>, paste your HWID, and click <strong>Bind HWID</strong> — your key activates instantly in Firebase!</p>
+              <p>১. বিকাশ/রকেটে ব্যালেন্স যোগ করে ৭, ১৫, অথবা ৩০ দিনের অফার কিনুন।</p>
+              <p>২. টুল ডাউনলোড করে কম্পিউটারে ওপেন করলে আপনার পিসির HWID দেখতে পাবেন।</p>
+              <p>৩. 'আমার লাইসেন্স ও HWID কি' অপশনে গিয়ে HWID পেস্ট করে <strong>HWID লক করুন</strong>-এ ক্লিক করলেই আপনার লাইসেন্স স্বয়ংক্রিয়ভাবে সক্রিয় হবে!</p>
             </div>
           </div>
 
@@ -982,15 +982,15 @@ export default function UserDashboardPage() {
           ) : (
             <div className="text-center py-16 rounded-2xl glass-panel border border-white/10 space-y-4">
               <Key className="w-12 h-12 text-slate-500 mx-auto" />
-              <h3 className="text-lg font-bold text-white">No active licenses yet</h3>
+              <h3 className="text-lg font-bold text-white">এখনও কোনো লাইসেন্স সক্রিয় নেই</h3>
               <p className="text-xs text-slate-400">
-                Add money to your wallet and purchase the 7-Day ($2), 15-Day ($4), or 30-Day ($8) offer to unlock your key!
+                ওয়ালেটে ব্যালেন্স লোড করে ৭ দিন ($২), ১৫ দিন ($৪), অথবা ৩০ দিন ($৮)-এর অফার কিনে এখনই লাইসেন্স কী সক্রিয় করুন!
               </p>
               <button
                 onClick={() => setActiveTab("wallet")}
                 className="inline-block px-5 py-2.5 rounded-xl bg-yellow-400 text-black text-xs font-black shadow-neon-yellow"
               >
-                Add Money & Buy Offer
+                ব্যালেন্স লোড ও অফার কিনুন
               </button>
             </div>
           )}
@@ -1004,8 +1004,8 @@ export default function UserDashboardPage() {
         <div key="tab-downloads" className="animate-tab-fade space-y-4">
           <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10">
             <div>
-              <h3 className="text-xl font-black text-white">
-                Authorized Software Package Download &amp; Setup Videos
+              <h3 className="text-xl font-black text-gradient-shimmer">
+                সফটওয়্যার প্যাকেজ ডাউনলোড ও সেটআপ ভিডিও গাইড
               </h3>
               <p className="text-xs text-slate-300 mt-1">
                 অফিশিয়াল সফটওয়্যার ডাউনলোড করুন এবং সেটআপ ভিডিও গাইড দেখে সহজেই আপনার কম্পিউটারে ইন্সটল ও লাইসেন্স অ্যাক্টিভ করুন।
@@ -1107,17 +1107,17 @@ export default function UserDashboardPage() {
         <div key="tab-orders" className="animate-tab-fade space-y-6">
           {/* Wallet Deposits Table */}
           <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-white/10">
-            <h3 className="text-lg font-black text-white">Wallet Add Money History</h3>
+            <h3 className="text-lg font-black text-gradient-shimmer">ওয়ালেট ব্যালেন্স যোগের হিস্টোরি</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs min-w-[650px]">
                 <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
                   <tr>
-                    <th className="pb-3 font-bold">Method</th>
-                    <th className="pb-3 font-bold">Amount</th>
-                    <th className="pb-3 font-bold">Sender</th>
+                    <th className="pb-3 font-bold">পদ্ধতি</th>
+                    <th className="pb-3 font-bold">পরিমাণ</th>
+                    <th className="pb-3 font-bold">প্রেরক নম্বর</th>
                     <th className="pb-3 font-bold">TrxID</th>
-                    <th className="pb-3 font-bold">Status</th>
-                    <th className="pb-3 font-bold">Date</th>
+                    <th className="pb-3 font-bold">স্ট্যাটাস</th>
+                    <th className="pb-3 font-bold">তারিখ</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 text-slate-300">
@@ -1156,17 +1156,17 @@ export default function UserDashboardPage() {
 
           {/* Orders Table */}
           <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-white/10">
-            <h3 className="text-lg font-black text-white">Tool License Orders</h3>
+            <h3 className="text-lg font-black text-gradient-shimmer">সফটওয়্যার লাইসেন্স অর্ডার হিস্টোরি</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs min-w-[650px]">
                 <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
                   <tr>
-                    <th className="pb-3 font-bold">Order ID</th>
-                    <th className="pb-3 font-bold">Tool & Plan</th>
-                    <th className="pb-3 font-bold">Amount</th>
-                    <th className="pb-3 font-bold">Method</th>
+                    <th className="pb-3 font-bold">অর্ডার নম্বর</th>
+                    <th className="pb-3 font-bold">টুল ও অফার প্ল্যান</th>
+                    <th className="pb-3 font-bold">মূল্য</th>
+                    <th className="pb-3 font-bold">পেমেন্ট মাধ্যম</th>
                     <th className="pb-3 font-bold">TrxID</th>
-                    <th className="pb-3 font-bold">Status</th>
+                    <th className="pb-3 font-bold">স্ট্যাটাস</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 text-slate-300">
@@ -1222,10 +1222,10 @@ export default function UserDashboardPage() {
           <div>
             <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-yellow-400 mb-1">
               <Sparkles className="w-4 h-4 text-red-500" />
-              <span>আপনার মেম্বারশিপ ও অ্যাক্টিভ সফটওয়্যার</span>
+              <span>আপনার মেম্বারশিপ ও সক্রিয় সফটওয়্যার</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              আমার কেনা টুলস ও লাইসেন্স মেম্বারশিপ (Active Tool Memberships)
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-gradient-shimmer">
+              আমার কেনা টুলস ও লাইসেন্স মেম্বারশিপ তালিকা
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1">
               টুলস ডাউনলোড করে সফটওয়্যার ওপেন করে আপনার Machine HWID দিলে পারমানেন্ট লাইসেন্স কী পেয়ে যাবেন।

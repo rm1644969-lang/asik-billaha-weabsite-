@@ -7,33 +7,33 @@ import Card3D from "@/components/Card3D";
 export default function StatsSection() {
   const stats = [
     {
-      label: "Active Members",
-      value: "5,000+",
-      subtext: "Verified Tools Community",
+      label: "সক্রিয় গ্রাহক",
+      value: "৫,০০০+",
+      subtext: "ভেরিফাইড ইউজার কমিউনিটি",
       icon: Users,
       glowColor: "rgba(250, 204, 21, 0.45)",
       textColor: "text-yellow-400"
     },
     {
-      label: "Licenses Issued",
-      value: "2,500+",
-      subtext: "HWID Machine Secured",
+      label: "ইস্যুকৃত লাইসেন্স",
+      value: "২,৫০০+",
+      subtext: "HWID মেশিন সিকিউরড",
       icon: Key,
       glowColor: "rgba(239, 68, 68, 0.45)",
       textColor: "text-red-500"
     },
     {
-      label: "Payment Verification",
-      value: "< 30s",
-      subtext: "Instant bKash & Rocket",
+      label: "পেমেন্ট ভেরিফিকেশন",
+      value: "< ৩০ সেকেন্ড",
+      subtext: "তাৎক্ষণিক বিকাশ ও রকেট",
       icon: Zap,
       glowColor: "rgba(255, 255, 255, 0.4)",
       textColor: "text-white"
     },
     {
-      label: "Telegram Members",
-      value: "15,000+",
-      subtext: "24/7 Live Support",
+      label: "টেলিগ্রাম মেম্বার",
+      value: "১৫,০০০+",
+      subtext: "২৪/৭ লাইভ সাপোর্ট",
       icon: Send,
       glowColor: "rgba(250, 204, 21, 0.45)",
       textColor: "text-yellow-400"

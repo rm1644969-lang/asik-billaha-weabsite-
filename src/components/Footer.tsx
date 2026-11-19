@@ -32,23 +32,23 @@ export default function Footer() {
             </Link>
             
             <p className="text-sm text-slate-300 max-w-sm leading-relaxed">
-              Official automated software licensing platform. Instant bKash &amp; Rocket payment verification and single-PC HWID security protection.
+              অফিসিয়াল সফটওয়্যার লাইসেন্সিং ও অটোমেশন প্ল্যাটফর্ম। তাৎক্ষণিক বিকাশ ও রকেট পেমেন্ট ভেরিফিকেশন এবং সিঙ্গেল পিসি HWID সিকিউরিটি সুরক্ষা।
             </p>
 
             {/* Payment Numbers Highlight */}
             <div className="p-3.5 rounded-xl bg-[#0e0e0e] border border-white/10 space-y-2 max-w-sm">
               <span className="text-[11px] font-bold uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
                 <Smartphone className="w-3.5 h-3.5 text-red-500" />
-                <span>Official Payment Accounts (Personal)</span>
+                <span>অফিসিয়াল পেমেন্ট অ্যাকাউন্ট (পার্সোনাল)</span>
               </span>
               <div className="flex items-center justify-between text-xs font-mono">
-                <span className="text-white font-bold">bKash (Send Money):</span>
+                <span className="text-white font-bold">বিকাশ (সেন্ড মানি):</span>
                 <span className="text-yellow-400 font-bold bg-black/60 px-2 py-0.5 rounded border border-white/10">
                   {settings.bkashMerchantNumber}
                 </span>
               </div>
               <div className="flex items-center justify-between text-xs font-mono">
-                <span className="text-white font-bold">Rocket (Send Money):</span>
+                <span className="text-white font-bold">রকেট (সেন্ড মানি):</span>
                 <span className="text-red-400 font-bold bg-black/60 px-2 py-0.5 rounded border border-white/10">
                   {settings.rocketMerchantNumber}
                 </span>
@@ -58,11 +58,11 @@ export default function Footer() {
             <div className="flex items-center gap-3 pt-1">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-xs font-semibold">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>SMS Gateway: 100% Active</span>
+                <span>এসএমএস গেটওয়ে: ১০০% সক্রিয়</span>
               </div>
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-yellow-950/50 border border-yellow-500/40 text-yellow-300 text-xs font-semibold">
                 <ShieldCheck className="w-3.5 h-3.5 text-yellow-400" />
-                <span>HWID Protected</span>
+                <span>HWID সুরক্ষিত</span>
               </div>
             </div>
           </div>
@@ -70,27 +70,27 @@ export default function Footer() {
           {/* Quick Links */}
           <div className="space-y-3">
             <h4 className="text-xs font-black uppercase tracking-wider text-yellow-400">
-              Platform
+              প্ল্যাটফর্ম
             </h4>
             <ul className="space-y-2 text-sm text-slate-300">
               <li>
                 <Link href="/tools" className="hover:text-yellow-400 transition-colors">
-                  Tools Marketplace
+                  টুলস মার্কেটপ্লেস
                 </Link>
               </li>
               <li>
                 <Link href="/pricing" className="hover:text-yellow-400 transition-colors">
-                  Pricing Plans
+                  অফার প্রাইসিং প্ল্যান
                 </Link>
               </li>
               <li>
                 <Link href="/tutorials" className="hover:text-yellow-400 transition-colors">
-                  Setup Tutorials
+                  ভিডিও টিউটোরিয়াল
                 </Link>
               </li>
               <li>
                 <Link href="/faq" className="hover:text-yellow-400 transition-colors">
-                  Frequently Asked Questions
+                  সাধারণ প্রশ্নোত্তর (FAQ)
                 </Link>
               </li>
             </ul>
@@ -99,27 +99,27 @@ export default function Footer() {
           {/* Customer Area */}
           <div className="space-y-3">
             <h4 className="text-xs font-black uppercase tracking-wider text-yellow-400">
-              Customer Portal
+              কাস্টমার পোর্টাল
             </h4>
             <ul className="space-y-2 text-sm text-slate-300">
               <li>
                 <Link href="/dashboard" className="hover:text-red-400 transition-colors">
-                  My Active Licenses
+                  আমার সক্রিয় লাইসেন্স
                 </Link>
               </li>
               <li>
                 <Link href="/dashboard" className="hover:text-red-400 transition-colors">
-                  Reset HWID Lock
+                  HWID লক রিসেট
                 </Link>
               </li>
               <li>
                 <Link href="/dashboard" className="hover:text-red-400 transition-colors">
-                  Authorized Downloads
+                  টুলস ডাউনলোড
                 </Link>
               </li>
               <li>
                 <Link href="/dashboard" className="hover:text-red-400 transition-colors">
-                  My Account Dashboard
+                  ইউজার ড্যাশবোর্ড
                 </Link>
               </li>
             </ul>
@@ -128,7 +128,7 @@ export default function Footer() {
           {/* Telegram & Support */}
           <div className="space-y-3">
             <h4 className="text-xs font-black uppercase tracking-wider text-red-500">
-              Support & Community
+              সাপোর্ট ও কমিউনিটি
             </h4>
             <div className="space-y-2.5 text-sm">
               <a
@@ -138,7 +138,7 @@ export default function Footer() {
                 className="flex items-center gap-2 p-2.5 rounded-lg bg-surface-card border border-white/10 hover:border-yellow-400 text-slate-200 hover:text-white transition-all group"
               >
                 <Send className="w-4 h-4 text-yellow-400 group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-bold">Join Telegram VIP</span>
+                <span className="text-xs font-bold">টেলিগ্রাম ভিআইপি গ্রুপ</span>
               </a>
 
               <a
@@ -148,11 +148,11 @@ export default function Footer() {
                 className="flex items-center gap-2 p-2.5 rounded-lg bg-surface-card border border-white/10 hover:border-red-500 text-slate-200 hover:text-white transition-all group"
               >
                 <Mail className="w-4 h-4 text-red-400 group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-bold">Admin: {settings.telegramSupportUsername}</span>
+                <span className="text-xs font-bold">অ্যাডমিন: {settings.telegramSupportUsername}</span>
               </a>
 
               <p className="text-[11px] text-slate-400 pt-1">
-                Supported: bKash (01967922602) &bull; Rocket (01731328169)
+                সাপোর্টেড: বিকাশ ({settings.bkashMerchantNumber}) &bull; রকেট ({settings.rocketMerchantNumber})
               </p>
             </div>
           </div>
@@ -162,17 +162,17 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>
-            &copy; {new Date().getFullYear()} {settings.siteName}. All rights reserved.
+            &copy; {new Date().getFullYear()} {settings.siteName}. সর্বস্বত্ব সংরক্ষিত।
           </p>
           <div className="flex items-center gap-6">
             <Link href="/terms" className="hover:text-yellow-400 transition-colors">
-              Terms of Service
+              শর্তাবলী (Terms)
             </Link>
             <Link href="/privacy" className="hover:text-yellow-400 transition-colors">
-              Privacy Policy
+              প্রাইভেসি পলিসি
             </Link>
             <Link href="/faq" className="hover:text-yellow-400 transition-colors">
-              License FAQ
+              প্রশ্নোত্তর (FAQ)
             </Link>
           </div>
         </div>

@@ -63,11 +63,11 @@ function RegisterContent() {
               <Terminal className="w-7 h-7 text-yellow-400" />
             </div>
           </div>
-          <h1 className="text-3xl font-black text-white">
-            Create Toolsbd<span className="text-red-500">.com</span> Account
+          <h1 className="text-3xl font-black tracking-tight text-gradient-shimmer">
+            Toolsbd.com নতুন অ্যাকাউন্ট তৈরি করুন
           </h1>
           <p className="text-xs text-slate-300">
-            Register your Gmail account to save your wallet balance, purchases, and HWID keys.
+            আপনার Gmail দিয়ে রেজিস্ট্রেশন সম্পন্ন করে ওয়ালেট ব্যালেন্স, কেনা অফার ও HWID লাইসেন্স কি সুরক্ষিত রাখুন।
           </p>
         </div>
 
@@ -85,14 +85,14 @@ function RegisterContent() {
           <form onSubmit={handleRegister} className="space-y-4 text-xs">
             <div>
               <label className="font-black text-slate-300 uppercase tracking-wider block mb-1.5">
-                Full Name
+                পুরো নাম
               </label>
               <div className="relative">
                 <User className="w-4 h-4 text-yellow-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Asik Billah"
+                  placeholder="যেমন: Asik Billah"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium placeholder:text-slate-500"
@@ -102,14 +102,14 @@ function RegisterContent() {
 
             <div>
               <label className="font-black text-slate-300 uppercase tracking-wider block mb-1.5">
-                Gmail Address
+                আপনার Gmail এড্রেস
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-yellow-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="email"
                   required
-                  placeholder="e.g. yourname@gmail.com"
+                  placeholder="যেমন: yourname@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium placeholder:text-slate-500"
@@ -119,14 +119,14 @@ function RegisterContent() {
 
             <div>
               <label className="font-black text-slate-300 uppercase tracking-wider block mb-1.5">
-                Password
+                পাসওয়ার্ড
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-red-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   required
-                  placeholder="Minimum 4 characters"
+                  placeholder="কমপক্ষে ৪ অক্ষর"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium placeholder:text-slate-500"
@@ -139,18 +139,18 @@ function RegisterContent() {
               disabled={loading}
               className="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black font-black text-xs sm:text-sm shadow-neon-yellow hover:opacity-95 flex items-center justify-center gap-2 transition-all mt-2"
             >
-              <span>{loading ? "Creating Account..." : "Create Account & Continue"}</span>
+              <span>{loading ? "অ্যাকাউন্ট তৈরি হচ্ছে..." : "অ্যাকাউন্ট তৈরি করে এগিয়ে যান"}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
           <p className="text-center text-xs text-slate-400">
-            Already have an account?{" "}
+            ইতিমধ্যেই অ্যাকাউন্ট আছে?{" "}
             <Link 
               href={`/login${redirectUrl ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
               className="text-yellow-400 font-black hover:underline"
             >
-              Sign In
+              লগইন করুন
             </Link>
           </p>
 

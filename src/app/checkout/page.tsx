@@ -339,9 +339,9 @@ function CheckoutContent() {
         <div className="text-center space-y-2">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/40 text-yellow-400 text-xs font-black uppercase tracking-wider">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Toolsbd.com Instant Checkout</span>
+          <span>Toolsbd.com এক্সপ্রেস চেকআউট</span>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-gradient-gold-fire">
+        <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-gradient-shimmer">
           {isSuccess 
             ? "🎉 লাইসেন্স কনফার্মেশন ও টুল ডাউনলোড" 
             : isPending 
@@ -401,7 +401,7 @@ function CheckoutContent() {
                         </span>
                       </div>
                       <span className="text-[11px] text-slate-400 block font-normal">
-                        ✓ Single PC Permanent Lock
+                        ✓ সিঙ্গেল পিসি পার্মানেন্ট লক
                       </span>
                     </button>
                   </Card3D>
@@ -429,7 +429,7 @@ function CheckoutContent() {
               >
                 <div className="flex items-center gap-2">
                   <span className="w-3.5 h-3.5 rounded-full bg-[#D12053] shrink-0" />
-                  <span className="text-sm font-black text-white">bKash Personal</span>
+                  <span className="text-sm font-black text-white">বিকাশ পার্সোনাল</span>
                 </div>
                 <span className="text-xs font-mono text-yellow-400 font-bold">{settings.bkashMerchantNumber}</span>
               </button>
@@ -446,7 +446,7 @@ function CheckoutContent() {
               >
                 <div className="flex items-center gap-2">
                   <span className="w-3.5 h-3.5 rounded-full bg-[#8C3494] shrink-0" />
-                  <span className="text-sm font-black text-white">Rocket Personal</span>
+                  <span className="text-sm font-black text-white">রকেট পার্সোনাল</span>
                 </div>
                 <span className="text-xs font-mono text-yellow-400 font-bold">{settings.rocketMerchantNumber}</span>
               </button>
@@ -463,7 +463,7 @@ function CheckoutContent() {
               >
                 <div className="flex items-center gap-2">
                   <Wallet className="w-4 h-4 text-yellow-400 shrink-0" />
-                  <span className="text-sm font-black text-white">Wallet Balance</span>
+                  <span className="text-sm font-black text-white">ওয়ালেট ব্যালেন্স</span>
                 </div>
                 <span className="text-xs font-mono text-emerald-400 font-bold">${walletBalanceUSD.toFixed(2)} USD</span>
               </button>
@@ -665,7 +665,7 @@ function CheckoutContent() {
               <span className="w-2 h-2 rounded-full bg-amber-400" />
               <span>স্ট্যাটাস: পেন্ডিং (যাচাই চলছে...) — PENDING</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white mt-1">
+            <h2 className="text-2xl sm:text-3xl font-black text-gradient-shimmer mt-1">
               পেমেন্ট ভেরিফিকেশন অপেক্ষারত (Awaiting Verification)
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-lg mx-auto">
@@ -675,26 +675,26 @@ function CheckoutContent() {
 
           <div className="p-5 rounded-2xl bg-[#14120a] border border-yellow-400/30 text-xs text-left space-y-2.5 font-mono max-w-md mx-auto">
             <div className="flex justify-between text-slate-400">
-              <span>Order Number:</span>
+              <span>অর্ডার নম্বর:</span>
               <strong className="text-white font-bold">{activeOrder.orderNumber}</strong>
             </div>
             <div className="flex justify-between text-slate-400">
-              <span>Tool &amp; Plan:</span>
+              <span>টুল ও অফার প্ল্যান:</span>
               <strong className={getToolTitleClass(selectedTool.name)}>{selectedTool.name} ({selectedPlan?.durationDays} Days)</strong>
             </div>
             <div className="flex justify-between text-slate-400">
-              <span>Payable Amount:</span>
+              <span>পরিশোধিত মূল্য:</span>
               <strong className="text-emerald-400 font-bold">৳{selectedPlan?.priceBDT} BDT (${selectedPlan?.priceUSD})</strong>
             </div>
             <div className="flex justify-between text-slate-400">
-              <span>Submitted TrxID:</span>
+              <span>সাবমিটকৃত TrxID:</span>
               <strong className="text-white uppercase font-black">{trxId.trim().toUpperCase()}</strong>
             </div>
             <div className="flex justify-between text-slate-400">
-              <span>Current Status:</span>
+              <span>বর্তমান স্ট্যাটাস:</span>
               <span className="text-amber-400 font-bold flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                <span>PENDING</span>
+                <span>যাচাই চলছে (Pending)</span>
               </span>
             </div>
           </div>
@@ -755,7 +755,7 @@ function CheckoutContent() {
             <span className="text-xs font-black uppercase tracking-wider text-yellow-400">
               পেমেন্ট কনফার্মেশন সম্পন্ন!
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-white mt-1">
+            <h2 className="text-2xl sm:text-4xl font-black text-gradient-shimmer mt-1">
               আপনার লাইসেন্স প্রস্তুত
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-lg mx-auto">

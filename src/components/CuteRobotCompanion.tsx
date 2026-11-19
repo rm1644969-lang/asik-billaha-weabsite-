@@ -18,11 +18,11 @@ export default function CuteRobotCompanion() {
   const robotRef = useRef<HTMLDivElement>(null);
 
   const messages = [
-    { text: "Welcome to Toolsbd.com! 👋", tag: "ASSISTANT" },
-    { text: "FAST OTP Pro — 7 Days only $2! 🔥", tag: "OFFER" },
-    { text: "bKash (01967922602) & Rocket auto ⚡", tag: "PAYMENT" },
-    { text: "Single PC HWID Locked & Secure 🔒", tag: "SECURITY" },
-    { text: "24/7 Active Official Telegram 💬", tag: "SUPPORT" },
+    { text: "Toolsbd-তে আপনাকে স্বাগতম! 👋", tag: "সহকারী" },
+    { text: "FAST OTP Pro — ৭ দিন মাত্র $২! 🔥", tag: "অফার" },
+    { text: "বিকাশ ও রকেটে দ্রুত স্বয়ংক্রিয় ভেরিফিকেশন ⚡", tag: "পেমেন্ট" },
+    { text: "সিঙ্গেল পিসি HWID লক ও ১০০% সুরক্ষিত 🔒", tag: "সুরক্ষা" },
+    { text: "যেকোনো প্রয়োজনে ২৪/৭ টেলিগ্রাম সাপোর্ট 💬", tag: "সাপোর্ট" },
   ];
 
   useEffect(() => {
@@ -99,10 +99,10 @@ export default function CuteRobotCompanion() {
         type="button"
         onClick={() => setIsMinimized(false)}
         className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-black shadow-neon-yellow flex items-center gap-2 hover:scale-110 transition-all font-bold text-xs group"
-        title="Show Cute Robot Assistant"
+        title="রোবট অ্যাসিস্ট্যান্ট চালু করুন"
       >
         <Bot className="w-5 h-5 animate-bounce" />
-        <span className="hidden group-hover:inline">AI Bot 👋</span>
+        <span className="hidden group-hover:inline">রোবট বন্ধু 👋</span>
       </button>
     );
   }
@@ -127,7 +127,7 @@ export default function CuteRobotCompanion() {
               type="button"
               onClick={() => setIsMinimized(true)}
               className="text-slate-400 hover:text-white p-0.5"
-              title="Minimize Assistant"
+              title="লুকান"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -142,7 +142,7 @@ export default function CuteRobotCompanion() {
               href="/tools"
               className="text-yellow-400 font-bold hover:underline inline-flex items-center gap-0.5"
             >
-              <span>Explore Tools</span>
+              <span>টুলস দেখুন</span>
               <ExternalLink className="w-2.5 h-2.5" />
             </Link>
             <span className="text-slate-500 font-mono">Toolsbd AI</span>

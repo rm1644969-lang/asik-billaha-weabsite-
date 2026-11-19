@@ -15,13 +15,13 @@ export default function FaqPage() {
       <div className="text-center space-y-4">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-semibold">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Support & Clarification</span>
+          <span>সহায়তা ও সাধারণ জিজ্ঞাসা</span>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black text-white">
-          Frequently Asked Questions
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-gradient-shimmer">
+          সাধারণ জিজ্ঞাসা ও প্রশ্নোত্তর (FAQ)
         </h1>
         <p className="text-slate-400 text-base max-w-xl mx-auto">
-          Clear answers about automated bKash/Nagad verification, HWID license binding, and troubleshooting.
+          বিকাশ ও রকেট স্বয়ংক্রিয় পেমেন্ট ভেরিফিকেশন, HWID লাইসেন্স সক্রিয়করণ এবং যেকোনো সমস্যা সমাধানের নিয়মাবলী।
         </p>
       </div>
 
@@ -63,18 +63,18 @@ export default function FaqPage() {
 
       {/* Still need help CTA */}
       <div className="rounded-3xl p-8 bg-surface-card border border-white/10 text-center space-y-4">
-        <h3 className="text-xl font-bold text-white">Have a specific question?</h3>
+        <h3 className="text-xl font-bold text-white">অন্য কোনো প্রশ্ন বা সমস্যা আছে?</h3>
         <p className="text-xs text-slate-400 max-w-md mx-auto">
-          Our Telegram support channel is active 24/7 to assist with payment inquiries or HWID resets.
+          যেকোনো পেমেন্ট জটিলতা বা লাইসেন্স রিসেটের জন্য আমাদের টেলিগ্রাম সাপোর্ট চ্যানেল ২৪/৭ সক্রিয় রয়েছে।
         </p>
         <a
           href={settings.telegramGroupUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-xs font-bold shadow-neon-purple hover:opacity-95 transition-all"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-red-600 to-yellow-500 text-black text-xs font-black shadow-neon-yellow hover:opacity-95 transition-all"
         >
-          <Send className="w-4 h-4" />
-          <span>Ask on Telegram</span>
+          <Send className="w-4 h-4 text-black" />
+          <span>টেলিগ্রামে কথা বলুন</span>
         </a>
       </div>
 

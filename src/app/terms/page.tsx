@@ -4,35 +4,35 @@ export default function TermsPage() {
   return (
     <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-8 text-slate-300">
       <div className="space-y-2 border-b border-white/10 pb-6">
-        <h1 className="text-3xl sm:text-4xl font-black text-white">Terms of Service & Licensing Policy</h1>
-        <p className="text-xs text-slate-400">Effective Date: January 1, 2026</p>
+        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-gradient-shimmer">ব্যবহারের শর্তাবলী ও লাইসেন্স নীতিমালা</h1>
+        <p className="text-xs text-slate-400">কার্যকরী তারিখ: ২০২৬</p>
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-bold text-white">1. Software License Agreement</h2>
+        <h2 className="text-lg font-bold text-gradient-shimmer">১. সফটওয়্যার লাইসেন্স চুক্তি</h2>
         <p className="text-xs sm:text-sm leading-relaxed">
-          All utilities distributed on this platform are proprietary software tools licensed on a duration-limited subscription basis (e.g. 7-day, 15-day, or 30-day). A purchased license grants a single non-transferable right to execute the software bound to one physical machine Hardware ID (HWID).
+          এই প্ল্যাটফর্মে সরবরাহকৃত সকল সফটওয়্যার টুলস নির্দিষ্ট মেয়াদের (যেমন: ৭ দিন, ১৫ দিন, অথবা ৩০ দিন) সাবস্ক্রিপশন ভিত্তিক। লাইসেন্স কেনার মাধ্যমে একজন ব্যবহারকারী তার একক কম্পিউটারের হার্ডওয়্যার আইডিতে (HWID) সফটওয়্যারটি চালানোর অধিকার পান।
         </p>
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-bold text-white">2. Hardware Fingerprint (HWID) Binding</h2>
+        <h2 className="text-lg font-bold text-gradient-shimmer">২. হার্ডওয়্যার আইডি (HWID) লক</h2>
         <p className="text-xs sm:text-sm leading-relaxed">
-          Upon first launch on the client&apos;s machine, the license key is cryptographically locked to the user&apos;s processor and motherboard hardware identifiers. Users are granted one free HWID reset per 30-day billing cycle through their user dashboard in the event of hardware upgrades or operating system reinstalls. Unauthorized sharing or cracking attempts will result in immediate permanent license revocation without refund.
+          ক্লায়েন্টের কম্পিউটারে প্রথমবারের মতো সফটওয়্যার চালুর সময় লাইসেন্স কী স্থায়ীভাবে প্রসেসর ও মাদারবোর্ডের হার্ডওয়্যার আইডির সাথে লক হয়ে যায়। উইন্ডোজ রি-ইনস্টল বা পিসি পরিবর্তনের ক্ষেত্রে ড্যাশবোর্ড থেকে রিসেটের সুবিধা প্রদান করা হয়। কোনো প্রকার অননুমোদিত শেয়ারিং বা ক্র্যাকিং চেষ্টা করলে লাইসেন্স স্বয়ংক্রিয়ভাবে বাতিল হবে।
         </p>
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-bold text-white">3. Payment & Automated Verification</h2>
+        <h2 className="text-lg font-bold text-gradient-shimmer">৩. পেমেন্ট ও স্বয়ংক্রিয় ভেরিফিকেশন</h2>
         <p className="text-xs sm:text-sm leading-relaxed">
-          Payments are handled via automated bKash and Nagad personal mobile payment verification. Users must send the exact specified BDT amount and enter their valid Transaction ID (TrxID). Any falsified TrxID submissions or double-spend attempts will permanently blacklist the client&apos;s IP address and account.
+          বিকাশ ও রকেট পার্সোনাল সেন্ড মানি মেথডের মাধ্যমে স্বয়ংক্রিয়ভাবে পেমেন্ট যাচাই করা হয়। ব্যবহারকারীকে সঠিক টাকা পাঠিয়ে SMS থেকে সঠিক TrxID সাবমিট করতে হবে। ভুয়া বা ডুপ্লিকেট TrxID দিলে অ্যাকাউন্ট স্বয়ংক্রিয়ভাবে স্থগিত করা হবে।
         </p>
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-lg font-bold text-white">4. Refund & Replacement Policy</h2>
+        <h2 className="text-lg font-bold text-gradient-shimmer">৪. রিফান্ড ও রিপ্লেসমেন্ট পলিসি</h2>
         <p className="text-xs sm:text-sm leading-relaxed">
-          Due to the digital nature of immediate cryptographic key delivery, sales are final once an active license key is issued. In the rare event that an auto-payment succeeds but no license is generated within 15 minutes, our admin desk will issue the key manually or process a full refund.
+          ডিজিটাল লাইসেন্স কী তাৎক্ষণিক ডেলিভারি হওয়ার পর সাধারণত কোনো রিফান্ড প্রযোজ্য নয়। তবে পেমেন্ট সফল হওয়ার পর যদি ১৫ মিনিটের মধ্যে সিস্টেম থেকে লাইসেন্স কি না আসে, তবে অ্যাডমিন ডেস্ক যাচাই করে তাৎক্ষণিক লাইসেন্স প্রদান অথবা সম্পূর্ণ রিফান্ড নিশ্চিত করবে।
         </p>
       </section>
     </div>

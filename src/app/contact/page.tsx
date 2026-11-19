@@ -23,13 +23,13 @@ export default function ContactPage() {
       
       <div className="text-center space-y-3">
         <span className="text-xs font-bold uppercase tracking-wider text-yellow-400">
-          Get in Touch
+          সরাসরি যোগাযোগ
         </span>
-        <h1 className="text-4xl sm:text-5xl font-black text-white">
-          Contact & Community Support
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-gradient-shimmer">
+          যোগাযোগ ও সাপোর্ট সেন্টার
         </h1>
         <p className="text-slate-400 text-sm max-w-lg mx-auto">
-          Need assistance with tool installation, license activation, or payment verification?
+          টুল ইনস্টলেশন, লাইসেন্স অ্যাক্টিভেশন, অথবা বিকাশ/রকেট পেমেন্ট সংক্রান্ত যেকোনো সহায়তার জন্য সরাসরি যোগাযোগ করুন।
         </p>
       </div>
 
@@ -38,7 +38,7 @@ export default function ContactPage() {
         {/* Contact info channels */}
         <div className="lg:col-span-5 space-y-4">
           <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10">
-            <h3 className="text-lg font-bold text-white">Direct Channels</h3>
+            <h3 className="text-lg font-bold text-white">সরাসরি যোগাযোগের মাধ্যম</h3>
             
             <a
               href={settings.telegramGroupUrl}
@@ -50,9 +50,9 @@ export default function ContactPage() {
                 <Send className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white">Telegram Community</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Instant public discussions & updates</p>
-                <span className="text-[11px] text-yellow-400 font-semibold mt-1 inline-block">Join Group &rarr;</span>
+                <h4 className="text-sm font-bold text-white">টেলিগ্রাম কমিউনিটি</h4>
+                <p className="text-xs text-slate-400 mt-0.5">তাৎক্ষণিক আপডেট ও গ্রুপ ডিসকাশন</p>
+                <span className="text-[11px] text-yellow-400 font-semibold mt-1 inline-block">গ্রুপে জয়েন করুন &rarr;</span>
               </div>
             </a>
 
@@ -66,9 +66,9 @@ export default function ContactPage() {
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white">Direct Admin Support</h4>
+                <h4 className="text-sm font-bold text-white">সরাসরি অ্যাডমিন সাপোর্ট</h4>
                 <p className="text-xs text-slate-400 mt-0.5">{settings.telegramSupportUsername}</p>
-                <span className="text-[11px] text-red-400 font-semibold mt-1 inline-block">Message Admin &rarr;</span>
+                <span className="text-[11px] text-red-400 font-semibold mt-1 inline-block">মেসেজ দিন &rarr;</span>
               </div>
             </a>
 
@@ -77,9 +77,9 @@ export default function ContactPage() {
                 <Mail className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white">Official Email</h4>
+                <h4 className="text-sm font-bold text-white">অফিসিয়াল ইমেইল</h4>
                 <p className="text-xs text-slate-400 mt-0.5">{settings.contactEmail}</p>
-                <span className="text-[11px] text-slate-500 mt-1 inline-block">Direct response</span>
+                <span className="text-[11px] text-slate-500 mt-1 inline-block">সরাসরি রিপ্লাই</span>
               </div>
             </div>
           </div>
@@ -88,62 +88,62 @@ export default function ContactPage() {
         {/* Contact Form */}
         <div className="lg:col-span-7">
           <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10">
-            <h3 className="text-lg font-bold text-white">Send a Support Ticket</h3>
+            <h3 className="text-lg font-bold text-white">মেসেজ পাঠান</h3>
 
             {submitted && (
               <div className="p-4 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>Your message has been sent to our support desk. We will reach back shortly!</span>
+                <span>আপনার বার্তা আমাদের কাছে সফলভাবে পাঠানো হয়েছে। দ্রুত রিপ্লাই দেওয়া হবে!</span>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="font-bold text-slate-300 block mb-1">Your Name</label>
+                  <label className="font-bold text-slate-300 block mb-1">আপনার নাম</label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full p-3 rounded-xl glass-input text-white"
-                    placeholder="e.g. Asik Billah"
+                    placeholder="যেমন: Asik Billah"
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-slate-300 block mb-1">Your Email</label>
+                  <label className="font-bold text-slate-300 block mb-1">আপনার ইমেইল</label>
                   <input
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full p-3 rounded-xl glass-input text-white"
-                    placeholder="e.g. user@gmail.com"
+                    placeholder="যেমন: user@gmail.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="font-bold text-slate-300 block mb-1">Subject</label>
+                <label className="font-bold text-slate-300 block mb-1">বিষয় (Subject)</label>
                 <input
                   type="text"
                   required
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   className="w-full p-3 rounded-xl glass-input text-white"
-                  placeholder="e.g. Payment TrxID verification or HWID reset"
+                  placeholder="যেমন: পেমেন্ট TrxID ভেরিফিকেশন বা HWID সমস্যা"
                 />
               </div>
 
               <div>
-                <label className="font-bold text-slate-300 block mb-1">Message</label>
+                <label className="font-bold text-slate-300 block mb-1">বিস্তারিত বার্তা</label>
                 <textarea
                   rows={4}
                   required
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   className="w-full p-3 rounded-xl glass-input text-white"
-                  placeholder="Describe your inquiry in detail..."
+                  placeholder="আপনার বিষয় বিস্তারিত লিখুন..."
                 />
               </div>
 
@@ -151,7 +151,7 @@ export default function ContactPage() {
                 type="submit"
                 className="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black font-black text-xs shadow-neon-yellow hover:opacity-95 transition-all"
               >
-                Submit Message
+                বার্তা পাঠান
               </button>
             </form>
           </div>

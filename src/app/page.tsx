@@ -50,11 +50,8 @@ export default function HomePage() {
           <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
             
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-white">
-              Professional Software Tools &{" "}
-              <span className="text-gradient-gold-fire">
-                Automated Licensing
-              </span>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15] text-gradient-shimmer">
+              প্রফেশনাল সফটওয়্যার টুলস ও স্বয়ংক্রিয় লাইসেন্সিং
             </h1>
 
             {/* CTAs */}
@@ -63,7 +60,7 @@ export default function HomePage() {
                 href="/tools"
                 className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-xs sm:text-sm font-black text-black bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 hover:opacity-95 shadow-neon-yellow flex items-center justify-center gap-2 group transition-all"
               >
-                <span>Browse All Tools</span>
+                <span>সবগুলো টুল দেখুন</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
 
@@ -74,7 +71,7 @@ export default function HomePage() {
                 className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-xs sm:text-sm font-black text-white bg-red-950/80 hover:bg-red-900 border border-red-500 hover:border-red-400 flex items-center justify-center gap-2 transition-all shadow-neon-red"
               >
                 <Send className="w-4 h-4 text-red-400" />
-                <span>Join Official Telegram</span>
+                <span>অফিশিয়াল টেলিগ্রামে যুক্ত হোন</span>
               </a>
             </div>
 
@@ -82,15 +79,15 @@ export default function HomePage() {
             <div className="pt-3 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-[11px] sm:text-xs text-slate-300 border-t border-white/10">
               <span className="flex items-center gap-1.5 font-semibold">
                 <CheckCircle2 className="w-3.5 h-3.5 text-yellow-400" />
-                <span>bKash &amp; Rocket Instant Auto Delivery</span>
+                <span>বিকাশ ও রকেট ইন্সট্যান্ট অটো ডেলিভারি</span>
               </span>
               <span className="flex items-center gap-1.5 font-semibold">
                 <ShieldCheck className="w-3.5 h-3.5 text-red-500" />
-                <span>Single PC HWID Security Lock</span>
+                <span>সিঙ্গেল পিসি HWID সিকিউরিটি লক</span>
               </span>
               <span className="flex items-center gap-1.5 font-semibold">
                 <Zap className="w-3.5 h-3.5 text-yellow-400" />
-                <span>24/7 Active Telegram Support</span>
+                <span>২৪/৭ সক্রিয় টেলিগ্রাম সাপোর্ট</span>
               </span>
             </div>
 
@@ -116,9 +113,9 @@ export default function HomePage() {
           <div>
             <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-yellow-400 mb-1.5">
               <Layers className="w-4 h-4 text-red-500" />
-              <span>Flagship Release &bull; Official Software Tools</span>
+              <span>অফিসিয়াল সফটওয়্যার টুলস রিলিজ</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gradient-gold-fire">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gradient-shimmer">
               আমাদের অফিসিয়াল সফটওয়্যার টুলস
             </h2>
             <p className="text-slate-300 text-xs sm:text-sm mt-1">
@@ -162,11 +159,11 @@ export default function HomePage() {
                 <Send className="w-7 h-7 text-yellow-400" />
               </div>
 
-              <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-                Join Toolsbd.com Telegram Community
+              <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-gradient-shimmer">
+                Toolsbd.com অফিশিয়াল টেলিগ্রাম কমিউনিটি
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
-                Get immediate tool updates, version releases, setup help, and 24/7 direct support from our official community.
+                সরাসরি সফটওয়্যার আপডেট, নতুন ভার্সন রিলিজ, সেটআপ সহায়তা এবং ২৪/৭ লাইভ সাপোর্টের জন্য আমাদের অফিশিয়াল গ্রুপে যুক্ত হোন।
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
@@ -177,14 +174,14 @@ export default function HomePage() {
                   className="w-full sm:w-auto px-7 py-3 rounded-xl text-xs sm:text-sm font-black text-white bg-gradient-to-r from-red-600 to-red-700 hover:opacity-95 shadow-neon-red flex items-center justify-center gap-2 transition-all"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Join Official Telegram</span>
+                  <span>টেলিগ্রামে জয়েন করুন</span>
                 </a>
 
                 <Link
                   href="/tools"
                   className="w-full sm:w-auto px-7 py-3 rounded-xl text-xs sm:text-sm font-black text-black bg-yellow-400 hover:bg-yellow-300 shadow-neon-yellow transition-all text-center"
                 >
-                  <span>Explore Tools Marketplace</span>
+                  <span>টুলস মার্কেটপ্লেস দেখুন</span>
                 </Link>
               </div>
 

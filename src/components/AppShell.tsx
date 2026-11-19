@@ -43,14 +43,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   const navItems = [
-    { name: "Home", href: "/", icon: Home },
-    { name: "Tools", href: "/tools", icon: Layers },
-    { name: "Offer Pricing", href: "/pricing", icon: Tag, badge: "$2+", highlight: true },
-    { name: "Checkout", href: "/checkout", icon: ShoppingCart },
-    { name: "My Dashboard", href: "/dashboard", icon: LayoutDashboard, badge: "HWID" },
-    { name: "Tutorials", href: "/tutorials", icon: Tv },
-    { name: "FAQ", href: "/faq", icon: HelpCircle },
-    { name: "Contact", href: "/contact", icon: MessageSquare },
+    { name: "হোম", href: "/", icon: Home },
+    { name: "টুলস মার্কেটপ্লেস", href: "/tools", icon: Layers },
+    { name: "অফার প্রাইসিং ($২+)", href: "/pricing", icon: Tag, badge: "$২+", highlight: true },
+    { name: "চেকআউট", href: "/checkout", icon: ShoppingCart },
+    { name: "আমার ড্যাশবোর্ড", href: "/dashboard", icon: LayoutDashboard, badge: "HWID" },
+    { name: "ভিডিও গাইড", href: "/tutorials", icon: Tv },
+    { name: "প্রশ্নোত্তর", href: "/faq", icon: HelpCircle },
+    { name: "যোগাযোগ", href: "/contact", icon: MessageSquare },
   ];
 
   const isActive = (path: string) => {
@@ -95,7 +95,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             href="/admin"
             className="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-yellow-400 to-yellow-500 text-black text-xs font-black shadow-neon-yellow hover:opacity-95 transition-all"
           >
-            Admin
+            এডমিন
           </Link>
         </div>
       </header>
@@ -179,7 +179,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                     onClick={logoutUser}
                     className="text-[10px] font-bold text-slate-400 hover:text-red-400 shrink-0 ml-2"
                   >
-                    Logout
+                    লগআউট
                   </button>
                 </div>
               ) : (
@@ -189,7 +189,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-yellow-400/10 hover:bg-yellow-400/20 border border-yellow-400/40 text-yellow-400 text-xs font-black transition-all"
                 >
                   <User className="w-3.5 h-3.5" />
-                  <span>Sign In / Register</span>
+                  <span>লগইন / রেজিস্টার</span>
                 </Link>
               )
             )}
@@ -204,11 +204,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
                     <Wallet className="w-3.5 h-3.5 text-yellow-400" />
-                    <span>Wallet Balance</span>
+                    <span>ওয়ালেট ব্যালেন্স</span>
                   </span>
                   <span className="text-[10px] font-black text-yellow-400 group-hover:text-white flex items-center gap-0.5 bg-yellow-400/10 px-2 py-0.5 rounded-md border border-yellow-400/30">
                     <PlusCircle className="w-3 h-3 text-yellow-400" />
-                    <span>Add</span>
+                    <span>টাকা যোগ</span>
                   </span>
                 </div>
                 <div className="flex items-baseline justify-between">
@@ -234,7 +234,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <div className="space-y-1">
               {!collapsed && (
                 <p className="px-3 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1.5">
-                  Dashboard &amp; Navigation
+                  ড্যাশবোর্ড ও নেভিগেশন
                 </p>
               )}
               <nav className="space-y-1">
@@ -287,16 +287,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/10 via-red-500/10 to-transparent border border-yellow-500/20 text-xs">
                 <div className="flex items-center gap-1.5 font-black text-yellow-400 text-[11px] mb-1">
                   <Flame className="w-3.5 h-3.5 text-red-500 animate-bounce" />
-                  <span>SPECIAL OFFER</span>
+                  <span>স্পেশাল অফার</span>
                 </div>
                 <p className="text-[11px] text-slate-300 leading-tight">
-                  7D: <strong>$2</strong> &bull; 15D: <strong>$4</strong> &bull; 30D: <strong>$8</strong>
+                  ৭ দিন: <strong>$২</strong> &bull; ১৫ দিন: <strong>$৪</strong> &bull; ৩০ দিন: <strong>$৮</strong>
                 </p>
                 <Link
                   href="/pricing"
                   className="mt-2 text-[10px] font-black text-yellow-400 hover:underline flex items-center gap-1"
                 >
-                  <span>Select Plan</span>
+                  <span>প্ল্যান বেছে নিন</span>
                   <Zap className="w-3 h-3" />
                 </Link>
               </div>
@@ -312,28 +312,28 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               href={settings.telegramGroupUrl}
               target="_blank"
               rel="noopener noreferrer"
-              title="Telegram VIP"
+              title="টেলিগ্রাম ভিআইপি"
               className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-black text-white bg-red-950/80 hover:bg-red-600 border border-red-500/60 transition-all shadow-neon-red active:scale-95"
             >
               <Send className="w-4 h-4 text-red-400 shrink-0" />
-              {!collapsed && <span>Telegram VIP</span>}
+              {!collapsed && <span>টেলিগ্রাম ভিআইপি</span>}
             </a>
 
             {/* Owner Admin Panel Button */}
             <Link
               href="/admin"
               onClick={() => setMobileOpen(false)}
-              title="Owner Admin Panel"
+              title="অনার এডমিন প্যানেল"
               className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-black text-black bg-gradient-to-r from-yellow-400 to-yellow-500 hover:opacity-95 shadow-neon-yellow transition-all active:scale-95"
             >
               <Shield className="w-4 h-4 shrink-0" />
-              {!collapsed && <span>Owner Admin</span>}
+              {!collapsed && <span>অনার এডমিন</span>}
             </Link>
 
             {!collapsed && (
               <div className="pt-1 flex items-center justify-center gap-1.5 text-[10px] text-emerald-400 font-semibold font-mono">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>bKash &amp; Rocket Auto: 24/7 OK</span>
+                <span>বিকাশ ও রকেট অটো: ২৪/৭ চালু</span>
               </div>
             )}
           </div>
@@ -358,7 +358,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           }`}
         >
           <Home className="w-4 h-4" />
-          <span>Home</span>
+          <span>হোম</span>
         </Link>
         <Link
           href="/tools"
@@ -367,7 +367,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           }`}
         >
           <Layers className="w-4 h-4" />
-          <span>Tools</span>
+          <span>টুলস</span>
         </Link>
         <Link
           href="/pricing"
@@ -376,7 +376,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           }`}
         >
           <Tag className="w-4 h-4 text-red-500" />
-          <span className="text-yellow-400 font-black">Offer ($2)</span>
+          <span className="text-yellow-400 font-black">অফার ($২)</span>
         </Link>
         <Link
           href="/dashboard"
@@ -385,7 +385,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           }`}
         >
           <LayoutDashboard className="w-4 h-4" />
-          <span>Dashboard</span>
+          <span>ড্যাশবোর্ড</span>
         </Link>
         <Link
           href="/admin"
@@ -394,7 +394,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           }`}
         >
           <Shield className="w-4 h-4" />
-          <span>Admin</span>
+          <span>এডমিন</span>
         </Link>
       </nav>
 

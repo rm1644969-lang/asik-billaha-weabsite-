@@ -75,9 +75,9 @@ export default function ToolDetailsPage() {
       
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-slate-400">
-        <Link href="/" className="hover:text-white transition-colors">Home</Link>
+        <Link href="/" className="hover:text-white transition-colors">হোম</Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <Link href="/tools" className="hover:text-white transition-colors">Tools</Link>
+        <Link href="/tools" className="hover:text-white transition-colors">টুলস</Link>
         <ChevronRight className="w-3.5 h-3.5" />
         <span className="text-yellow-400 font-bold">{tool.name}</span>
       </nav>
@@ -183,11 +183,11 @@ export default function ToolDetailsPage() {
               className="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 hover:opacity-95 text-black font-black text-sm flex items-center justify-center gap-2 shadow-neon-yellow transition-all"
             >
               <Zap className="w-4 h-4 text-black" />
-              <span>Choose a License Plan &amp; Buy Now</span>
+              <span>লাইসেন্স প্ল্যান বেছে নিন ও কিনুন</span>
             </a>
             <p className="text-center text-[11px] text-slate-400 mt-2 flex items-center justify-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Automated bKash &bull; Rocket instant auto delivery</span>
+              <span>বিকাশ ও রকেটে দ্রুত স্বয়ংক্রিয় লাইসেন্স ডেলিভারি</span>
             </p>
           </div>
 
@@ -207,7 +207,7 @@ export default function ToolDetailsPage() {
                 : "text-slate-400 hover:text-white"
             }`}
           >
-            Full Description
+            সম্পূর্ণ বিবরণ
           </button>
           <button
             onClick={() => setActiveTab("setup")}
@@ -217,7 +217,7 @@ export default function ToolDetailsPage() {
                 : "text-slate-400 hover:text-white"
             }`}
           >
-            Setup Guide &amp; Video
+            সেটআপ গাইড ও ভিডিও
           </button>
           <button
             onClick={() => setActiveTab("specs")}
@@ -227,7 +227,7 @@ export default function ToolDetailsPage() {
                 : "text-slate-400 hover:text-white"
             }`}
           >
-            System Requirements
+            সিস্টেম রিকোয়ারমেন্ট
           </button>
         </div>
 
@@ -311,13 +311,13 @@ export default function ToolDetailsPage() {
       <section id="plans" className="pt-12 space-y-8 scroll-mt-24">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <span className="text-xs font-black uppercase tracking-wider text-yellow-400">
-            Special Limited Offer
+            স্পেশাল সীমিত সময়ের অফার
           </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-white">
-            TOOLS OFFER PRICE 🔊
+          <h2 className="text-3xl sm:text-4xl font-black text-gradient-shimmer">
+            টুলস স্পেশাল অফার প্রাইস 🔊
           </h2>
           <p className="text-slate-300 text-sm font-semibold">
-            7 DAYS — <span className="text-yellow-400 font-black">$2 🔥</span> &bull; 15 DAYS — <span className="text-yellow-400 font-black">$4 🔥</span> &bull; 30 DAYS — <span className="text-yellow-400 font-black">$8 🔥</span>
+            ৭ দিন — <span className="text-yellow-400 font-black">$২ 🔥</span> &bull; ১৫ দিন — <span className="text-yellow-400 font-black">$৪ 🔥</span> &bull; ৩০ দিন — <span className="text-yellow-400 font-black">$৮ 🔥</span>
           </p>
         </div>
 
@@ -331,11 +331,11 @@ export default function ToolDetailsPage() {
         <div className="p-5 rounded-2xl bg-[#0e0e0e] border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-300">
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-5">
             <span>
-              bKash Personal: <strong className="text-yellow-400 font-bold select-all">{settings.bkashMerchantNumber}</strong>
+              বিকাশ পার্সোনাল: <strong className="text-yellow-400 font-bold select-all">{settings.bkashMerchantNumber}</strong>
             </span>
             <span className="text-slate-600 hidden sm:inline">&bull;</span>
             <span>
-              Rocket Personal: <strong className="text-red-400 font-bold select-all">{settings.rocketMerchantNumber}</strong>
+              রকেট পার্সোনাল: <strong className="text-red-400 font-bold select-all">{settings.rocketMerchantNumber}</strong>
             </span>
           </div>
 
@@ -343,7 +343,7 @@ export default function ToolDetailsPage() {
             href="/dashboard"
             className="text-yellow-400 hover:text-yellow-300 hover:underline font-sans font-bold flex items-center gap-1.5"
           >
-            <span>Or Buy instantly with Wallet Balance</span>
+            <span>অথবা ওয়ালেট দিয়ে তাৎক্ষণিক কিনুন</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

@@ -28,10 +28,10 @@ export default function PricingCard({ plan, toolSlug }: PricingCardProps) {
           {/* Header */}
           <div className="mb-4">
             <span className="text-xs font-black text-yellow-400 uppercase tracking-wider">
-              {plan.durationDays} Days Access
+              {plan.durationDays} দিনের লাইসেন্স অ্যাক্সেস
             </span>
-            <h3 className="text-xl font-black text-white mt-1">
-              {plan.name}
+            <h3 className="text-xl font-black mt-1">
+              <span className="text-gradient-shimmer">{plan.name}</span>
             </h3>
             {plan.toolName && (
               <p className="text-xs text-slate-400 mt-0.5">{plan.toolName}</p>
@@ -52,11 +52,11 @@ export default function PricingCard({ plan, toolSlug }: PricingCardProps) {
               )}
             </div>
             <p className="text-xs font-mono text-slate-300 mt-1.5">
-              bKash / Rocket Equivalent: <strong className="text-white">৳{plan.priceBDT} BDT</strong>
+              বিকাশ / রকেট সমপরিমাণ: <strong className="text-white">৳{plan.priceBDT} BDT</strong>
             </p>
             {discountPercent > 0 && (
               <span className="inline-block mt-2 text-[11px] font-black text-white bg-red-600/90 border border-red-500 px-2.5 py-0.5 rounded">
-                Save {discountPercent}% Offer Price
+                সাশ্রয় {discountPercent}% স্পেশাল অফার
               </span>
             )}
           </div>
@@ -64,7 +64,7 @@ export default function PricingCard({ plan, toolSlug }: PricingCardProps) {
           {/* Feature List */}
           <div className="space-y-3 mb-8">
             <p className="text-xs font-black uppercase tracking-wider text-slate-300">
-              Included in this license:
+              এই লাইসেন্সে যা যা থাকছে:
             </p>
             <ul className="space-y-2.5 text-xs text-slate-200">
               {plan.features.map((feat, idx) => (
@@ -86,11 +86,11 @@ export default function PricingCard({ plan, toolSlug }: PricingCardProps) {
             className="w-full py-3.5 px-4 rounded-xl text-sm font-black flex items-center justify-center gap-2 transition-all text-center shadow-lg bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black shadow-neon-yellow hover:opacity-95"
           >
             <Zap className="w-4 h-4 text-black" />
-            <span>Select & Buy Plan</span>
+            <span>প্ল্যান সিলেক্ট করে কিনুন</span>
           </Link>
           <p className="text-center text-[10px] text-slate-400 mt-2.5 flex items-center justify-center gap-1 font-semibold">
             <ShieldCheck className="w-3 h-3 text-red-500" />
-            <span>Auto Delivery via bKash / Rocket</span>
+            <span>বিকাশ ও রকেটে তাৎক্ষণিক অটো ডেলিভারি</span>
           </p>
         </div>
       </div>
