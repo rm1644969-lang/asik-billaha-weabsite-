@@ -129,34 +129,26 @@ export default function UserDashboardPage() {
     setTimeout(() => setCopiedNum(null), 2000);
   };
 
-  const handleDepositSubmit = async (e: React.FormEvent, instantTest = false) => {
+  const handleDepositSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const sender = depositSender.trim() || (instantTest ? "01755123456" : "");
-    const trx = depositTrxId.trim() || (instantTest ? `${depositMethod === "bKash" ? "BK" : "RK"}${Math.floor(10000000 + Math.random() * 90000000)}` : "");
+    const sender = depositSender.trim();
+    const trx = depositTrxId.trim().toUpperCase();
 
     if (!sender || !trx) {
-      showBanner("error", "Please enter your sender number and TrxID.");
+      showBanner("error", "দয়া করে সেন্ডার নম্বর এবং বিকাশ/রকেট TrxID লিখুন।");
       return;
     }
 
     setIsDepositing(true);
-    const res = await submitWalletDeposit(depositAmountUSD, depositMethod, sender, trx, instantTest);
+    const res = await submitWalletDeposit(depositAmountUSD, depositMethod, sender, trx, false);
     setIsDepositing(false);
     setDepositSender("");
     setDepositTrxId("");
 
-    if (instantTest) {
-      triggerConfetti();
-      showBanner(
-        "success",
-        `$${depositAmountUSD} (৳${depositAmountUSD * 120}) added to your wallet! ${res.firebaseSynced ? `Synced to Firebase (${firebaseProjectId}).` : "Saved locally (check Firestore rules for cloud sync)."}`
-      );
-    } else {
-      showBanner(
-        "success",
-        `Deposit request (${trx}) submitted for $${depositAmountUSD}! Wallet will update automatically once verified.`
-      );
-    }
+    showBanner(
+      "success",
+      `ডিপোজিট রিকোয়েস্ট (${trx}) $${depositAmountUSD}-এর জন্য জমা হয়েছে! অ্যাডমিন প্যানেল থেকে ভেরিফাই করলেই আপনার প্রোফাইল ব্যালেন্সে যুক্ত হবে।`
+    );
   };
 
   const handleBuyWithWallet = async (planId: string) => {
@@ -265,19 +257,12 @@ export default function UserDashboardPage() {
                 className="w-full p-2.5 rounded-xl glass-input text-white"
               />
             </div>
-            <div className="sm:col-span-3 pt-1 flex items-center justify-between">
+            <div className="sm:col-span-3 pt-1">
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-neon-yellow transition-all"
+                className="w-full sm:w-auto px-7 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-neon-yellow transition-all"
               >
                 Sign In / Register Account
-              </button>
-              <button
-                type="button"
-                onClick={() => registerUser("Member", "member@gmail.com", "123456")}
-                className="text-slate-400 hover:text-white text-xs underline"
-              >
-                Or 1-Click Demo Sign In
               </button>
             </div>
           </form>
@@ -515,7 +500,7 @@ export default function UserDashboardPage() {
               </div>
             </div>
 
-            <form onSubmit={(e) => handleDepositSubmit(e, false)} className="space-y-3 text-xs">
+            <form onSubmit={handleDepositSubmit} className="space-y-3 text-xs">
               <div>
                 <label className="font-bold text-slate-300 block mb-1">Sender Mobile Number</label>
                 <input
@@ -539,22 +524,13 @@ export default function UserDashboardPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
+              <div className="pt-2">
                 <button
                   type="submit"
                   disabled={isDepositing}
-                  className="py-3.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black shadow-neon-yellow transition-all"
+                  className="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 hover:opacity-95 text-black font-black text-sm shadow-neon-yellow transition-all"
                 >
-                  Submit Add Money (৳{depositAmountUSD * 120})
-                </button>
-                <button
-                  type="button"
-                  disabled={isDepositing}
-                  onClick={(e) => handleDepositSubmit(e, true)}
-                  className="py-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black shadow-neon-red transition-all flex items-center justify-center gap-1.5"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Simulate Auto-Add (${depositAmountUSD})</span>
+                  {isDepositing ? "জমা হচ্ছে..." : `টাকা জমা দিন — Submit Add Money (৳${depositAmountUSD * 120})`}
                 </button>
               </div>
             </form>

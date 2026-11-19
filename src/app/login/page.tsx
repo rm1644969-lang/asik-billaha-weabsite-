@@ -46,16 +46,6 @@ function LoginContent() {
     }
   };
 
-  const handleQuickDemoCustomer = () => {
-    loginUser("member@gmail.com", "123456");
-    router.push(redirectUrl);
-  };
-
-  const handleQuickDemoAdmin = () => {
-    switchUserRole("admin");
-    router.push("/admin");
-  };
-
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-[#070707]">
       <div className="w-full max-w-md space-y-6">
@@ -131,32 +121,7 @@ function LoginContent() {
             </button>
           </form>
 
-          {/* Quick Demo Switchers */}
-          <div className="pt-2 border-t border-white/10 space-y-2">
-            <span className="text-[10px] uppercase font-black text-slate-500 block text-center tracking-wider">
-              Quick 1-Click Access
-            </span>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={handleQuickDemoCustomer}
-                className="py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-yellow-400 font-bold flex items-center justify-center gap-1.5 transition-all"
-              >
-                <User className="w-3.5 h-3.5" />
-                <span>Customer Demo</span>
-              </button>
-              <button
-                type="button"
-                onClick={handleQuickDemoAdmin}
-                className="py-2 px-3 rounded-xl bg-red-950/60 hover:bg-red-900/60 border border-red-500/50 text-red-300 font-bold flex items-center justify-center gap-1.5 transition-all"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-red-400" />
-                <span>Owner Admin</span>
-              </button>
-            </div>
-          </div>
-
-          <p className="text-center text-xs text-slate-400">
+          <p className="text-center text-xs text-slate-400 pt-2 border-t border-white/10">
             Don&apos;t have an account yet?{" "}
             <Link 
               href={`/register${redirectUrl ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}

@@ -246,56 +246,10 @@ export async function POST(req: NextRequest) {
       console.warn("Dedicated License Firestore query warning:", fbErr?.message);
     }
 
-    // ------------------------------------------------------------------------
-    // TIER 3: LOCAL FALLBACK DEMO KEYS (for offline/developer testing)
-    // ------------------------------------------------------------------------
-    const DEMO_KEYS: Record<string, { days: number; toolId: string; hwid?: string }> = {
-      "TBD-OTP-7D-9A2F-84BC-4E11": { days: 7, toolId: "tool-otp-utility", hwid: "BFEBFBFF000906EA-F48E-381A-B19F" },
-      "TBD-OTP-15D-77F1-309A-1102": { days: 15, toolId: "tool-otp-utility" },
-      "TBD-OTP-30D-88AF-901B-CC44": { days: 30, toolId: "tool-otp-utility" },
-      "NEX-OTP-7D-9A2F-84BC-4E11": { days: 7, toolId: "tool-otp-utility" }
-    };
-
-    if (cleanKey && DEMO_KEYS[cleanKey]) {
-      const demo = DEMO_KEYS[cleanKey];
-      if (demo.hwid && cleanHwid && demo.hwid !== cleanHwid) {
-        return NextResponse.json(
-          { success: false, error: "HWID mismatch. Reset HWID in your dashboard." },
-          { status: 401 }
-        );
-      }
-
-      const offlineToken = createSignedOfflineToken(cleanKey, cleanHwid || "DEMO-HWID", OFFLINE_TOKEN_VALIDITY_HOURS);
-      const demoResponse = {
-        success: true,
-        source: "local-demo-verified",
-        message: "Demo license key validated successfully.",
-        data: {
-          key: cleanKey,
-          hwid: cleanHwid || demo.hwid || "DEMO-HWID",
-          toolId: demo.toolId,
-          status: "ACTIVE",
-          expiresAt: new Date(Date.now() + demo.days * 86400000).toISOString(),
-          offlineToken: offlineToken.token,
-          validUntil: offlineToken.validUntil,
-          refreshIntervalSeconds: OFFLINE_TOKEN_VALIDITY_HOURS * 3600,
-          serverTime: new Date().toISOString(),
-        }
-      };
-
-      verificationCache.set(cacheKey, {
-        data: demoResponse,
-        cachedAt: Date.now(),
-        expiresAt: Date.now() + CACHE_TTL_MS,
-      });
-
-      return NextResponse.json(demoResponse);
-    }
-
     return NextResponse.json(
       { 
         success: false, 
-        error: "License key or HWID not found in Toolsbd.com registry. Please check your dashboard." 
+        error: "License key or HWID not found in Toolsbd.com registry. Please purchase a valid plan." 
       },
       { status: 404 }
     );

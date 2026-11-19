@@ -44,6 +44,7 @@ function CheckoutContent() {
   const { 
     tools, 
     plans, 
+    orders,
     settings, 
     walletBalanceUSD,
     firebaseProjectId,
@@ -55,7 +56,6 @@ function CheckoutContent() {
     bindHwidToLicense,
     createOrder, 
     submitOrderPayment, 
-    simulateIncomingSms,
   } = useNexusStore();
 
   const toolParam = searchParams.get("tool");
@@ -65,8 +65,9 @@ function CheckoutContent() {
   const [selectedPlan, setSelectedPlan] = useState<PricePlan | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"bKash" | "Rocket" | "Wallet">("bKash");
   
-  // Checkout view state: 'form' or 'success'
+  // Checkout view state: 'form', 'pending', or 'success'
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const [activeOrder, setActiveOrder] = useState<Order | null>(null);
   
   // User input fields
@@ -85,6 +86,19 @@ function CheckoutContent() {
   const [hwidInput, setHwidInput] = useState("");
   const [hwidBoundStatus, setHwidBoundStatus] = useState<{ bound: boolean; message: string } | null>(null);
   const [isBindingHwid, setIsBindingHwid] = useState(false);
+
+  // Auto-listen when order is approved by Admin in real-time
+  useEffect(() => {
+    if (activeOrder && isPending) {
+      const current = orders.find(o => o.id === activeOrder.id);
+      if (current && current.status === "PAID") {
+        setGeneratedLicense(current.licenseKey || null);
+        setIsPending(false);
+        setIsSuccess(true);
+        triggerConfetti();
+      }
+    }
+  }, [orders, activeOrder, isPending]);
 
   // Sync email when user logs in
   useEffect(() => {
@@ -208,11 +222,8 @@ function CheckoutContent() {
         triggerConfetti();
         setIsSuccess(true);
       } else {
-        // If not matched immediately by SMS, auto-verify for smooth customer experience
-        const fallbackKey = result.key || generateToolLicenseKey();
-        setGeneratedLicense(fallbackKey);
-        triggerConfetti();
-        setIsSuccess(true);
+        // Real order: Pending verification by Admin or automated SMS match
+        setIsPending(true);
       }
     }, 1200);
   };
@@ -236,25 +247,6 @@ function CheckoutContent() {
     }
   };
 
-  // Simulated SMS test
-  const handleTriggerSimulatedSms = () => {
-    if (!selectedPlan) return;
-    const prefix = paymentMethod === "bKash" ? "BK" : "RK";
-    const mockTrx = `${prefix}${Math.floor(10000000 + Math.random() * 90000000)}`;
-    setTrxId(mockTrx);
-    if (!customerEmail) setCustomerEmail("customer@gmail.com");
-
-    // Auto fill and submit
-    setTimeout(() => {
-      simulateIncomingSms(
-        paymentMethod as any,
-        selectedPlan.priceBDT,
-        senderNumber || "01967922602",
-        mockTrx
-      );
-    }, 300);
-  };
-
   const currentPaymentNumber = paymentMethod === "bKash" 
     ? settings.bkashMerchantNumber 
     : settings.rocketMerchantNumber;
@@ -269,12 +261,18 @@ function CheckoutContent() {
           <span>Toolsbd.com Express Checkout &bull; অতি সহজে দ্রুত ডেলিভারি</span>
         </div>
         <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-          {isSuccess ? "🎉 লাইসেন্স কনফার্মেশন ও টুল ডাউনলোড" : "টুল কিনুন ও লাইসেন্স পান (Instant Delivery)"}
+          {isSuccess 
+            ? "🎉 লাইসেন্স কনফার্মেশন ও টুল ডাউনলোড" 
+            : isPending 
+            ? "⏳ পেমেন্ট অর্ডার সফলভাবে জমা হয়েছে"
+            : "টুল কিনুন ও লাইসেন্স পান (Instant Delivery)"}
         </h1>
         <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
           {isSuccess 
             ? "আপনার পেমেন্ট সফল হয়েছে! নিচে দেওয়া লাইসেন্স কী ও ডাউনলোড লিঙ্ক ব্যবহার করে টুল চালু করুন।"
-            : "bKash বা Rocket-এ টাকা পাঠিয়ে TrxID দিলে companion SMS গেটওয়ের মাধ্যমে সাথে সাথে লাইসেন্স পেয়ে যাবেন।"
+            : isPending
+            ? "আপনার পেমেন্ট রিকোয়েস্ট জমা হয়েছে। অ্যাডমিন TrxID ভেরিফাই করলেই লাইসেন্স অটো অ্যাক্টিভ হয়ে যাবে।"
+            : "bKash বা Rocket-এ টাকা পাঠিয়ে TrxID দিলে ভেরিফাই হয়ে সাথে সাথে লাইসেন্স পেয়ে যাবেন।"
           }
         </p>
       </div>
@@ -282,7 +280,7 @@ function CheckoutContent() {
       {/* ============================================================== */}
       {/* VIEW 1: ONE-PAGE ULTRA FAST CHECKOUT (NO COMPLICATED STEPS)     */}
       {/* ============================================================== */}
-      {!isSuccess && selectedPlan && (
+      {!isSuccess && !isPending && selectedPlan && (
         <div className="glass-panel rounded-3xl p-5 sm:p-8 space-y-7 border border-white/10 shadow-2xl">
           
           {/* 1. PLAN SELECTOR PILLS */}
@@ -552,21 +550,6 @@ function CheckoutContent() {
                 )}
               </button>
 
-              {/* Instant Simulator Button for quick testing without sending real cash */}
-              <div className="p-3.5 rounded-2xl bg-[#0e0e0e] border border-white/10 text-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-300">
-                <span className="flex items-center gap-2">
-                  <Smartphone className="w-4 h-4 text-yellow-400 shrink-0" />
-                  <span>টেস্টিং মোড: আসল টাকা পাঠানো ছাড়াই টেস্ট করতে চান?</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={handleTriggerSimulatedSms}
-                  className="px-3.5 py-1.5 rounded-lg bg-red-600/30 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/50 text-[11px] font-bold transition-all shrink-0"
-                >
-                  🚀 Test Auto-Activation (Simulate SMS)
-                </button>
-              </div>
-
             </form>
           )}
 
@@ -584,6 +567,80 @@ function CheckoutContent() {
             >
               <Send className="w-3.5 h-3.5" />
               <span>সাহায্য প্রয়োজন? টেলিগ্রাম সাপোর্ট</span>
+            </a>
+          </div>
+
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* VIEW: ORDER PENDING REAL-TIME ADMIN VERIFICATION               */}
+      {/* ============================================================== */}
+      {isPending && activeOrder && (
+        <div className="glass-panel rounded-3xl p-6 sm:p-10 space-y-7 border-2 border-yellow-400/50 shadow-neon-yellow text-center relative overflow-hidden bg-[#0c0c0c]">
+          
+          <div className="w-16 h-16 rounded-2xl bg-yellow-400/15 border border-yellow-400/40 text-yellow-400 flex items-center justify-center mx-auto shadow-neon-yellow">
+            <RotateCcw className="w-8 h-8 animate-spin text-yellow-400" />
+          </div>
+
+          <div>
+            <span className="text-xs font-black uppercase tracking-wider text-yellow-400">
+              পেমেন্ট রিকোয়েস্ট সফলভাবে জমা হয়েছে
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-white mt-1">
+              অ্যাডমিন ভেরিফিকেশন অপেক্ষারত (Payment Pending)
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-lg mx-auto">
+              আপনার {paymentMethod} TrxID (<strong className="text-white font-mono">{trxId.trim().toUpperCase()}</strong>) সফলভাবে সিস্টেমে যুক্ত হয়েছে। অ্যাডমিন পেমেন্ট চেক করে অ্যাপ্রুভ করার সাথে সাথেই এই স্ক্রিনেই লাইসেন্স চলে আসবে।
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-[#14120a] border border-yellow-400/30 text-xs text-left space-y-2.5 font-mono max-w-md mx-auto">
+            <div className="flex justify-between text-slate-400">
+              <span>Order Number:</span>
+              <strong className="text-white font-bold">{activeOrder.orderNumber}</strong>
+            </div>
+            <div className="flex justify-between text-slate-400">
+              <span>Tool &amp; Plan:</span>
+              <strong className="text-yellow-400">{selectedTool.name} ({selectedPlan?.durationDays} Days)</strong>
+            </div>
+            <div className="flex justify-between text-slate-400">
+              <span>Payable Amount:</span>
+              <strong className="text-emerald-400 font-bold">৳{selectedPlan?.priceBDT} BDT (${selectedPlan?.priceUSD})</strong>
+            </div>
+            <div className="flex justify-between text-slate-400">
+              <span>Submitted TrxID:</span>
+              <strong className="text-white uppercase font-black">{trxId.trim().toUpperCase()}</strong>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-[#090909] border border-white/10 text-xs text-slate-300 space-y-1 max-w-lg mx-auto text-left">
+            <p className="font-bold text-white flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-yellow-400" />
+              <span>রিয়েল-টাইম অটো লাইসেন্স আপডেট:</span>
+            </p>
+            <p className="text-[11px] text-slate-300 leading-relaxed">
+              অ্যাডমিন প্যানেল থেকে আপনার বিকাশ/রকেট TrxID নিশ্চিত করার সাথে সাথে এই পেইজটি স্বয়ংক্রিয়ভাবে লাইসেন্স ডেলিভারি স্ক্রিনে পরিবর্তন হয়ে যাবে। আপনি এখানে অপেক্ষা করতে পারেন অথবা ড্যাশবোর্ডে গিয়েও চেক করতে পারেন।
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 max-w-lg mx-auto">
+            <Link
+              href="/dashboard"
+              className="py-3.5 px-4 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs flex items-center justify-center gap-2 shadow-neon-yellow transition-all"
+            >
+              <span>আমার ড্যাশবোর্ডে যান (Check Dashboard)</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+
+            <a
+              href={settings.telegramGroupUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="py-3.5 px-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs flex items-center justify-center gap-2 shadow-neon-red transition-all"
+            >
+              <Send className="w-4 h-4" />
+              <span>টেলিগ্রামে দ্রুত কনফার্মেশন নিন</span>
             </a>
           </div>
 
