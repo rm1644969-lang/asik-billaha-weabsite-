@@ -32,6 +32,8 @@ import {
   syncOrderToFirestore,
   syncDepositToFirestore,
   syncWalletBalanceToFirestore,
+  syncSettingsToFirestore,
+  fetchSettingsFromFirestore,
   FIREBASE_PROJECT_ID
 } from "./firebase";
 
@@ -105,6 +107,15 @@ export function useNexusStore() {
       } else if (storedWallet) {
         setWalletBalanceUSD(JSON.parse(storedWallet));
       }
+      // Also try fetching live settings from Firestore in the background
+      fetchSettingsFromFirestore().then((remoteSettings) => {
+        if (remoteSettings) {
+          setSettings(prev => ({ ...prev, ...remoteSettings }));
+          if (typeof window !== "undefined") {
+            localStorage.setItem("toolsbd_v4_settings", JSON.stringify(remoteSettings));
+          }
+        }
+      }).catch(() => {});
     } catch {
       // Fallback
     }
@@ -135,6 +146,7 @@ export function useNexusStore() {
   const saveSettings = (newSettings: SiteSettings) => {
     setSettings(newSettings);
     if (typeof window !== "undefined") localStorage.setItem("toolsbd_v4_settings", JSON.stringify(newSettings));
+    syncSettingsToFirestore(newSettings).catch(() => {});
   };
 
   const saveSmsRecords = (newRecords: SmsRecord[]) => {

@@ -612,12 +612,12 @@ function CheckoutContent() {
             </p>
           </div>
 
-          {/* 1. STEP 1: DOWNLOAD TOOL ZIP ARCHIVE (BIG GREEN BUTTON) */}
+          {/* 1. STEP 1: DOWNLOAD TOOL ZIP ARCHIVE */}
           <div className="p-5 rounded-2xl bg-[#0c180e] border border-emerald-500/50 text-left space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
                 <Download className="w-4 h-4" />
-                <span>ধাপ ১: টুল সফটওয়্যারটি ডাউনলোড করুন</span>
+                <span>ধাপ ১: টুলস ডাউনলোড করে সফটওয়্যার ওপেন করুন</span>
               </span>
               <span className="text-xs font-mono text-slate-300 bg-black/60 px-2 py-0.5 rounded border border-white/10">
                 {selectedTool.fileSize || "28.4 MB"}
@@ -634,51 +634,19 @@ function CheckoutContent() {
             </a>
 
             <p className="text-[11px] text-slate-300">
-              ডাউনলোড করার পর জিপ ফাইলটি আনজিপ করুন এবং <strong>Run as Administrator</strong> হিসেবে সফটওয়্যারটি ওপেন করুন।
+              ডাউনলোড করার পর জিপ ফাইলটি আনজিপ করুন এবং <strong>Run as Administrator</strong> হিসেবে সফটওয়্যারটি ওপেন করুন। ওপেন করলে সফটওয়্যার উইন্ডোর ভেতর আপনার কম্পিউটারের <strong>Machine HWID</strong> দেখতে পাবেন।
             </p>
           </div>
 
-          {/* 2. STEP 2: LICENSE ACTIVATION KEY (BIG GOLD BOX WITH COPY) */}
-          <div className="p-5 rounded-2xl bg-black border border-yellow-400 text-left space-y-3">
+          {/* 2. STEP 2: HWID FIRST — USER ENTERS HWID BEFORE GETTING LICENSE */}
+          <div className="p-5 rounded-2xl bg-[#121212] border border-yellow-400/60 text-left space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
-                <Key className="w-4 h-4 text-red-500" />
-                <span>ধাপ ২: আপনার লাইসেন্স কী (License Key)</span>
+                <Cpu className="w-4 h-4 text-red-500" />
+                <span>ধাপ ২: সফটওয়্যার ওপেন করে আপনার Machine HWID দিন</span>
               </span>
-              <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-black">
-                Single PC Permanent Lock
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-[#111111] border border-white/20">
-              <span className="font-mono text-base sm:text-xl font-black text-yellow-400 break-all select-all">
-                {generatedLicense || activeOrder?.licenseKey || "TBD-OTP-30D-88AF-901B-4E11"}
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(generatedLicense || activeOrder?.licenseKey || "");
-                  setCopiedKey(true);
-                  triggerConfetti();
-                  setTimeout(() => setCopiedKey(false), 2000);
-                }}
-                className="px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center gap-1.5 shrink-0 transition-all shadow-neon-yellow"
-              >
-                {copiedKey ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                <span>{copiedKey ? "কপি হয়েছে!" : "কপি করুন"}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* 3. STEP 3: HWID BINDING (SUPER EASY MACHINE LOCK) */}
-          <div className="p-5 rounded-2xl bg-[#121212] border border-white/15 text-left space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-wider text-white flex items-center gap-1.5">
-                <Cpu className="w-4 h-4 text-yellow-400" />
-                <span>ধাপ ৩: আপনার PC HWID দিয়ে কী লক করুন (Machine Lock)</span>
-              </span>
-              <span className="text-[10px] text-emerald-400 font-mono">
-                কোনো রিসেটের ঝামেলা নেই
+              <span className="text-[10px] text-yellow-300 font-mono font-bold">
+                আগে HWID দিন &rarr; তারপর লাইসেন্স পাবেন
               </span>
             </div>
 
@@ -688,28 +656,84 @@ function CheckoutContent() {
                 <span>{hwidBoundStatus.message}</span>
               </div>
             ) : (
-              <form onSubmit={handleBindHwid} className="space-y-2">
+              <form onSubmit={handleBindHwid} className="space-y-2.5">
+                <label className="text-xs text-slate-300 block font-semibold">
+                  টুলস ডাউনলোড করে ওপেন করার পর সফটওয়্যারে দেখানো Machine HWID টি এখানে দিন:
+                </label>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     required
-                    placeholder="সফটওয়্যার ওপেন করে প্রাপ্ত Machine HWID এখানে পেস্ট করুন (যেমন: AGY-E42D-475A-B6D8-A901)"
+                    placeholder="যেমন: AGY-E42D-475A-B6D8-A901"
                     value={hwidInput}
                     onChange={(e) => setHwidInput(e.target.value)}
-                    className="flex-1 p-3 rounded-xl glass-input font-mono text-xs text-white font-medium"
+                    className="flex-1 p-3 rounded-xl glass-input font-mono text-xs text-white font-black uppercase"
                   />
                   <button
                     type="submit"
                     disabled={isBindingHwid}
-                    className="px-5 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-neon-yellow shrink-0 transition-all"
+                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 text-black font-black text-xs shadow-neon-yellow shrink-0 transition-all flex items-center justify-center gap-1.5"
                   >
-                    {isBindingHwid ? "লক হচ্ছে..." : "Lock to My PC 🔒"}
+                    <Zap className="w-4 h-4" />
+                    <span>{isBindingHwid ? "ভেরিফাই হচ্ছে..." : "HWID সাবমিট করে লাইসেন্স কী নিন 🔒"}</span>
                   </button>
                 </div>
                 <p className="text-[11px] text-slate-400">
-                  সফটওয়্যারটি ওপেন করলে স্ক্রিনে <strong>Machine HWID</strong> দেখতে পাবেন। সেটি এখানে পেস্ট করে বাটনে চাপলেই লাইসেন্সটি আপনার কম্পিউটারে পার্মানেন্টভাবে রেজিস্টার্ড হয়ে যাবে।
+                  ⚠️ নোট: HWID দেওয়ার সাথে সাথেই লাইসেন্স কী আপনার কম্পিউটারের হার্ডওয়্যারের সাথে আজীবনের জন্য লক হয়ে যাবে।
                 </p>
               </form>
+            )}
+          </div>
+
+          {/* 3. STEP 3: REVEALED LICENSE ACTIVATION KEY (SHOWN AFTER HWID IS SUBMITTED) */}
+          <div className={`p-5 rounded-2xl text-left space-y-3 transition-all ${
+            hwidBoundStatus?.bound 
+              ? "bg-black border-2 border-yellow-400 shadow-neon-yellow" 
+              : "bg-[#0a0a0a] border border-white/10 opacity-70"
+          }`}>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
+                <Key className="w-4 h-4 text-red-500" />
+                <span>ধাপ ৩: আপনার অ্যাক্টিভেটেড লাইসেন্স কী (License Key)</span>
+              </span>
+              <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-black">
+                {hwidBoundStatus?.bound ? "● Locked to your PC" : "Locked until HWID"}
+              </span>
+            </div>
+
+            {hwidBoundStatus?.bound ? (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-[#111111] border border-yellow-400/50">
+                  <span className="font-mono text-base sm:text-xl font-black text-yellow-400 break-all select-all">
+                    {generatedLicense || activeOrder?.licenseKey || "TBD-OTP-30D-88AF-901B-4E11"}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(generatedLicense || activeOrder?.licenseKey || "");
+                      setCopiedKey(true);
+                      triggerConfetti();
+                      setTimeout(() => setCopiedKey(false), 2000);
+                    }}
+                    className="px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center gap-1.5 shrink-0 transition-all shadow-neon-yellow"
+                  >
+                    {copiedKey ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    <span>{copiedKey ? "কপি হয়েছে!" : "কপি করুন"}</span>
+                  </button>
+                </div>
+                <p className="text-[11px] text-emerald-400 font-medium">
+                  ✓ সফটওয়্যারে গিয়ে এই লাইসেন্স কী পেস্ট করে <strong>&quot;LOGIN &amp; ACTIVATE AUTO TOOL&quot;</strong> বাটনে চাপলেই টুল ফুল ওপেন হয়ে যাবে।
+                </p>
+              </div>
+            ) : (
+              <div className="p-4 rounded-xl bg-black/40 border border-white/10 text-slate-400 text-xs flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-yellow-400/10 flex items-center justify-center text-yellow-400 shrink-0">
+                  <Key className="w-4 h-4" />
+                </div>
+                <span>
+                  লাইসেন্স কী দেখতে প্রথমে ওপরের <strong>ধাপ ২</strong>-এ আপনার টুলের Machine HWID দিন। HWID সাবমিট করার সাথে সাথেই আপনার এক্সক্লুসিভ লাইসেন্স কী এখানে আনলক হবে।
+                </span>
+              </div>
             )}
           </div>
 

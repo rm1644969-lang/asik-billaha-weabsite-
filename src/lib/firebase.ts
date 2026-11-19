@@ -229,3 +229,38 @@ export async function syncWalletBalanceToFirestore(
     return { synced: false, error: err?.message };
   }
 }
+
+/**
+ * Syncs Site Settings (bKash/Rocket numbers, hero text, dollar rate) to Primary Web Firestore (`site_settings/general`)
+ */
+export async function syncSettingsToFirestore(settings: any): Promise<{ synced: boolean; error?: string }> {
+  try {
+    await setDoc(
+      doc(webDb, "site_settings", "general"),
+      {
+        ...settings,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
+    return { synced: true };
+  } catch (err: any) {
+    console.warn("Web Firebase settings sync notice:", err?.message);
+    return { synced: false, error: err?.message };
+  }
+}
+
+/**
+ * Fetches Site Settings from Primary Web Firestore (`site_settings/general`)
+ */
+export async function fetchSettingsFromFirestore(): Promise<any | null> {
+  try {
+    const snap = await getDoc(doc(webDb, "site_settings", "general"));
+    if (snap.exists()) {
+      return snap.data();
+    }
+    return null;
+  } catch (err: any) {
+    return null;
+  }
+}

@@ -12,14 +12,20 @@ import {
   CheckCircle2, 
   Copy, 
   Check, 
-  Wallet,
-  PlusCircle,
-  Cpu,
-  Flame,
-  Sparkles,
-  AlertCircle,
-  Database
+  Wallet, 
+  PlusCircle, 
+  Cpu, 
+  Flame, 
+  Sparkles, 
+  AlertCircle, 
+  Database,
+  Play,
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+  HardDrive
 } from "lucide-react";
+import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
 
 export default function UserDashboardPage() {
   const { 
@@ -63,6 +69,7 @@ export default function UserDashboardPage() {
   const [hwidInputs, setHwidInputs] = useState<Record<string, string>>({});
   const [bindingId, setBindingId] = useState<string | null>(null);
   const [buyingPlanId, setBuyingPlanId] = useState<string | null>(null);
+  const [openVideoModal, setOpenVideoModal] = useState<string | null>(null);
 
   const userLicenses = currentUser 
     ? licenses.filter(l => l.userId === currentUser.id || l.userEmail === currentUser.email)
@@ -920,6 +927,271 @@ export default function UserDashboardPage() {
           </div>
         </div>
       )}
+
+      {/* ============================================================== */}
+      {/* SECTION: ACTIVE TOOL MEMBERSHIPS & DOWNLOAD CONTROL (ALWAYS VISIBLE) */}
+      {/* ============================================================== */}
+      <section id="memberships" className="pt-10 border-t border-white/10 space-y-6">
+        
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-yellow-400 mb-1">
+              <Sparkles className="w-4 h-4 text-red-500" />
+              <span>আপনার মেম্বারশিপ ও অ্যাক্টিভ সফটওয়্যার</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              আমার কেনা টুলস ও লাইসেন্স মেম্বারশিপ (Active Tool Memberships)
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 mt-1">
+              টুলস ডাউনলোড করে সফটওয়্যার ওপেন করে আপনার Machine HWID দিলে পারমানেন্ট লাইসেন্স কী পেয়ে যাবেন।
+            </p>
+          </div>
+
+          <Link
+            href="/tools"
+            className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-yellow-400 hover:text-black text-yellow-400 text-xs font-bold transition-all self-start sm:self-auto border border-white/15"
+          >
+            নতুন টুল বা অফার কিনুন &rarr;
+          </Link>
+        </div>
+
+        {/* Memberships Cards List */}
+        {userLicenses.length > 0 ? (
+          <div className="space-y-6">
+            {userLicenses.map((lic) => {
+              const matchedTool = tools.find(t => t.id === lic.toolId || t.name === lic.toolName) || flagshipTool;
+              const expiresDate = new Date(lic.expiresAt);
+              const isExpired = expiresDate.getTime() < Date.now();
+              const daysRemaining = Math.max(0, Math.ceil((expiresDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+              const isVideoOpen = openVideoModal === lic.id;
+
+              return (
+                <div
+                  key={lic.id}
+                  className="rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-[#14120a] via-[#0d0c07] to-[#070707] border-2 border-yellow-400/50 shadow-neon-yellow space-y-6"
+                >
+                  
+                  {/* Top Bar of Membership Card */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-12 h-12 rounded-2xl bg-yellow-400/15 border border-yellow-400/40 flex items-center justify-center text-yellow-400 shrink-0">
+                        <Cpu className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-lg sm:text-xl font-black text-white">
+                            {lic.toolName}
+                          </h3>
+                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-red-600 text-white shadow-neon-red">
+                            {matchedTool?.version || "v3.0 PRO"}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-300 mt-0.5 font-medium">
+                          {lic.durationDays} Days Access Plan &bull; {lic.userEmail}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 self-end sm:self-auto">
+                      <span className={`text-xs font-black uppercase px-3 py-1 rounded-full ${
+                        lic.status === "ACTIVE" && !isExpired
+                          ? "bg-emerald-950 text-emerald-400 border border-emerald-500/50 shadow-neon-yellow"
+                          : "bg-red-950 text-red-400 border border-red-500/50"
+                      }`}>
+                        {isExpired ? "EXPIRED" : "● MEMBERSHIP ACTIVE"}
+                      </span>
+                      <span className="text-xs font-mono font-bold text-yellow-400 bg-black/80 px-3 py-1 rounded-xl border border-white/15">
+                        {daysRemaining} Days Left
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 3 Interactive Blocks: 1. Tool Download, 2. Video Guide, 3. HWID & License */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    
+                    {/* BLOCK 1: DIRECT TOOL DOWNLOAD */}
+                    <div className="p-5 rounded-2xl bg-[#0e0e0e] border border-white/10 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                          <Download className="w-4 h-4" />
+                          <span>১. সফটওয়্যার ফাইল ডাউনলোড</span>
+                        </span>
+                        <span className="text-[11px] font-mono text-slate-400">
+                          {matchedTool?.fileSize || "28.4 MB"}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        সফটওয়্যার জিপ ফাইলটি ডাউনলোড করে আনজিপ করুন এবং <strong>Run as Administrator</strong> হিসেবে রান করুন।
+                      </p>
+
+                      <a
+                        href={matchedTool?.downloadFilePath || "/releases/Setup.zip"}
+                        download
+                        className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-black font-black text-xs flex items-center justify-center gap-2 shadow-lg transition-all"
+                      >
+                        <Download className="w-4 h-4 text-black" />
+                        <span>টুল ফাইল ডাউনলোড করুন ({matchedTool?.fileSize || "28.4 MB"})</span>
+                      </a>
+
+                      <div className="pt-1 text-[11px] text-slate-400 font-mono flex items-center justify-between">
+                        <span>OS: {matchedTool?.systemRequirements?.os || "Windows 10/11"}</span>
+                        <span className="text-emerald-400">100% Virus-Free</span>
+                      </div>
+                    </div>
+
+                    {/* BLOCK 2: SETUP VIDEO & INSTRUCTIONS */}
+                    <div className="p-5 rounded-2xl bg-[#0e0e0e] border border-white/10 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
+                          <Play className="w-4 h-4 text-red-500" />
+                          <span>২. সেটাপ ভিডিও ও গাইড</span>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setOpenVideoModal(isVideoOpen ? null : lic.id)}
+                          className="text-[11px] font-bold text-yellow-400 hover:underline"
+                        >
+                          {isVideoOpen ? "ভিডিও লুকান ▲" : "ভিডিও দেখুন ▼"}
+                        </button>
+                      </div>
+
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        টুল কীভাবে চালু ও অ্যাক্টিভ করতে হয় তার সম্পূর্ণ টিউটোরিয়াল ভিডিও গাইড।
+                      </p>
+
+                      {isVideoOpen && matchedTool?.setupVideoUrl && (
+                        <div className="relative aspect-video rounded-xl overflow-hidden border border-yellow-400/40 shadow-lg mt-2">
+                          <iframe
+                            src={normalizeYouTubeEmbedUrl(matchedTool.setupVideoUrl)}
+                            title="Setup Guide Video"
+                            className="w-full h-full"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </div>
+                      )}
+
+                      {!isVideoOpen && (
+                        <button
+                          type="button"
+                          onClick={() => setOpenVideoModal(lic.id)}
+                          className="w-full py-3.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
+                        >
+                          <Play className="w-4 h-4 text-yellow-400" />
+                          <span>সেটআপ ভিডিও প্লে করুন</span>
+                        </button>
+                      )}
+
+                      <ol className="list-decimal list-inside text-[11px] text-slate-400 space-y-0.5 pt-1">
+                        <li>টুল ওপেন করে Machine HWID কপি করুন</li>
+                        <li>ডানের ঘরে HWID দিয়ে লাইসেন্স নিন</li>
+                        <li>সফটওয়্যারে লাইসেন্স কী পেস্ট করে লগইন করুন</li>
+                      </ol>
+                    </div>
+
+                    {/* BLOCK 3: HWID FIRST -> GET LICENSE KEY */}
+                    <div className="p-5 rounded-2xl bg-[#0a0a0a] border-2 border-yellow-400 text-left space-y-3 shadow-lg">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
+                          <Key className="w-4 h-4 text-red-500" />
+                          <span>৩. HWID দিয়ে লাইসেন্স নেওয়া</span>
+                        </span>
+                        <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-black">
+                          {lic.hwid ? "LOCKED" : "HWID REQUIRED"}
+                        </span>
+                      </div>
+
+                      {lic.hwid ? (
+                        <div className="space-y-3">
+                          <span className="text-[11px] text-slate-300 font-bold block">
+                            আপনার পারমানেন্ট লাইসেন্স কী (License Key):
+                          </span>
+                          <div className="flex items-center justify-between gap-2 p-3 rounded-xl bg-black border border-yellow-400/50">
+                            <span className="font-mono text-xs sm:text-sm font-black text-yellow-400 break-all select-all">
+                              {lic.key}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleCopy(lic.key, lic.id)}
+                              className="px-3 py-1.5 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center gap-1 shrink-0 transition-colors shadow-neon-yellow"
+                            >
+                              {copiedKey === lic.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                              <span>{copiedKey === lic.id ? "কপি হয়েছে" : "কপি"}</span>
+                            </button>
+                          </div>
+
+                          <div className="p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-[11px] text-emerald-400 font-mono space-y-0.5">
+                            <span className="block font-bold">✓ Machine HWID Locked:</span>
+                            <span className="block break-all">{lic.hwid}</span>
+                          </div>
+
+                          <p className="text-[11px] text-slate-400">
+                            সফটওয়্যারে এই লাইসেন্স কী পেস্ট করে <strong>Login</strong> বাটনে চাপলেই টুল লাইফটাইম আনলক হয়ে যাবে।
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-2.5">
+                          <p className="text-xs text-yellow-300 font-bold">
+                            ⚠️ টুলস ডাউনলোড করে ওপেন করে আপনার Machine HWID দিন:
+                          </p>
+                          <p className="text-[11px] text-slate-400">
+                            সফটওয়্যার ওপেন করলেই স্ক্রিনে আপনার ইউনিক Machine HWID দেখতে পাবেন। সেটি নিচে দিন:
+                          </p>
+                          <div className="space-y-2">
+                            <input
+                              type="text"
+                              placeholder="Machine HWID দিন (যেমন: AGY-E42D-475A-B6D8-A901)"
+                              value={hwidInputs[lic.id] || ""}
+                              onChange={(e) => setHwidInputs(prev => ({ ...prev, [lic.id]: e.target.value }))}
+                              className="w-full p-2.5 rounded-xl glass-input font-mono text-xs text-white font-black uppercase"
+                            />
+                            <button
+                              type="button"
+                              disabled={bindingId === lic.id}
+                              onClick={() => handleBindHwid(lic.id)}
+                              className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 text-black font-black text-xs shadow-neon-yellow transition-all flex items-center justify-center gap-1.5"
+                            >
+                              <Zap className="w-4 h-4" />
+                              <span>{bindingId === lic.id ? "লক ও এক্টিভেট হচ্ছে..." : "HWID সাবমিট করে লাইসেন্স কী নিন 🔒"}</span>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                  </div>
+
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="p-8 sm:p-10 rounded-3xl bg-[#0b0b0b] border border-white/10 text-center space-y-4">
+            <div className="w-14 h-14 rounded-2xl bg-yellow-400/10 border border-yellow-400/30 flex items-center justify-center mx-auto text-yellow-400">
+              <Key className="w-7 h-7" />
+            </div>
+            <h3 className="text-lg font-black text-white">
+              আপনার এখনো কোনো অ্যাক্টিভ টুল মেম্বারশিপ নেই
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
+              আমাদের জনপ্রিয় <strong>FAST OTP — FB Auto Resender Pro</strong> টুলটি কিনলে আপনি এখানে সরাসরি সফটওয়্যার ডাউনলোড, সেটআপ ভিডিও এবং HWID দিয়ে লাইসেন্স নেওয়ার সুবিধা পাবেন।
+            </p>
+            <div className="pt-2">
+              <Link
+                href="/tools/otp-testing-utility#plans"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-neon-yellow transition-all"
+              >
+                <Zap className="w-4 h-4 text-black" />
+                <span>অফার প্ল্যান দেখুন ও টুল কিনুন ($২ — $৮)</span>
+              </Link>
+            </div>
+          </div>
+        )}
+
+      </section>
 
     </div>
   );
