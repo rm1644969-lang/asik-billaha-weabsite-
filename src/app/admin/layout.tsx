@@ -194,7 +194,7 @@ export default function AdminLayout({
       )}
 
       {/* Mobile Sidebar Toggle Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-[#0a0a0a] border-b border-white/10">
+      <div className="md:hidden flex items-center justify-between p-4 bg-[#0a0a0a] border-b border-white/10 sticky top-0 z-30">
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-5 h-5 text-yellow-400" />
           <span className="font-black text-sm text-white">Toolsbd Admin</span>
@@ -215,6 +215,15 @@ export default function AdminLayout({
           </button>
         </div>
       </div>
+
+      {/* Mobile Backdrop Overlay (Tap outside to close drawer) */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/75 backdrop-blur-sm z-35 md:hidden"
+          aria-hidden="true"
+        />
+      )}
 
       {/* Sidebar Navigation */}
       <aside className={`

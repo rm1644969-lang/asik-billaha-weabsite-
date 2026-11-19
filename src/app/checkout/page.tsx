@@ -547,14 +547,14 @@ function CheckoutContent() {
                 </div>
 
                 {/* Big Copyable Number */}
-                <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-black border border-white/20">
-                  <span className="text-2xl sm:text-3xl font-mono font-black text-yellow-400 tracking-wider select-all">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-black border border-white/20">
+                  <span className="text-xl sm:text-3xl font-mono font-black text-yellow-400 tracking-wider select-all">
                     {currentPaymentNumber}
                   </span>
                   <button
                     type="button"
                     onClick={() => handleCopyNumber(currentPaymentNumber)}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white text-xs font-black flex items-center gap-1.5 transition-all shadow-neon-red shrink-0"
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white text-xs font-black flex items-center justify-center gap-1.5 transition-all shadow-neon-red shrink-0"
                   >
                     {copiedNumber ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     <span>{copiedNumber ? "কপি হয়েছে!" : "নাম্বার কপি করুন"}</span>
@@ -883,8 +883,8 @@ function CheckoutContent() {
 
             {hwidBoundStatus?.bound ? (
               <div className="space-y-3">
-                <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-[#111111] border border-yellow-400/50">
-                  <span className="font-mono text-base sm:text-xl font-black text-yellow-400 break-all select-all">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-[#111111] border border-yellow-400/50">
+                  <span className="font-mono text-sm sm:text-xl font-black text-yellow-400 break-all select-all">
                     {generatedLicense || activeOrder?.licenseKey || "TBD-OTP-30D-88AF-901B-4E11"}
                   </span>
                   <button
@@ -895,7 +895,7 @@ function CheckoutContent() {
                       triggerConfetti();
                       setTimeout(() => setCopiedKey(false), 2000);
                     }}
-                    className="px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center gap-1.5 shrink-0 transition-all shadow-neon-yellow"
+                    className="w-full sm:w-auto px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center justify-center gap-1.5 shrink-0 transition-all shadow-neon-yellow"
                   >
                     {copiedKey ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     <span>{copiedKey ? "কপি হয়েছে!" : "কপি করুন"}</span>

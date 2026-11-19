@@ -549,35 +549,35 @@ export default function UserDashboardPage() {
         </div>
       )}
 
-      {/* Dashboard Tabs */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-white/10 pb-3">
+      {/* Dashboard Tabs (Horizontally scrollable on mobile, wrapping on tablets & desktops) */}
+      <div className="flex items-center gap-2 border-b border-white/10 pb-3 overflow-x-auto scrollbar-none sm:flex-wrap">
         <button
           onClick={() => setActiveTab("wallet")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all shrink-0 whitespace-nowrap ${
             activeTab === "wallet"
               ? "bg-yellow-400 text-black shadow-neon-yellow"
               : "text-slate-300 hover:text-white bg-surface-card"
           }`}
         >
           <Wallet className="w-4 h-4" />
-          <span>Add Money & Buy Offer</span>
+          <span>Add Money &amp; Buy Offer</span>
         </button>
 
         <button
           onClick={() => setActiveTab("licenses")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all shrink-0 whitespace-nowrap ${
             activeTab === "licenses"
               ? "bg-yellow-400 text-black shadow-neon-yellow"
               : "text-slate-300 hover:text-white bg-surface-card"
           }`}
         >
           <Key className="w-4 h-4" />
-          <span>My Licenses & HWID Key ({userLicenses.length})</span>
+          <span>My Licenses &amp; HWID Key ({userLicenses.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab("downloads")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all shrink-0 whitespace-nowrap ${
             activeTab === "downloads"
               ? "bg-yellow-400 text-black shadow-neon-yellow"
               : "text-slate-300 hover:text-white bg-surface-card"
@@ -589,7 +589,7 @@ export default function UserDashboardPage() {
 
         <button
           onClick={() => setActiveTab("orders")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all shrink-0 whitespace-nowrap ${
             activeTab === "orders"
               ? "bg-yellow-400 text-black shadow-neon-yellow"
               : "text-slate-300 hover:text-white bg-surface-card"
@@ -1095,7 +1095,7 @@ export default function UserDashboardPage() {
           <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-white/10">
             <h3 className="text-lg font-black text-white">Wallet Add Money History</h3>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
+              <table className="w-full text-left text-xs min-w-[650px]">
                 <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
                   <tr>
                     <th className="pb-3 font-bold">Method</th>
@@ -1144,7 +1144,7 @@ export default function UserDashboardPage() {
           <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-white/10">
             <h3 className="text-lg font-black text-white">Tool License Orders</h3>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
+              <table className="w-full text-left text-xs min-w-[650px]">
                 <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
                   <tr>
                     <th className="pb-3 font-bold">Order ID</th>

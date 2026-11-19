@@ -195,7 +195,7 @@ export default function AdminPaymentsPage() {
       {/* SMS Records Stream */}
       <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-white/10">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[700px]">
             <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
               <tr>
                 <th className="pb-3 font-bold">Provider</th>

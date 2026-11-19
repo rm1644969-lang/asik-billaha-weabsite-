@@ -196,7 +196,7 @@ export default function AdminOverviewPage() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[650px]">
               <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
                 <tr>
                   <th className="pb-3 font-bold">Customer</th>
@@ -261,7 +261,7 @@ export default function AdminOverviewPage() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs min-w-[650px]">
             <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
               <tr>
                 <th className="pb-3 font-bold">Order ID</th>
