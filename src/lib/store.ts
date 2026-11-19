@@ -116,7 +116,16 @@ export function useNexusStore() {
       }
       if (storedOrders) setOrders(JSON.parse(storedOrders));
       if (storedLicenses) setLicenses(JSON.parse(storedLicenses));
-      if (storedSettings) setSettings(JSON.parse(storedSettings));
+      if (storedSettings) {
+        const parsedSettings = JSON.parse(storedSettings);
+        if (parsedSettings.bkashMerchantNumber === "01967922602") {
+          parsedSettings.bkashMerchantNumber = "01609166109";
+          try {
+            localStorage.setItem("toolsbd_v4_settings", JSON.stringify(parsedSettings));
+          } catch (_) {}
+        }
+        setSettings({ ...initialSettings, ...parsedSettings });
+      }
       if (storedSmsRecords) setSmsRecords(JSON.parse(storedSmsRecords));
       if (storedDevices) setSmsDevices(JSON.parse(storedDevices));
       if (storedDeposits) setDeposits(JSON.parse(storedDeposits));
@@ -135,9 +144,14 @@ export function useNexusStore() {
       // Also try fetching live settings from Firestore in the background
       fetchSettingsFromFirestore().then((remoteSettings) => {
         if (remoteSettings) {
+          if (remoteSettings.bkashMerchantNumber === "01967922602") {
+            remoteSettings.bkashMerchantNumber = "01609166109";
+          }
           setSettings(prev => ({ ...prev, ...remoteSettings }));
           if (typeof window !== "undefined") {
-            localStorage.setItem("toolsbd_v4_settings", JSON.stringify(remoteSettings));
+            try {
+              localStorage.setItem("toolsbd_v4_settings", JSON.stringify(remoteSettings));
+            } catch (_) {}
           }
         }
       }).catch(() => {});

@@ -157,7 +157,7 @@ export default function AdminOverviewPage() {
                 </span>
               </h3>
               <p className="text-xs text-slate-300 mt-0.5">
-                আপনার অ্যান্ড্রয়েড ফোন bKash (01967922602) ও Rocket (01731328169) SMS পড়ে স্বয়ংক্রিয়ভাবে অর্ডার কনফার্ম করছে।
+                আপনার অ্যান্ড্রয়েড ফোন bKash (01609166109) ও Rocket (01731328169) SMS পড়ে স্বয়ংক্রিয়ভাবে অর্ডার কনফার্ম করছে।
               </p>
             </div>
           </div>

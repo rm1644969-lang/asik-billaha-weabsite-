@@ -95,7 +95,7 @@ export default function AdminPaymentsPage() {
               type="text"
               value={bkashNum}
               onChange={(e) => setBkashNum(e.target.value)}
-              placeholder="01967922602"
+              placeholder="01609166109"
               className="w-full p-3 rounded-xl glass-input text-yellow-400 font-mono font-black text-sm"
             />
           </div>

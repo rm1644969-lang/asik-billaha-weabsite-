@@ -31,7 +31,7 @@ export default function PricingPage() {
           ৭ দিন — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$২ 🔥</span> &nbsp;|&nbsp; ১৫ দিন — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$৪ 🔥</span> &nbsp;|&nbsp; ৩০ দিন — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$৮ 🔥</span>
         </p>
         <p className="text-slate-400 text-sm">
-          বিকাশ (<span className="text-yellow-400 font-mono font-bold">01967922602</span>) ও রকেট (<span className="text-red-400 font-mono font-bold">01731328169</span>)-এ স্বয়ংক্রিয় তাৎক্ষণিক লাইসেন্স ডেলিভারি।
+          বিকাশ (<span className="text-yellow-400 font-mono font-bold">01609166109</span>) ও রকেট (<span className="text-red-400 font-mono font-bold">01731328169</span>)-এ স্বয়ংক্রিয় তাৎক্ষণিক লাইসেন্স ডেলিভারি।
         </p>
       </div>
 

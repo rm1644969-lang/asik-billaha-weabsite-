@@ -128,6 +128,6 @@ def verify_tool_license(key, hwid):
 - **7 Days Access**: $2 USD (৳240 BDT) 🔥
 - **15 Days Access**: $4 USD (৳480 BDT) 🔥
 - **30 Days VIP Access**: $8 USD (৳960 BDT) 🔥
-- **bKash Personal**: `01967922602`
+- **bKash Personal**: `01609166109`
 - **Rocket Personal**: `01731328169`
 - **Automated Verification Window**: 30 – 45 seconds via companion SMS gateway or Instant Wallet Purchase.
