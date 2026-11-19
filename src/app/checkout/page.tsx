@@ -96,6 +96,30 @@ function CheckoutContent() {
   const [isBindingHwid, setIsBindingHwid] = useState(false);
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
 
+  // Auto-load remembered Gmail
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("toolsbd_customer_email");
+      if (saved && !customerEmail) {
+        setCustomerEmail(saved);
+      }
+    }
+  }, []);
+
+  const handlePasteTrxId = async (setter: (val: string) => void) => {
+    try {
+      if (navigator?.clipboard?.readText) {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          const clean = text.trim().replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+          setter(clean || text.trim().toUpperCase());
+        }
+      }
+    } catch {
+      // Ignore if clipboard permissions are restricted
+    }
+  };
+
   const handleManualCheckOrder = async () => {
     if (!activeOrder?.id) return;
     setIsCheckingStatus(true);
@@ -271,6 +295,9 @@ function CheckoutContent() {
     if (!emailToUse || !emailToUse.includes("@")) {
       setErrorMsg("আপনার জিমেইল এড্রেস (Gmail) দিন যাতে লাইসেন্স কী ও ডাউনলোড লিঙ্ক আপনার একাউন্টে সেভ থাকে।");
       return;
+    }
+    if (typeof window !== "undefined") {
+      localStorage.setItem("toolsbd_customer_email", emailToUse);
     }
 
     if (!trxId.trim()) {
@@ -569,9 +596,20 @@ function CheckoutContent() {
                   </button>
                 </div>
 
-                <div className="text-[11px] text-slate-300 space-y-1">
-                  <p>&bull; আপনার {paymentMethod} অ্যাপ ওপেন করে <strong>Send Money</strong> সিলেক্ট করুন।</p>
-                  <p>&bull; উপরোক্ত নাম্বারে <strong>৳{selectedPlan.priceBDT}</strong> পাঠিয়ে কনফার্মেশন মেসেজের <strong>TrxID</strong> নিচে দিন।</p>
+                {/* 3-Step Mini Visual Guide */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-white/10 text-[11px] text-slate-300">
+                  <div className="p-2.5 rounded-xl bg-black/60 border border-white/5 flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-[10px] shrink-0">১</span>
+                    <span>{paymentMethod} অ্যাপে <strong>Send Money</strong> দিন</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-black/60 border border-white/5 flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-[10px] shrink-0">২</span>
+                    <span>নাম্বারে <strong>৳{selectedPlan.priceBDT}</strong> পাঠান</span>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-black/60 border border-white/5 flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-[10px] shrink-0">৩</span>
+                    <span>এসএমএসের <strong>TrxID</strong> পেস্ট করুন</span>
+                  </div>
                 </div>
               </div>
 
@@ -593,18 +631,39 @@ function CheckoutContent() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-black uppercase tracking-wider text-slate-300 block mb-1.5 flex items-center justify-between">
-                    <span>২. Transaction ID (TrxID):</span>
-                    <span className="text-[10px] text-emerald-400 font-mono">SMS থেকে কপি করুন</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="যেমন: BK992A81KC বা RK82736"
-                    value={trxId}
-                    onChange={(e) => setTrxId(e.target.value)}
-                    className="w-full p-3.5 rounded-xl glass-input text-sm font-mono uppercase text-yellow-400 font-black tracking-wider"
-                  />
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-black uppercase tracking-wider text-slate-300">
+                      ২. Transaction ID (TrxID):
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => handlePasteTrxId(setTrxId)}
+                      className="text-[10px] text-yellow-400 hover:text-yellow-300 flex items-center gap-1 font-bold bg-yellow-400/10 px-2.5 py-0.5 rounded-md border border-yellow-400/30 transition-all active:scale-95"
+                      title="ক্লিপবোর্ড থেকে অটো পেস্ট করুন"
+                    >
+                      <Copy className="w-3 h-3" />
+                      <span>ক্লিপবোর্ড থেকে পেস্ট</span>
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      required
+                      placeholder="যেমন: BK992A81KC বা RK82736"
+                      value={trxId}
+                      onChange={(e) => setTrxId(e.target.value)}
+                      className="w-full p-3.5 pr-14 rounded-xl glass-input text-sm font-mono uppercase text-yellow-400 font-black tracking-wider"
+                    />
+                    {trxId && (
+                      <button
+                        type="button"
+                        onClick={() => setTrxId("")}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white px-1.5 py-0.5 rounded"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -697,6 +756,26 @@ function CheckoutContent() {
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
                   <span>যাচাই চলছে (Pending)</span>
                 </span>
+              </div>
+            </div>
+
+            {/* 3-Step Visual Progress Pipeline */}
+            <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 max-w-md mx-auto">
+              <div className="flex items-center justify-between text-[11px] font-mono">
+                <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>১. TrxID জমা</span>
+                </div>
+                <div className="w-8 h-[2px] bg-amber-400 animate-pulse" />
+                <div className="flex items-center gap-1.5 text-amber-400 font-bold animate-pulse">
+                  <RotateCcw className="w-3.5 h-3.5 animate-spin text-amber-400" />
+                  <span>২. ভেরিফিকেশন চলছে</span>
+                </div>
+                <div className="w-8 h-[2px] bg-white/20" />
+                <div className="flex items-center gap-1.5 text-slate-500">
+                  <Key className="w-3.5 h-3.5" />
+                  <span>৩. লাইসেন্স আনলক</span>
+                </div>
               </div>
             </div>
 

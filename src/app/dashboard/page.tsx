@@ -113,6 +113,30 @@ export default function UserDashboardPage() {
     return () => window.removeEventListener("pwa-installable", handleInstallable);
   }, []);
 
+  // Remember sender number
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedSender = localStorage.getItem("toolsbd_sender_number");
+      if (savedSender && !depositSender) {
+        setDepositSender(savedSender);
+      }
+    }
+  }, []);
+
+  const handlePasteTrxId = async (setter: (val: string) => void) => {
+    try {
+      if (navigator?.clipboard?.readText) {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          const clean = text.trim().replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+          setter(clean || text.trim().toUpperCase());
+        }
+      }
+    } catch {
+      // Ignore if clipboard restricted
+    }
+  };
+
   const handleInstallMemberPwa = async () => {
     const prompt = installPrompt || (window as any).deferredPrompt;
     if (prompt) {
@@ -327,7 +351,9 @@ export default function UserDashboardPage() {
     setIsDepositing(true);
     const res = await submitWalletDeposit(depositAmountUSD, depositMethod, sender, trx, false);
     setIsDepositing(false);
-    setDepositSender("");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("toolsbd_sender_number", sender);
+    }
     setDepositTrxId("");
 
     showBanner(
@@ -875,6 +901,26 @@ export default function UserDashboardPage() {
                         </div>
                       </div>
 
+                      {/* 3-Step Visual Progress Pipeline */}
+                      <div className="p-3 rounded-xl bg-black/60 border border-white/10">
+                        <div className="flex items-center justify-between text-[11px] font-mono">
+                          <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>১. TrxID জমা</span>
+                          </div>
+                          <div className="w-8 h-[2px] bg-amber-400 animate-pulse" />
+                          <div className="flex items-center gap-1.5 text-amber-400 font-bold animate-pulse">
+                            <RotateCcw className="w-3.5 h-3.5 animate-spin text-amber-400" />
+                            <span>২. এসএমএস ভেরিফিকেশন চলছে</span>
+                          </div>
+                          <div className="w-8 h-[2px] bg-white/20" />
+                          <div className="flex items-center gap-1.5 text-slate-500">
+                            <Key className="w-3.5 h-3.5" />
+                            <span>৩. ব্যালেন্স ও লাইসেন্স আনলক</span>
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="p-3 rounded-xl bg-black/40 border border-yellow-400/20 text-xs text-slate-300 flex items-center justify-between gap-4">
                         <p className="flex items-center gap-2">
                           <Sparkles className="w-4 h-4 text-yellow-400 shrink-0" />
@@ -1255,26 +1301,55 @@ export default function UserDashboardPage() {
               </div>
             </div>
 
+            {/* Visual 3-Step Instruction Pills */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] text-slate-300">
+              <div className="p-2.5 rounded-xl bg-black/60 border border-white/5 flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-[10px] shrink-0">১</span>
+                <span>{depositMethod} অ্যাপে <strong>Send Money</strong> দিন</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-black/60 border border-white/5 flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-[10px] shrink-0">২</span>
+                <span>নাম্বারে <strong>৳{depositAmountUSD * 120}</strong> পাঠান</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-black/60 border border-white/5 flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-[10px] shrink-0">৩</span>
+                <span>এসএমএসের <strong>TrxID</strong> পেস্ট করুন</span>
+              </div>
+            </div>
+
             {/* Quick Amount Pills */}
             <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-slate-300 block">
-                টাকার পরিমাণ নির্বাচন করুন (USD / BDT)
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-black uppercase text-slate-300 block">
+                  টাকার পরিমাণ নির্বাচন করুন (USD / BDT)
+                </label>
+                <span className="text-[10px] font-mono font-bold text-yellow-400">
+                  {depositAmountUSD === 2 ? "🔥 ৭ দিনের অফার" : depositAmountUSD === 4 ? "🔥 ১৫ দিনের অফার" : depositAmountUSD === 8 ? "🔥 ৩০ দিনের VIP অফার" : "কাস্টম অ্যামাউন্ট"}
+                </span>
+              </div>
               <div className="grid grid-cols-4 gap-2">
-                {[2, 4, 8, 15].map(amt => (
+                {[
+                  { usd: 2, label: "৭ দিন" },
+                  { usd: 4, label: "১৫ দিন" },
+                  { usd: 8, label: "৩০ দিন" },
+                  { usd: 15, label: "VIP" }
+                ].map(({ usd, label }) => (
                   <button
-                    key={amt}
+                    key={usd}
                     type="button"
-                    onClick={() => setDepositAmountUSD(amt)}
-                    className={`py-2.5 rounded-xl text-xs font-black transition-all border ${
-                      depositAmountUSD === amt
-                        ? "bg-yellow-400 text-black border-yellow-400 shadow-neon-yellow"
+                    onClick={() => setDepositAmountUSD(usd)}
+                    className={`py-2 px-1 rounded-xl text-xs font-black transition-all border text-center ${
+                      depositAmountUSD === usd
+                        ? "bg-yellow-400 text-black border-yellow-400 shadow-neon-yellow scale-[1.03]"
                         : "bg-black text-white border-white/10 hover:border-white/30"
                     }`}
                   >
-                    ${amt}
-                    <span className={`block text-[10px] font-mono ${depositAmountUSD === amt ? "text-black/80" : "text-slate-400"}`}>
-                      ৳{amt * 120}
+                    <span className="block font-black">${usd}</span>
+                    <span className={`block text-[10px] font-mono ${depositAmountUSD === usd ? "text-black/90 font-bold" : "text-slate-400"}`}>
+                      ৳{usd * 120}
+                    </span>
+                    <span className={`block text-[9px] ${depositAmountUSD === usd ? "text-red-900 font-black" : "text-yellow-400/80"}`}>
+                      {label}
                     </span>
                   </button>
                 ))}
@@ -1294,15 +1369,37 @@ export default function UserDashboardPage() {
                 />
               </div>
               <div>
-                <label className="font-bold text-slate-300 block mb-1">{depositMethod} ট্রানজেকশন আইডি (TrxID)</label>
-                <input
-                  type="text"
-                  placeholder="যেমন: BK992A81KC"
-                  value={depositTrxId}
-                  onChange={(e) => setDepositTrxId(e.target.value)}
-                  className="w-full p-3 rounded-xl glass-input font-mono uppercase text-yellow-400 font-bold"
-                  required
-                />
+                <div className="flex items-center justify-between mb-1">
+                  <label className="font-bold text-slate-300">{depositMethod} ট্রানজেকশন আইডি (TrxID)</label>
+                  <button
+                    type="button"
+                    onClick={() => handlePasteTrxId(setDepositTrxId)}
+                    className="text-[10px] text-yellow-400 hover:text-yellow-300 flex items-center gap-1 font-bold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/30 transition-all active:scale-95"
+                    title="ক্লিপবোর্ড থেকে অটো পেস্ট করুন"
+                  >
+                    <Copy className="w-3 h-3" />
+                    <span>ক্লিপবোর্ড থেকে পেস্ট</span>
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="যেমন: BK992A81KC বা RK82736"
+                    value={depositTrxId}
+                    onChange={(e) => setDepositTrxId(e.target.value)}
+                    className="w-full p-3 pr-14 rounded-xl glass-input font-mono uppercase text-yellow-400 font-bold"
+                    required
+                  />
+                  {depositTrxId && (
+                    <button
+                      type="button"
+                      onClick={() => setDepositTrxId("")}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="pt-2">
