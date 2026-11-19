@@ -4,7 +4,7 @@ export const initialSettings: SiteSettings = {
   siteName: "Toolsbd.com",
   siteTagline: "Bangladesh's #1 Automated Software Tool & Licensing Hub",
   heroTitle: "Premium Software Tool & Automated 24/7 Licensing",
-  heroSubtitle: "Deploy our flagship high-speed utility with instantaneous HWID license activation, automated bKash & Rocket verification, and 24/7 VIP Telegram support.",
+  heroSubtitle: "",
   telegramGroupUrl: "https://t.me/toolsbd_official",
   telegramChannelUrl: "https://t.me/toolsbd_channel",
   telegramSupportUsername: "@ToolsbdSupport",
