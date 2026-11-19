@@ -283,3 +283,47 @@ body {
   animation: tabFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   will-change: opacity, transform;
 }
+
+/* 3D Tactile Interactive Buttons with Z-Elevation & Glow */
+.btn-3d {
+  position: relative;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
+  transform-style: preserve-3d;
+}
+.btn-3d:hover {
+  transform: translateY(-3px) translateZ(12px);
+  box-shadow: 0 12px 25px -4px rgba(250, 204, 21, 0.45);
+}
+.btn-3d:active {
+  transform: translateY(1px) translateZ(0);
+  box-shadow: 0 3px 10px -2px rgba(250, 204, 21, 0.3);
+}
+
+.btn-3d-red {
+  position: relative;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
+  transform-style: preserve-3d;
+}
+.btn-3d-red:hover {
+  transform: translateY(-3px) translateZ(12px);
+  box-shadow: 0 12px 25px -4px rgba(239, 68, 68, 0.5);
+}
+.btn-3d-red:active {
+  transform: translateY(1px) translateZ(0);
+  box-shadow: 0 3px 10px -2px rgba(239, 68, 68, 0.3);
+}
+
+/* 3D Floating Levitation with Perspective Rotation */
+@keyframes float3D {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotateX(5deg) rotateY(-4deg);
+  }
+}
+
+.animate-float-3d {
+  animation: float3D 4.5s ease-in-out infinite;
+  transform-style: preserve-3d;
+}

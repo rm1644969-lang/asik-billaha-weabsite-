@@ -30,6 +30,7 @@ import Footer from "@/components/Footer";
 import CyberCursor from "@/components/CyberCursor";
 import MouseParticles from "@/components/MouseParticles";
 import CuteRobotCompanion from "@/components/CuteRobotCompanion";
+import CyberCanvas3D from "@/components/CyberCanvas3D";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -342,8 +343,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         {/* ============================================================== */}
         {/* RIGHT MAIN CONTENT AREA                                        */}
         {/* ============================================================== */}
-        <div className="flex-1 min-w-0 flex flex-col">
-          <main className="flex-1 pb-16 lg:pb-0">{children}</main>
+        <div className="flex-1 min-w-0 flex flex-col relative">
+          {/* Global Ambient 3D Cyber Canvas across all website pages */}
+          <CyberCanvas3D className="fixed inset-0 pointer-events-none opacity-30 z-0" />
+          <main className="flex-1 pb-16 lg:pb-0 relative z-10">{children}</main>
           <Footer />
         </div>
 

@@ -654,98 +654,101 @@ function CheckoutContent() {
       {/* VIEW: ORDER PENDING REAL-TIME ADMIN & SMS GATEWAY VERIFICATION  */}
       {/* ============================================================== */}
       {isPending && activeOrder && (
-        <div className="glass-panel rounded-3xl p-6 sm:p-10 space-y-7 border-2 border-yellow-400/50 shadow-neon-yellow text-center relative overflow-hidden bg-[#0c0c0c]">
-          
-          <div className="w-16 h-16 rounded-2xl bg-yellow-400/15 border border-yellow-400/40 text-yellow-400 flex items-center justify-center mx-auto shadow-neon-yellow">
-            <RotateCcw className="w-8 h-8 animate-spin text-yellow-400" />
+        <Card3D maxTilt={4} depth={1.01} glare={true}>
+          <div className="glass-panel rounded-3xl p-6 sm:p-10 space-y-7 border-2 border-yellow-400/50 shadow-neon-yellow text-center relative overflow-hidden bg-[#0c0c0c]">
+            
+            <div className="w-16 h-16 rounded-2xl bg-yellow-400/15 border border-yellow-400/40 text-yellow-400 flex items-center justify-center mx-auto shadow-neon-yellow">
+              <RotateCcw className="w-8 h-8 animate-spin text-yellow-400" />
+            </div>
+
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 animate-pulse mb-2">
+                <span className="w-2 h-2 rounded-full bg-amber-400" />
+                <span>স্ট্যাটাস: পেন্ডিং (যাচাই চলছে...) — PENDING</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-gradient-shimmer mt-1">
+                পেমেন্ট ভেরিফিকেশন অপেক্ষারত (Awaiting Verification)
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-lg mx-auto">
+                আপনার {paymentMethod} TrxID (<strong className="text-white font-mono">{trxId.trim().toUpperCase()}</strong>) সিস্টেমে যুক্ত হয়েছে। বিকাশ/রকেট মেসেজ ম্যাচিং অথবা অ্যাডমিন কনফার্মেশন হওয়ামাত্রই এই স্ক্রিনে স্বয়ংক্রিয়ভাবে লাইসেন্স ডেলিভারি হয়ে যাবে।
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-[#14120a] border border-yellow-400/30 text-xs text-left space-y-2.5 font-mono max-w-md mx-auto">
+              <div className="flex justify-between text-slate-400">
+                <span>অর্ডার নম্বর:</span>
+                <strong className="text-white font-bold">{activeOrder.orderNumber}</strong>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>টুল ও অফার প্ল্যান:</span>
+                <strong className={getToolTitleClass(selectedTool.name)}>{selectedTool.name} ({selectedPlan?.durationDays} Days)</strong>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>পরিশোধিত মূল্য:</span>
+                <strong className="text-emerald-400 font-bold">৳{selectedPlan?.priceBDT} BDT (${selectedPlan?.priceUSD})</strong>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>সাবমিটকৃত TrxID:</span>
+                <strong className="text-white uppercase font-black">{trxId.trim().toUpperCase()}</strong>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>বর্তমান স্ট্যাটাস:</span>
+                <span className="text-amber-400 font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                  <span>যাচাই চলছে (Pending)</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#090909] border border-white/10 text-xs text-slate-300 space-y-1 max-w-lg mx-auto text-left">
+              <p className="font-bold text-white flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-yellow-400" />
+                <span>রিয়েল-টাইম অটো লাইসেন্স আপডেট:</span>
+              </p>
+              <p className="text-[11px] text-slate-300 leading-relaxed">
+                স্বয়ংক্রিয় SMS গেটওয়ে থেকে আপনার পেমেন্ট কনফার্ম হওয়া মাত্রই এই পেইজটি রিলোড ছাড়াই সাথে সাথে লাইসেন্স এবং ডাউনলোড স্ক্রিনে চলে যাবে।
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 max-w-xl mx-auto">
+              <button
+                onClick={handleManualCheckOrder}
+                disabled={isCheckingStatus}
+                className="py-3 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all border border-white/10"
+              >
+                <RotateCcw className={`w-3.5 h-3.5 ${isCheckingStatus ? "animate-spin text-yellow-400" : ""}`} />
+                <span>{isCheckingStatus ? "চেক হচ্ছে..." : "এখনই চেক করুন"}</span>
+              </button>
+
+              <Link
+                href="/dashboard"
+                className="py-3 px-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs flex items-center justify-center gap-1.5 shadow-neon-yellow transition-all"
+              >
+                <span>ড্যাশবোর্ডে যান</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+
+              <a
+                href={settings.telegramGroupUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-3 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-neon-red transition-all"
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>টেলিগ্রাম সাপোর্ট</span>
+              </a>
+            </div>
+
           </div>
-
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 animate-pulse mb-2">
-              <span className="w-2 h-2 rounded-full bg-amber-400" />
-              <span>স্ট্যাটাস: পেন্ডিং (যাচাই চলছে...) — PENDING</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-gradient-shimmer mt-1">
-              পেমেন্ট ভেরিফিকেশন অপেক্ষারত (Awaiting Verification)
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-lg mx-auto">
-              আপনার {paymentMethod} TrxID (<strong className="text-white font-mono">{trxId.trim().toUpperCase()}</strong>) সিস্টেমে যুক্ত হয়েছে। বিকাশ/রকেট মেসেজ ম্যাচিং অথবা অ্যাডমিন কনফার্মেশন হওয়ামাত্রই এই স্ক্রিনে স্বয়ংক্রিয়ভাবে লাইসেন্স ডেলিভারি হয়ে যাবে।
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-[#14120a] border border-yellow-400/30 text-xs text-left space-y-2.5 font-mono max-w-md mx-auto">
-            <div className="flex justify-between text-slate-400">
-              <span>অর্ডার নম্বর:</span>
-              <strong className="text-white font-bold">{activeOrder.orderNumber}</strong>
-            </div>
-            <div className="flex justify-between text-slate-400">
-              <span>টুল ও অফার প্ল্যান:</span>
-              <strong className={getToolTitleClass(selectedTool.name)}>{selectedTool.name} ({selectedPlan?.durationDays} Days)</strong>
-            </div>
-            <div className="flex justify-between text-slate-400">
-              <span>পরিশোধিত মূল্য:</span>
-              <strong className="text-emerald-400 font-bold">৳{selectedPlan?.priceBDT} BDT (${selectedPlan?.priceUSD})</strong>
-            </div>
-            <div className="flex justify-between text-slate-400">
-              <span>সাবমিটকৃত TrxID:</span>
-              <strong className="text-white uppercase font-black">{trxId.trim().toUpperCase()}</strong>
-            </div>
-            <div className="flex justify-between text-slate-400">
-              <span>বর্তমান স্ট্যাটাস:</span>
-              <span className="text-amber-400 font-bold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                <span>যাচাই চলছে (Pending)</span>
-              </span>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-[#090909] border border-white/10 text-xs text-slate-300 space-y-1 max-w-lg mx-auto text-left">
-            <p className="font-bold text-white flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-yellow-400" />
-              <span>রিয়েল-টাইম অটো লাইসেন্স আপডেট:</span>
-            </p>
-            <p className="text-[11px] text-slate-300 leading-relaxed">
-              স্বয়ংক্রিয় SMS গেটওয়ে থেকে আপনার পেমেন্ট কনফার্ম হওয়া মাত্রই এই পেইজটি রিলোড ছাড়াই সাথে সাথে লাইসেন্স এবং ডাউনলোড স্ক্রিনে চলে যাবে।
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 max-w-xl mx-auto">
-            <button
-              onClick={handleManualCheckOrder}
-              disabled={isCheckingStatus}
-              className="py-3 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all border border-white/10"
-            >
-              <RotateCcw className={`w-3.5 h-3.5 ${isCheckingStatus ? "animate-spin text-yellow-400" : ""}`} />
-              <span>{isCheckingStatus ? "চেক হচ্ছে..." : "এখনই চেক করুন"}</span>
-            </button>
-
-            <Link
-              href="/dashboard"
-              className="py-3 px-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs flex items-center justify-center gap-1.5 shadow-neon-yellow transition-all"
-            >
-              <span>ড্যাশবোর্ডে যান</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-
-            <a
-              href={settings.telegramGroupUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="py-3 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs flex items-center justify-center gap-1.5 shadow-neon-red transition-all"
-            >
-              <Send className="w-3.5 h-3.5" />
-              <span>টেলিগ্রাম সাপোর্ট</span>
-            </a>
-          </div>
-
-        </div>
+        </Card3D>
       )}
 
       {/* ============================================================== */}
       {/* VIEW 2: INSTANT SUCCESS, DIRECT DOWNLOAD & HWID BINDING        */}
       {/* ============================================================== */}
       {isSuccess && (
-        <div className="glass-panel rounded-3xl p-6 sm:p-10 space-y-7 border-2 border-yellow-400 shadow-neon-yellow text-center relative overflow-hidden">
+        <Card3D maxTilt={4} depth={1.01} glare={true}>
+          <div className="glass-panel rounded-3xl p-6 sm:p-10 space-y-7 border-2 border-yellow-400 shadow-neon-yellow text-center relative overflow-hidden">
           
           <div className="w-16 h-16 rounded-full bg-yellow-400 text-black flex items-center justify-center mx-auto shadow-neon-yellow">
             <CheckCircle2 className="w-10 h-10" />
@@ -947,6 +950,7 @@ function CheckoutContent() {
           </div>
 
         </div>
+        </Card3D>
       )}
 
       </div>

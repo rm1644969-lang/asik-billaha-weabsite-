@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Terminal, Lock, Mail, User, ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { useNexusStore } from "@/lib/store";
+import Card3D from "@/components/Card3D";
+import CyberCanvas3D from "@/components/CyberCanvas3D";
 
 export default function RegisterPage() {
   return (
@@ -33,11 +35,11 @@ function RegisterContent() {
     setError(null);
 
     if (!email.trim() || !email.includes("@")) {
-      setError("Please enter a valid Gmail address.");
+      setError("দয়া করে সঠিক Gmail এড্রেস লিখুন।");
       return;
     }
     if (!password || password.length < 4) {
-      setError("Password must be at least 4 characters.");
+      setError("পাসওয়ার্ড কমপক্ষে ৪ অক্ষরের হতে হবে।");
       return;
     }
 
@@ -48,13 +50,17 @@ function RegisterContent() {
     if (res.success) {
       router.push(redirectUrl);
     } else {
-      setError(res.error || "Registration failed.");
+      setError(res.error || "রেজিস্ট্রেশন সম্পন্ন করা যায়নি। পুনরায় চেষ্টা করুন।");
     }
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-[#070707]">
-      <div className="w-full max-w-md space-y-6">
+    <div className="relative min-h-[80vh] flex items-center justify-center px-4 py-12 bg-[#070707] overflow-hidden">
+      
+      {/* 3D Ambient Cyber Canvas Background */}
+      <CyberCanvas3D className="absolute inset-0 pointer-events-none opacity-40 z-0" />
+
+      <div className="w-full max-w-md space-y-6 relative z-10">
         
         {/* Brand Header */}
         <div className="text-center space-y-2">
@@ -71,90 +77,92 @@ function RegisterContent() {
           </p>
         </div>
 
-        {/* Register Form Container */}
-        <div className="rounded-3xl p-6 sm:p-8 space-y-6 bg-[#0c0c0c] border border-white/10 shadow-2xl relative overflow-hidden">
-          
-          <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 rounded-full blur-2xl pointer-events-none" />
+        {/* Register Form Container wrapped in Card3D */}
+        <Card3D maxTilt={7} depth={1.03} glare={true}>
+          <div className="rounded-3xl p-6 sm:p-8 space-y-6 bg-[#0c0c0c] border border-white/10 shadow-2xl relative overflow-hidden">
+            
+            <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 rounded-full blur-2xl pointer-events-none" />
 
-          {error && (
-            <div className="p-3.5 rounded-xl bg-red-950/80 border border-red-500 text-white text-xs font-bold">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleRegister} className="space-y-4 text-xs">
-            <div>
-              <label className="font-black text-slate-300 uppercase tracking-wider block mb-1.5">
-                পুরো নাম
-              </label>
-              <div className="relative">
-                <User className="w-4 h-4 text-yellow-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  required
-                  placeholder="যেমন: Asik Billah"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium placeholder:text-slate-500"
-                />
+            {error && (
+              <div className="p-3.5 rounded-xl bg-red-950/80 border border-red-500 text-white text-xs font-bold">
+                {error}
               </div>
-            </div>
+            )}
 
-            <div>
-              <label className="font-black text-slate-300 uppercase tracking-wider block mb-1.5">
-                আপনার Gmail এড্রেস
-              </label>
-              <div className="relative">
-                <Mail className="w-4 h-4 text-yellow-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="email"
-                  required
-                  placeholder="যেমন: yourname@gmail.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium placeholder:text-slate-500"
-                />
+            <form onSubmit={handleRegister} className="space-y-4 text-xs">
+              <div>
+                <label className="font-black text-slate-300 uppercase tracking-wider block mb-1.5">
+                  পুরো নাম
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-yellow-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    required
+                    placeholder="যেমন: Asik Billah"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium placeholder:text-slate-500"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="font-black text-slate-300 uppercase tracking-wider block mb-1.5">
-                পাসওয়ার্ড
-              </label>
-              <div className="relative">
-                <Lock className="w-4 h-4 text-red-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="password"
-                  required
-                  placeholder="কমপক্ষে ৪ অক্ষর"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium placeholder:text-slate-500"
-                />
+              <div>
+                <label className="font-black text-slate-300 uppercase tracking-wider block mb-1.5">
+                  আপনার Gmail এড্রেস
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-yellow-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="email"
+                    required
+                    placeholder="যেমন: yourname@gmail.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium placeholder:text-slate-500"
+                  />
+                </div>
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black font-black text-xs sm:text-sm shadow-neon-yellow hover:opacity-95 flex items-center justify-center gap-2 transition-all mt-2"
-            >
-              <span>{loading ? "অ্যাকাউন্ট তৈরি হচ্ছে..." : "অ্যাকাউন্ট তৈরি করে এগিয়ে যান"}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </form>
+              <div>
+                <label className="font-black text-slate-300 uppercase tracking-wider block mb-1.5">
+                  পাসওয়ার্ড
+                </label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-red-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="password"
+                    required
+                    placeholder="কমপক্ষে ৪ অক্ষর"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-white font-medium placeholder:text-slate-500"
+                  />
+                </div>
+              </div>
 
-          <p className="text-center text-xs text-slate-400">
-            ইতিমধ্যেই অ্যাকাউন্ট আছে?{" "}
-            <Link 
-              href={`/login${redirectUrl ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
-              className="text-yellow-400 font-black hover:underline"
-            >
-              লগইন করুন
-            </Link>
-          </p>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black font-black text-xs sm:text-sm shadow-neon-yellow hover:opacity-95 flex items-center justify-center gap-2 transition-all mt-2"
+              >
+                <span>{loading ? "অ্যাকাউন্ট তৈরি হচ্ছে..." : "অ্যাকাউন্ট তৈরি করে এগিয়ে যান"}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </form>
 
-        </div>
+            <p className="text-center text-xs text-slate-400">
+              ইতিমধ্যেই অ্যাকাউন্ট আছে?{" "}
+              <Link 
+                href={`/login${redirectUrl ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
+                className="text-yellow-400 font-black hover:underline"
+              >
+                লগইন করুন
+              </Link>
+            </p>
+
+          </div>
+        </Card3D>
 
       </div>
     </div>

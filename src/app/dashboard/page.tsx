@@ -618,7 +618,9 @@ export default function UserDashboardPage() {
         <div key="tab-wallet" className="animate-tab-fade grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Left: Add Money via bKash / Rocket */}
-          <div className="lg:col-span-6 glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10">
+          <div className="lg:col-span-6">
+            <Card3D maxTilt={5} depth={1.02} glare={true} className="h-full">
+              <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10 h-full">
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <div>
                 <h2 className="text-xl font-black text-gradient-shimmer flex items-center gap-2">
@@ -739,10 +741,14 @@ export default function UserDashboardPage() {
                 </button>
               </div>
             </form>
+              </div>
+            </Card3D>
           </div>
 
           {/* Right: Buy TOOLS OFFER PRICE Using Wallet Balance */}
-          <div className="lg:col-span-6 glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-yellow-400/30">
+          <div className="lg:col-span-6">
+            <Card3D maxTilt={5} depth={1.02} glare={true} className="h-full">
+              <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-yellow-400/30 h-full">
             <div className="pb-3 border-b border-white/10">
               <span className="text-[11px] font-black uppercase tracking-widest text-red-500">
                 তাৎক্ষণিক লাইসেন্স ক্রয়
@@ -804,6 +810,8 @@ export default function UserDashboardPage() {
               <p>২. টুল ডাউনলোড করে কম্পিউটারে ওপেন করলে আপনার পিসির HWID দেখতে পাবেন।</p>
               <p>৩. 'আমার লাইসেন্স ও HWID কি' অপশনে গিয়ে HWID পেস্ট করে <strong>HWID লক করুন</strong>-এ ক্লিক করলেই আপনার লাইসেন্স স্বয়ংক্রিয়ভাবে সক্রিয় হবে!</p>
             </div>
+              </div>
+            </Card3D>
           </div>
 
         </div>
@@ -1106,109 +1114,113 @@ export default function UserDashboardPage() {
       {activeTab === "orders" && (
         <div key="tab-orders" className="animate-tab-fade space-y-6">
           {/* Wallet Deposits Table */}
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-white/10">
-            <h3 className="text-lg font-black text-gradient-shimmer">ওয়ালেট ব্যালেন্স যোগের হিস্টোরি</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs min-w-[650px]">
-                <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
-                  <tr>
-                    <th className="pb-3 font-bold">পদ্ধতি</th>
-                    <th className="pb-3 font-bold">পরিমাণ</th>
-                    <th className="pb-3 font-bold">প্রেরক নম্বর</th>
-                    <th className="pb-3 font-bold">TrxID</th>
-                    <th className="pb-3 font-bold">স্ট্যাটাস</th>
-                    <th className="pb-3 font-bold">তারিখ</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5 text-slate-300">
-                  {activeDeposits.map(dep => (
-                    <tr key={dep.id} className="hover:bg-white/5">
-                      <td className="py-3 font-bold text-white">{dep.method}</td>
-                      <td className="py-3 font-black text-yellow-400">${dep.amountUSD} (৳{dep.amountBDT})</td>
-                      <td className="py-3 font-mono">{dep.senderNumber}</td>
-                      <td className="py-3 font-mono text-white font-bold">{dep.trxId}</td>
-                      <td className="py-3">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black inline-flex items-center gap-1.5 ${
-                          dep.status === "APPROVED"
-                            ? "bg-emerald-950 text-emerald-400 border border-emerald-500/40"
-                            : "bg-amber-950 text-amber-400 border border-amber-500/40 animate-pulse"
-                        }`}>
-                          {dep.status === "APPROVED" ? (
-                            <>
-                              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                              <span>সফল (APPROVED)</span>
-                            </>
-                          ) : (
-                            <>
-                              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                              <span>পেন্ডিং (যাচাই চলছে...)</span>
-                            </>
-                          )}
-                        </span>
-                      </td>
-                      <td className="py-3 text-slate-400 text-[11px]">{new Date(dep.createdAt).toLocaleDateString()}</td>
+          <Card3D maxTilt={4} depth={1.01} glare={true}>
+            <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-white/10 shadow-xl">
+              <h3 className="text-lg font-black text-gradient-shimmer">ওয়ালেট ব্যালেন্স যোগের হিস্টোরি</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs min-w-[650px]">
+                  <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
+                    <tr>
+                      <th className="pb-3 font-bold">পদ্ধতি</th>
+                      <th className="pb-3 font-bold">পরিমাণ</th>
+                      <th className="pb-3 font-bold">প্রেরক নম্বর</th>
+                      <th className="pb-3 font-bold">TrxID</th>
+                      <th className="pb-3 font-bold">স্ট্যাটাস</th>
+                      <th className="pb-3 font-bold">তারিখ</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-white/5 text-slate-300">
+                    {activeDeposits.map(dep => (
+                      <tr key={dep.id} className="hover:bg-white/5">
+                        <td className="py-3 font-bold text-white">{dep.method}</td>
+                        <td className="py-3 font-black text-yellow-400">${dep.amountUSD} (৳{dep.amountBDT})</td>
+                        <td className="py-3 font-mono">{dep.senderNumber}</td>
+                        <td className="py-3 font-mono text-white font-bold">{dep.trxId}</td>
+                        <td className="py-3">
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-black inline-flex items-center gap-1.5 ${
+                            dep.status === "APPROVED"
+                              ? "bg-emerald-950 text-emerald-400 border border-emerald-500/40"
+                              : "bg-amber-950 text-amber-400 border border-amber-500/40 animate-pulse"
+                          }`}>
+                            {dep.status === "APPROVED" ? (
+                              <>
+                                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                                <span>সফল (APPROVED)</span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                                <span>পেন্ডিং (যাচাই চলছে...)</span>
+                              </>
+                            )}
+                          </span>
+                        </td>
+                        <td className="py-3 text-slate-400 text-[11px]">{new Date(dep.createdAt).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          </Card3D>
 
           {/* Orders Table */}
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-white/10">
-            <h3 className="text-lg font-black text-gradient-shimmer">সফটওয়্যার লাইসেন্স অর্ডার হিস্টোরি</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs min-w-[650px]">
-                <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
-                  <tr>
-                    <th className="pb-3 font-bold">অর্ডার নম্বর</th>
-                    <th className="pb-3 font-bold">টুল ও অফার প্ল্যান</th>
-                    <th className="pb-3 font-bold">মূল্য</th>
-                    <th className="pb-3 font-bold">পেমেন্ট মাধ্যম</th>
-                    <th className="pb-3 font-bold">TrxID</th>
-                    <th className="pb-3 font-bold">স্ট্যাটাস</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5 text-slate-300">
-                  {userOrders.map((ord) => (
-                    <tr key={ord.id} className="hover:bg-white/5 transition-colors">
-                      <td className="py-3 font-mono font-bold text-white">{ord.orderNumber}</td>
-                      <td className="py-3">
-                        <span className="font-bold text-white">{ord.toolName}</span>
-                        <span className="text-[11px] text-yellow-400 block font-semibold">{ord.planDuration} Days</span>
-                      </td>
-                      <td className="py-3 font-black text-yellow-400">৳{ord.amount}</td>
-                      <td className="py-3 font-bold text-white">{ord.paymentMethod}</td>
-                      <td className="py-3 font-mono text-white font-bold">{ord.trxId || "Pending"}</td>
-                      <td className="py-3">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black inline-flex items-center gap-1.5 ${
-                          ord.status === "PAID" || ord.status === "APPROVED"
-                            ? "bg-emerald-950 text-emerald-400 border border-emerald-500/40"
-                            : ord.status === "PENDING"
-                            ? "bg-amber-950 text-amber-400 border border-amber-500/40 animate-pulse"
-                            : "bg-red-950 text-red-400 border border-red-500/40"
-                        }`}>
-                          {ord.status === "PAID" || ord.status === "APPROVED" ? (
-                            <>
-                              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                              <span>সফল (APPROVED)</span>
-                            </>
-                          ) : ord.status === "PENDING" ? (
-                            <>
-                              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-                              <span>পেন্ডিং (যাচাই চলছে...)</span>
-                            </>
-                          ) : (
-                            <span>{ord.status}</span>
-                          )}
-                        </span>
-                      </td>
+          <Card3D maxTilt={4} depth={1.01} glare={true}>
+            <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4 border border-white/10 shadow-xl">
+              <h3 className="text-lg font-black text-gradient-shimmer">সফটওয়্যার লাইসেন্স অর্ডার হিস্টোরি</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs min-w-[650px]">
+                  <thead className="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/10">
+                    <tr>
+                      <th className="pb-3 font-bold">অর্ডার নম্বর</th>
+                      <th className="pb-3 font-bold">টুল ও অফার প্ল্যান</th>
+                      <th className="pb-3 font-bold">মূল্য</th>
+                      <th className="pb-3 font-bold">পেমেন্ট মাধ্যম</th>
+                      <th className="pb-3 font-bold">TrxID</th>
+                      <th className="pb-3 font-bold">স্ট্যাটাস</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-white/5 text-slate-300">
+                    {userOrders.map((ord) => (
+                      <tr key={ord.id} className="hover:bg-white/5 transition-colors">
+                        <td className="py-3 font-mono font-bold text-white">{ord.orderNumber}</td>
+                        <td className="py-3">
+                          <span className="font-bold text-white">{ord.toolName}</span>
+                          <span className="text-[11px] text-yellow-400 block font-semibold">{ord.planDuration} Days</span>
+                        </td>
+                        <td className="py-3 font-black text-yellow-400">৳{ord.amount}</td>
+                        <td className="py-3 font-bold text-white">{ord.paymentMethod}</td>
+                        <td className="py-3 font-mono text-white font-bold">{ord.trxId || "Pending"}</td>
+                        <td className="py-3">
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-black inline-flex items-center gap-1.5 ${
+                            ord.status === "PAID" || ord.status === "APPROVED"
+                              ? "bg-emerald-950 text-emerald-400 border border-emerald-500/40"
+                              : ord.status === "PENDING"
+                              ? "bg-amber-950 text-amber-400 border border-amber-500/40 animate-pulse"
+                              : "bg-red-950 text-red-400 border border-red-500/40"
+                          }`}>
+                            {ord.status === "PAID" || ord.status === "APPROVED" ? (
+                              <>
+                                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                                <span>সফল (APPROVED)</span>
+                              </>
+                            ) : ord.status === "PENDING" ? (
+                              <>
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                                <span>পেন্ডিং (যাচাই চলছে...)</span>
+                              </>
+                            ) : (
+                              <span>{ord.status}</span>
+                            )}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          </Card3D>
         </div>
       )}
 

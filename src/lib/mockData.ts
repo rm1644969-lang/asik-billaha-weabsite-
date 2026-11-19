@@ -36,11 +36,11 @@ export const samplePlans: PricePlan[] = [
     isPopular: false,
     enabled: true,
     features: [
-      "Full 7 Days Unlimited Access",
-      "Single PC HWID Security Lock",
-      "Instant bKash / Rocket Activation",
-      "Setup Video & Direct Download",
-      "Standard Telegram Support"
+      "সম্পূর্ণ ৭ দিন আনলিমিটেড অ্যাক্সেস",
+      "সিঙ্গেল পিসি HWID সিকিউরিটি লক",
+      "বিকাশ ও রকেটে তাৎক্ষণিক অ্যাক্টিভেশন",
+      "সেটআপ ভিডিও ও হাই-স্পিড ডাউনলোড",
+      "২৪/৭ অফিশিয়াল টেলিগ্রাম সাপোর্ট"
     ]
   },
   {
@@ -57,11 +57,11 @@ export const samplePlans: PricePlan[] = [
     isPopular: false,
     enabled: true,
     features: [
-      "Full 15 Days Unlimited Access",
-      "High Priority High-Speed Route",
-      "Single PC HWID Security Lock",
-      "Instant Auto-Delivery via SMS",
-      "Priority 24/7 Telegram Support"
+      "সম্পূর্ণ ১৫ দিন আনলিমিটেড অ্যাক্সেস",
+      "হাই-প্রায়োরিটি ফাস্ট স্পিড রুট",
+      "সিঙ্গেল পিসি HWID সিকিউরিটি লক",
+      "SMS গেটওয়েতে তাৎক্ষণিক ডেলিভারি",
+      "প্রায়োরিটি ২৪/৭ টেলিগ্রাম সাপোর্ট"
     ]
   },
   {
@@ -78,11 +78,11 @@ export const samplePlans: PricePlan[] = [
     isPopular: false,
     enabled: true,
     features: [
-      "Full 30 Days VIP Unlimited Access",
-      "Ultra-Fast Multi-Thread Engine",
-      "Single PC HWID Security Lock",
-      "Dedicated VIP Telegram Group",
-      "All Future Updates Included Free"
+      "সম্পূর্ণ ৩০ দিন VIP আনলিমিটেড অ্যাক্সেস",
+      "আল্ট্রা-ফাস্ট মাল্টি-থ্রেড ইঞ্জিন",
+      "সিঙ্গেল পিসি HWID সিকিউরিটি লক",
+      "ডেডিকেটেড VIP টেলিগ্রাম গ্রুপ সাপোর্ট",
+      "ভবিষ্যতের সকল সফটওয়্যার আপডেট ফ্রি"
     ]
   }
 ];
