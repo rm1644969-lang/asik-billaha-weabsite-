@@ -107,25 +107,12 @@ export default function ToolCard({ tool }: ToolCardProps) {
             </div>
           </div>
 
-          {/* Title & Tagline with Distinctive Masked Gradient Colors */}
-          <h3 className="text-xl sm:text-2xl font-black mb-2 tracking-tight transition-transform duration-300">
+          {/* Title with Distinctive Masked Gradient Colors */}
+          <h3 className="text-xl sm:text-2xl font-black tracking-tight transition-transform duration-300">
             <span className={`${toolTitleClass} select-none`}>
               {tool.name}
             </span>
           </h3>
-          <p className="text-sm text-slate-300 line-clamp-2 mb-4 leading-relaxed font-normal">
-            {tool.tagline}
-          </p>
-
-          {/* Top Features */}
-          <ul className="space-y-1.5 mb-6 text-xs text-slate-200">
-            {tool.features.slice(0, 3).map((feat, idx) => (
-              <li key={idx} className="flex items-center gap-2">
-                <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${isComingSoon ? "text-slate-500" : "text-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,0.6)]"}`} />
-                <span className="truncate">{feat}</span>
-              </li>
-            ))}
-          </ul>
         </div>
 
         {/* Pricing & CTA Buttons */}
