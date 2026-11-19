@@ -91,18 +91,18 @@ export const samplePlans: PricePlan[] = [
 export const sampleTools: Tool[] = [
   {
     id: "tool-otp-utility",
-    name: "OTP Testing Utility",
+    name: "FAST OTP — FB Auto Resender Pro",
     slug: "otp-testing-utility",
     category: "Flagship Utility",
     tagline: "High-speed automated utility with instant HWID license verification & zero-latency engine",
     description: "Our flagship tool engineered for maximum speed, stability, and automated workflow execution. Features ultra-low latency monitoring, multi-threaded operations, cryptographic HWID license locking, and automatic cloud updates directly from Toolsbd.com.",
-    version: "v3.4.2 PRO",
-    bannerUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200&auto=format&fit=crop",
+    version: "v3.0 PRO",
+    bannerUrl: "/images/fast-otp-tool.jpg",
     status: "active",
     isFeatured: true,
     setupVideoUrl: "https://www.youtube.com/embed/U2JBcFAO7mE?si=9Pxpka_XfFtBmDGF",
     downloadFilePath: "/releases/Toolsbd_Utility_v3.4.2_Setup.zip",
-    downloadFileName: "Toolsbd_Utility_v3.4.2_Setup.zip",
+    downloadFileName: "Fast_OTP_v3.0_Pro_Setup.zip",
     fileSize: "28.4 MB",
     checksumSha256: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     features: [
@@ -120,9 +120,7 @@ export const sampleTools: Tool[] = [
       netFramework: ".NET Desktop Runtime 8.0"
     },
     screenshots: [
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop"
+      "/images/fast-otp-tool.jpg"
     ],
     plans: samplePlans,
     createdAt: "2026-01-10T10:00:00Z",

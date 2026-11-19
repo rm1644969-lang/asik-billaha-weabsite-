@@ -48,15 +48,15 @@ export default function ToolCard({ tool }: ToolCardProps) {
           </div>
 
           {/* Banner Image / Thumbnail */}
-          <div className="relative w-full h-44 rounded-xl overflow-hidden mb-5 border border-white/10 group-hover:border-yellow-400/50 transition-colors">
+          <div className="relative w-full h-48 sm:h-52 rounded-xl overflow-hidden mb-5 border border-white/10 group-hover:border-yellow-400/50 transition-colors shadow-lg">
             <Image
               src={tool.bannerUrl}
               alt={tool.name}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-700"
+              className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c0c] via-[#0c0c0c]/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c0c] via-transparent to-transparent opacity-80" />
             
             <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
               <span className="flex items-center gap-1 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/20 font-semibold">

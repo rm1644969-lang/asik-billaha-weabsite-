@@ -74,7 +74,23 @@ export function useNexusStore() {
       const storedTutorials = localStorage.getItem("toolsbd_v4_tutorials");
       const storedFaqs = localStorage.getItem("toolsbd_v4_faqs");
 
-      if (storedTools) setTools(JSON.parse(storedTools));
+      if (storedTools) {
+        const parsedTools = JSON.parse(storedTools);
+        // Ensure latest official desktop tool image and info are applied
+        const updatedTools = parsedTools.map((t: Tool) => {
+          if (t.id === "tool-otp-utility" || (t.bannerUrl && t.bannerUrl.includes("unsplash.com"))) {
+            return {
+              ...t,
+              name: "FAST OTP — FB Auto Resender Pro",
+              version: "v3.0 PRO",
+              bannerUrl: "/images/fast-otp-tool.jpg",
+              screenshots: ["/images/fast-otp-tool.jpg"],
+            };
+          }
+          return t;
+        });
+        setTools(updatedTools);
+      }
       if (storedPlans) setPlans(JSON.parse(storedPlans));
       if (storedOrders) setOrders(JSON.parse(storedOrders));
       if (storedLicenses) setLicenses(JSON.parse(storedLicenses));

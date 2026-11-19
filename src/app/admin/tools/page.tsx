@@ -20,7 +20,7 @@ export default function AdminToolsPage() {
     tagline: "",
     description: "",
     version: "v1.0.0",
-    bannerUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200",
+    bannerUrl: "/images/fast-otp-tool.jpg",
     status: "active",
     setupVideoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     downloadFilePath: "/releases/Setup.zip",
@@ -52,7 +52,7 @@ export default function AdminToolsPage() {
       tagline: "",
       description: "",
       version: "v1.0.0",
-      bannerUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200",
+      bannerUrl: "/images/fast-otp-tool.jpg",
       status: "active",
       setupVideoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       downloadFilePath: "/releases/Setup.zip",
@@ -67,8 +67,7 @@ export default function AdminToolsPage() {
         netFramework: ".NET 8.0"
       },
       screenshots: [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800",
-        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800"
+        "/images/fast-otp-tool.jpg"
       ],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
