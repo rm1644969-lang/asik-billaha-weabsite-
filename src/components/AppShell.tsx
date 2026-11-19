@@ -20,7 +20,9 @@ import {
   X,
   PlusCircle,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Flame,
+  Zap
 } from "lucide-react";
 import { useNexusStore } from "@/lib/store";
 import Footer from "@/components/Footer";
@@ -31,7 +33,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
-  // Admin panel already has its own dedicated left sidebar layout
+  // Admin panel already has its own dedicated full-fledged layout
   if (pathname.startsWith("/admin")) {
     return <div className="min-h-screen bg-[#050505]">{children}</div>;
   }
@@ -39,7 +41,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const navItems = [
     { name: "Home", href: "/", icon: Home },
     { name: "Tools", href: "/tools", icon: Layers },
-    { name: "Offer Pricing", href: "/pricing", icon: Tag, badge: "$2+" },
+    { name: "Offer Pricing", href: "/pricing", icon: Tag, badge: "$2+", highlight: true },
     { name: "Checkout", href: "/checkout", icon: ShoppingCart },
     { name: "My Dashboard", href: "/dashboard", icon: LayoutDashboard, badge: "HWID" },
     { name: "Tutorials", href: "/tutorials", icon: Tv },
@@ -53,41 +55,42 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#070707] text-white">
+    <div className="min-h-screen flex flex-col bg-[#070707] text-white selection:bg-yellow-400 selection:text-black">
       
-      {/* Top Announcement Bar */}
+      {/* 1. TOP FLASH ANNOUNCEMENT BAR */}
       {settings.isAnnouncementActive && (
-        <div className="sticky top-0 z-50 bg-gradient-to-r from-red-950 via-black to-yellow-950 border-b border-yellow-500/30 text-[11px] sm:text-xs py-1.5 px-4 text-center flex items-center justify-center gap-2 text-yellow-300 font-semibold">
+        <div className="sticky top-0 z-50 bg-gradient-to-r from-red-950 via-black to-yellow-950 border-b border-yellow-500/30 text-[11px] sm:text-xs py-1.5 px-4 text-center flex items-center justify-center gap-2 text-yellow-300 font-semibold shadow-lg">
           <span className="w-2 h-2 rounded-full bg-red-500 animate-ping shrink-0" />
           <span className="truncate">{settings.announcementNotice}</span>
           <a
             href={settings.telegramChannelUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="underline font-black text-white hover:text-yellow-400 transition-colors shrink-0 ml-1"
+            className="underline font-black text-white hover:text-yellow-400 transition-colors shrink-0 ml-1 flex items-center gap-1"
           >
-            Join Telegram
+            <span>Join Telegram</span>
+            <Send className="w-3 h-3 text-yellow-400" />
           </a>
         </div>
       )}
 
-      {/* Mobile Top Header (Only visible below lg) */}
-      <header className="lg:hidden sticky top-[33px] z-40 h-16 px-4 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 flex items-center justify-between">
+      {/* 2. MOBILE TOP HEADER (VISIBLE BELOW lg) */}
+      <header className="lg:hidden sticky top-0 z-40 h-14 px-4 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-2 rounded-xl bg-white/5 border border-white/10 text-yellow-400 hover:bg-white/10"
-            aria-label="Open sidebar menu"
+            className="p-2 rounded-xl bg-white/5 border border-white/10 text-yellow-400 hover:bg-white/10 active:scale-95 transition-all"
+            aria-label="Open navigation menu"
           >
             <Menu className="w-5 h-5" />
           </button>
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-yellow-400 via-red-600 to-black p-[1.5px]">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-yellow-400 via-red-600 to-black p-[1.5px] shadow-neon-yellow">
               <div className="w-full h-full bg-[#0a0a0a] rounded-[6px] flex items-center justify-center">
-                <Terminal className="w-4 h-4 text-yellow-400" />
+                <Terminal className="w-4 h-4 text-yellow-400 group-hover:scale-110 transition-transform" />
               </div>
             </div>
-            <span className="font-black text-lg text-white">
+            <span className="font-black text-lg tracking-tight text-white">
               Toolsbd<span className="text-red-500">.com</span>
             </span>
           </Link>
@@ -96,48 +99,48 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex items-center gap-2">
           <Link
             href="/dashboard"
-            className="px-2.5 py-1.5 rounded-lg bg-yellow-400/15 border border-yellow-400/40 text-yellow-400 text-xs font-black font-mono"
+            className="px-2.5 py-1.5 rounded-lg bg-yellow-400/15 border border-yellow-400/40 text-yellow-400 text-xs font-black font-mono flex items-center gap-1 hover:bg-yellow-400/25 transition-all"
           >
-            ${walletBalanceUSD.toFixed(2)}
+            <Wallet className="w-3 h-3" />
+            <span>${walletBalanceUSD.toFixed(2)}</span>
           </Link>
           <Link
             href="/admin"
-            className="px-2.5 py-1.5 rounded-lg bg-yellow-400 text-black text-xs font-black"
+            className="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-yellow-400 to-yellow-500 text-black text-xs font-black shadow-neon-yellow hover:opacity-95 transition-all"
           >
             Admin
           </Link>
         </div>
       </header>
 
-      {/* Main Body Shell: Left Sidebar + Right Content */}
+      {/* 3. MAIN BODY CONTAINER: LEFT SIDEBAR + RIGHT CONTENT */}
       <div className="flex-1 flex relative">
 
-        {/* Mobile Backdrop */}
+        {/* Mobile Backdrop Overlay */}
         {mobileOpen && (
           <div
             onClick={() => setMobileOpen(false)}
-            className="fixed inset-0 z-40 bg-black/75 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm lg:hidden transition-opacity"
           />
         )}
 
         {/* ============================================================== */}
-        {/* LEFT VERTICAL DASHBOARD SIDEBAR                                */}
+        {/* LEFT VERTICAL DASHBOARD SIDEBAR (DESKTOP + MOBILE DRAWER)      */}
         {/* ============================================================== */}
         <aside
           className={`
-            fixed lg:sticky top-0 lg:top-[33px] left-0 z-50 lg:z-30
-            h-screen lg:h-[calc(100vh-33px)]
-            bg-[#0a0a0a]/95 backdrop-blur-2xl border-r border-white/10
+            fixed lg:sticky top-0 left-0 z-50 lg:z-30
+            h-screen bg-[#0a0a0a]/95 backdrop-blur-2xl border-r border-white/10
             flex flex-col justify-between transition-all duration-300 shrink-0
             ${collapsed ? "lg:w-20" : "w-64"}
             ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           `}
         >
           {/* Top Brand + Nav Links */}
-          <div className="p-4 space-y-5 overflow-y-auto flex-1">
+          <div className="p-4 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
             
-            {/* Brand Header + Collapse Toggle */}
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
+            {/* Brand Header + Collapse Button */}
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5 group min-w-0">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 via-red-600 to-black p-[2px] shadow-neon-yellow shrink-0 group-hover:scale-105 transition-transform">
                   <div className="w-full h-full bg-[#0a0a0a] rounded-[9px] flex items-center justify-center">
@@ -151,8 +154,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         Toolsbd<span className="text-red-500">.com</span>
                       </span>
                     </div>
-                    <span className="text-[10px] font-bold text-yellow-400 uppercase tracking-wider block">
-                      BD #1 Tools Hub
+                    <span className="text-[10px] font-black text-yellow-400 uppercase tracking-widest block">
+                      BD #1 Tools Platform
                     </span>
                   </div>
                 )}
@@ -162,11 +165,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <button
                 onClick={() => setMobileOpen(false)}
                 className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white bg-white/5"
+                aria-label="Close menu"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              {/* Collapse toggle on desktop */}
+              {/* Desktop Collapse Toggle */}
               <button
                 onClick={() => setCollapsed(!collapsed)}
                 className="hidden lg:flex p-1.5 rounded-lg text-slate-400 hover:text-yellow-400 hover:bg-white/5 transition-colors"
@@ -176,39 +180,47 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </button>
             </div>
 
-            {/* Wallet Mini Card inside Left Sidebar */}
-            {!collapsed && (
+            {/* Wallet Widget in Sidebar */}
+            {!collapsed ? (
               <Link
                 href="/dashboard"
                 onClick={() => setMobileOpen(false)}
-                className="block p-3.5 rounded-2xl bg-gradient-to-br from-[#141414] to-black border border-yellow-400/30 hover:border-yellow-400 transition-all group shadow-md"
+                className="block p-3.5 rounded-2xl bg-gradient-to-br from-[#131313] to-black border border-yellow-400/30 hover:border-yellow-400 transition-all group shadow-md"
               >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                    <Wallet className="w-3 h-3 text-yellow-400" />
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <Wallet className="w-3.5 h-3.5 text-yellow-400" />
                     <span>Wallet Balance</span>
                   </span>
-                  <span className="text-[10px] font-black text-red-400 group-hover:text-yellow-400 flex items-center gap-0.5">
-                    <PlusCircle className="w-3 h-3" />
-                    Add
+                  <span className="text-[10px] font-black text-yellow-400 group-hover:text-white flex items-center gap-0.5 bg-yellow-400/10 px-2 py-0.5 rounded-md border border-yellow-400/30">
+                    <PlusCircle className="w-3 h-3 text-yellow-400" />
+                    <span>Add</span>
                   </span>
                 </div>
                 <div className="flex items-baseline justify-between">
-                  <span className="text-xl font-black text-yellow-400 font-mono">
+                  <span className="text-2xl font-black text-yellow-400 font-mono tracking-tight">
                     ${walletBalanceUSD.toFixed(2)}
                   </span>
-                  <span className="text-[10px] font-mono text-slate-400">
-                    ৳{(walletBalanceUSD * 120).toLocaleString()}
+                  <span className="text-[11px] font-mono text-slate-400">
+                    ৳{(walletBalanceUSD * 120).toLocaleString()} BDT
                   </span>
                 </div>
               </Link>
+            ) : (
+              <Link
+                href="/dashboard"
+                title={`Wallet Balance: $${walletBalanceUSD.toFixed(2)}`}
+                className="flex items-center justify-center p-3 rounded-xl bg-white/5 hover:bg-yellow-400/10 border border-white/10 hover:border-yellow-400 transition-all text-yellow-400"
+              >
+                <Wallet className="w-5 h-5" />
+              </Link>
             )}
 
-            {/* Vertical Navigation Menu */}
+            {/* Navigation Links */}
             <div className="space-y-1">
               {!collapsed && (
-                <p className="px-3 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
-                  Navigation Menu
+                <p className="px-3 text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1.5">
+                  Dashboard &amp; Navigation
                 </p>
               )}
               <nav className="space-y-1">
@@ -221,26 +233,34 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                       href={item.href}
                       onClick={() => setMobileOpen(false)}
                       title={collapsed ? item.name : undefined}
-                      className={`flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                      className={`relative flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
                         active
-                          ? "bg-yellow-400 text-black shadow-neon-yellow font-black"
+                          ? "bg-gradient-to-r from-yellow-400 to-yellow-500 text-black shadow-neon-yellow font-black scale-[1.01]"
                           : "text-slate-300 hover:text-white hover:bg-white/5"
                       }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <Icon className={`w-4 h-4 shrink-0 ${active ? "text-black" : "text-yellow-400/80"}`} />
+                        <Icon className={`w-4 h-4 shrink-0 ${active ? "text-black" : "text-yellow-400"}`} />
                         {!collapsed && <span className="truncate">{item.name}</span>}
                       </div>
+
                       {!collapsed && item.badge && (
                         <span
-                          className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${
+                          className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded shadow-sm ${
                             active
                               ? "bg-black text-yellow-400"
-                              : "bg-red-600/90 text-white"
+                              : item.highlight
+                              ? "bg-red-600 text-white animate-pulse"
+                              : "bg-white/10 text-slate-300"
                           }`}
                         >
                           {item.badge}
                         </span>
+                      )}
+
+                      {/* Active indicator bar */}
+                      {active && (
+                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r bg-black" />
                       )}
                     </Link>
                   );
@@ -248,38 +268,58 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </nav>
             </div>
 
+            {/* Quick Pricing Badge / Banner in Sidebar */}
+            {!collapsed && (
+              <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/10 via-red-500/10 to-transparent border border-yellow-500/20 text-xs">
+                <div className="flex items-center gap-1.5 font-black text-yellow-400 text-[11px] mb-1">
+                  <Flame className="w-3.5 h-3.5 text-red-500 animate-bounce" />
+                  <span>SPECIAL OFFER</span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-tight">
+                  7D: <strong>$2</strong> &bull; 15D: <strong>$4</strong> &bull; 30D: <strong>$8</strong>
+                </p>
+                <Link
+                  href="/pricing"
+                  className="mt-2 text-[10px] font-black text-yellow-400 hover:underline flex items-center gap-1"
+                >
+                  <span>Select Plan</span>
+                  <Zap className="w-3 h-3" />
+                </Link>
+              </div>
+            )}
+
           </div>
 
           {/* Bottom Sidebar Action Buttons */}
           <div className="p-4 border-t border-white/10 space-y-2 bg-[#080808]">
             
-            {/* Telegram VIP */}
+            {/* Telegram VIP Button */}
             <a
               href={settings.telegramGroupUrl}
               target="_blank"
               rel="noopener noreferrer"
               title="Telegram VIP"
-              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-black text-white bg-red-950/80 hover:bg-red-600 border border-red-500/50 transition-all shadow-sm`}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-black text-white bg-red-950/80 hover:bg-red-600 border border-red-500/60 transition-all shadow-neon-red active:scale-95"
             >
               <Send className="w-4 h-4 text-red-400 shrink-0" />
               {!collapsed && <span>Telegram VIP</span>}
             </a>
 
-            {/* Owner Admin Panel */}
+            {/* Owner Admin Panel Button */}
             <Link
               href="/admin"
               onClick={() => setMobileOpen(false)}
               title="Owner Admin Panel"
-              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-black text-black bg-gradient-to-r from-yellow-400 to-yellow-500 hover:opacity-95 shadow-neon-yellow transition-all`}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-black text-black bg-gradient-to-r from-yellow-400 to-yellow-500 hover:opacity-95 shadow-neon-yellow transition-all active:scale-95"
             >
               <Shield className="w-4 h-4 shrink-0" />
               {!collapsed && <span>Owner Admin</span>}
             </Link>
 
             {!collapsed && (
-              <div className="pt-1 flex items-center justify-center gap-1.5 text-[10px] text-emerald-400 font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>bKash &amp; Rocket Auto: Online</span>
+              <div className="pt-1 flex items-center justify-center gap-1.5 text-[10px] text-emerald-400 font-semibold font-mono">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>bKash &amp; Rocket Auto: 24/7 OK</span>
               </div>
             )}
           </div>
@@ -289,11 +329,61 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         {/* RIGHT MAIN CONTENT AREA                                        */}
         {/* ============================================================== */}
         <div className="flex-1 min-w-0 flex flex-col">
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 pb-16 lg:pb-0">{children}</main>
           <Footer />
         </div>
 
       </div>
+
+      {/* 4. MOBILE BOTTOM QUICK NAVIGATION DOCK (VISIBLE ON SMALL SCREENS) */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-2 flex items-center justify-around text-[10px] font-bold">
+        <Link
+          href="/"
+          className={`flex flex-col items-center gap-1 p-1 transition-colors ${
+            isActive("/") ? "text-yellow-400" : "text-slate-400 hover:text-white"
+          }`}
+        >
+          <Home className="w-4 h-4" />
+          <span>Home</span>
+        </Link>
+        <Link
+          href="/tools"
+          className={`flex flex-col items-center gap-1 p-1 transition-colors ${
+            isActive("/tools") ? "text-yellow-400" : "text-slate-400 hover:text-white"
+          }`}
+        >
+          <Layers className="w-4 h-4" />
+          <span>Tools</span>
+        </Link>
+        <Link
+          href="/pricing"
+          className={`flex flex-col items-center gap-1 p-1 transition-colors ${
+            isActive("/pricing") ? "text-yellow-400" : "text-slate-400 hover:text-white"
+          }`}
+        >
+          <Tag className="w-4 h-4 text-red-500" />
+          <span className="text-yellow-400 font-black">Offer ($2)</span>
+        </Link>
+        <Link
+          href="/dashboard"
+          className={`flex flex-col items-center gap-1 p-1 transition-colors ${
+            isActive("/dashboard") ? "text-yellow-400" : "text-slate-400 hover:text-white"
+          }`}
+        >
+          <LayoutDashboard className="w-4 h-4" />
+          <span>Dashboard</span>
+        </Link>
+        <Link
+          href="/admin"
+          className={`flex flex-col items-center gap-1 p-1 transition-colors ${
+            isActive("/admin") ? "text-yellow-400" : "text-slate-400 hover:text-white"
+          }`}
+        >
+          <Shield className="w-4 h-4" />
+          <span>Admin</span>
+        </Link>
+      </nav>
+
     </div>
   );
 }

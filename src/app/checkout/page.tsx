@@ -71,6 +71,20 @@ function CheckoutContent() {
   const [generatedLicense, setGeneratedLicense] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const triggerConfetti = () => {
+    if (typeof window !== "undefined") {
+      import("canvas-confetti").then((module) => {
+        const confetti = module.default;
+        confetti({
+          particleCount: 90,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ["#FACC15", "#EF4444", "#FFFFFF"],
+        });
+      }).catch(() => {});
+    }
+  };
+
   // HWID binding on Step 3
   const [hwidInput, setHwidInput] = useState("");
   const [hwidBoundStatus, setHwidBoundStatus] = useState<{ bound: boolean; message: string } | null>(null);
@@ -134,6 +148,7 @@ function CheckoutContent() {
     const res = await bindHwidToLicense(targetKey, hwidInput.trim());
     setIsBindingHwid(false);
     if (res.success) {
+      triggerConfetti();
       setHwidBoundStatus({
         bound: true,
         message: `HWID "${hwidInput.trim()}" activated & ${res.firebaseSynced ? `synced live to Firebase (${firebaseProjectId})` : "saved to registry"}!`
@@ -602,6 +617,7 @@ function CheckoutContent() {
                   onClick={() => {
                     navigator.clipboard.writeText(generatedLicense || activeOrder.licenseKey || "");
                     setCopiedKey(true);
+                    triggerConfetti();
                     setTimeout(() => setCopiedKey(false), 2000);
                   }}
                   className="px-3.5 py-1.5 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center gap-1.5 shrink-0 transition-colors shadow-neon-yellow"

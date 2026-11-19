@@ -65,9 +65,24 @@ export default function UserDashboardPage() {
     setTimeout(() => setBannerMsg(null), 5500);
   };
 
+  const triggerConfetti = () => {
+    if (typeof window !== "undefined") {
+      import("canvas-confetti").then((module) => {
+        const confetti = module.default;
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ["#FACC15", "#EF4444", "#FFFFFF"],
+        });
+      }).catch(() => {});
+    }
+  };
+
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setCopiedKey(id);
+    triggerConfetti();
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
@@ -94,6 +109,7 @@ export default function UserDashboardPage() {
     setDepositTrxId("");
 
     if (instantTest) {
+      triggerConfetti();
       showBanner(
         "success",
         `$${depositAmountUSD} (৳${depositAmountUSD * 120}) added to your wallet! ${res.firebaseSynced ? `Synced to Firebase (${firebaseProjectId}).` : "Saved locally (check Firestore rules for cloud sync)."}`
@@ -119,6 +135,7 @@ export default function UserDashboardPage() {
       return;
     }
 
+    triggerConfetti();
     showBanner(
       "success",
       `Offer purchased! Key ${res.license?.key} generated ${res.firebaseSynced ? `& synced to Firebase (${firebaseProjectId})` : ""}. Now download the tool & enter your HWID below!`
@@ -137,6 +154,7 @@ export default function UserDashboardPage() {
     setBindingId(null);
 
     if (res.success) {
+      triggerConfetti();
       showBanner(
         "success",
         `HWID "${val}" bound to key ${res.license?.key}! ${res.firebaseSynced ? `Live synced to Firebase (${firebaseProjectId} -> hwid_keys & licenses).` : "Saved locally (enable Firestore write rules to sync cloud)."}`

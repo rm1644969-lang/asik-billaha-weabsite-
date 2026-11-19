@@ -18,7 +18,8 @@ import {
   ShieldCheck, 
   Send,
   Menu,
-  X
+  X,
+  Database
 } from "lucide-react";
 import { useNexusStore } from "@/lib/store";
 
@@ -41,6 +42,7 @@ export default function AdminLayout({
     { name: "Payments & SMS Log", href: "/admin/payments", icon: CreditCard },
     { name: "License Control", href: "/admin/licenses", icon: Key },
     { name: "HWID Management", href: "/admin/hwid", icon: Cpu },
+    { name: "Dual Firebase & Scaling", href: "/admin/scaling", icon: Database },
     { name: "Tutorials & Videos", href: "/admin/tutorials", icon: Tv },
     { name: "SMS Companion Device", href: "/admin/sms-devices", icon: Smartphone },
     { name: "Website & Payment Config", href: "/admin/settings", icon: Settings },
