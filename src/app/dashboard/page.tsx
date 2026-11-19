@@ -1014,66 +1014,124 @@ export default function UserDashboardPage() {
             )}
           </div>
 
-          {/* 3. AUTHORIZED TOOLS & DIRECT DOWNLOAD */}
+          {/* 3. AUTHORIZED TOOLS & DIRECT DOWNLOAD (ONLY UNLOCKED AFTER PURCHASE) */}
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-white/10">
               <div>
                 <h3 className="text-xl font-black text-gradient-shimmer flex items-center gap-2">
                   <Download className="w-5 h-5 text-yellow-400" />
-                  <span>সফটওয়্যার প্যাকেজ সরাসরি ডাউনলোড (Official Tool Downloads)</span>
+                  <span>অনুমোদিত সফটওয়্যার ডাউনলোড (Authorized Tool Downloads)</span>
                 </h3>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  পেন্ডিং অবস্থায় থাকলেও আপনি এখনই সফটওয়্যারটি ডাউনলোড করে পিসিতে রেডি রাখতে পারেন।
+                  ওয়ালেটে ব্যালেন্স যোগ করে অফার প্ল্যান কিনলে এখানে স্বয়ংক্রিয়ভাবে সফটওয়্যার ডাউনলোড ফাইল আনলক হবে।
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {tools.filter(t => t.status === "active").map((tool) => (
-                <Card3D key={tool.id} maxTilt={5} depth={1.02} glare={true} className="h-full">
-                  <div className="p-5 sm:p-6 rounded-2xl bg-[#0c0c0c] border border-white/10 hover:border-yellow-400/50 transition-all space-y-4 h-full flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-yellow-400/10 text-yellow-400 border border-yellow-400/30">
-                          {tool.category}
-                        </span>
-                        <span className="text-xs font-mono font-bold text-white px-2 py-0.5 rounded bg-red-950 border border-red-500/40">
-                          {tool.version}
-                        </span>
+              {tools.filter(t => t.status === "active").map((tool) => {
+                const isPurchased = allActiveLicenses.some(lic => 
+                  lic.toolId === tool.id || 
+                  lic.toolName?.toLowerCase() === tool.name?.toLowerCase() ||
+                  (tool.id.includes("otp") && lic.toolId?.includes("otp"))
+                );
+                const activeLic = allActiveLicenses.find(lic => 
+                  lic.toolId === tool.id || 
+                  lic.toolName?.toLowerCase() === tool.name?.toLowerCase() ||
+                  (tool.id.includes("otp") && lic.toolId?.includes("otp"))
+                );
+
+                return (
+                  <Card3D key={tool.id} maxTilt={5} depth={1.02} glare={true} className="h-full">
+                    <div className="p-5 sm:p-6 rounded-2xl bg-[#0c0c0c] border border-white/10 hover:border-yellow-400/50 transition-all space-y-4 h-full flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-yellow-400/10 text-yellow-400 border border-yellow-400/30">
+                            {tool.category}
+                          </span>
+                          <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded flex items-center gap-1 ${
+                            isPurchased 
+                              ? "bg-emerald-950 text-emerald-400 border border-emerald-500/40" 
+                              : "bg-red-950/80 text-red-300 border border-red-500/40"
+                          }`}>
+                            {isPurchased ? (
+                              <>
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                                <span>আনলকড (UNLOCKED)</span>
+                              </>
+                            ) : (
+                              <>
+                                <Lock className="w-3.5 h-3.5 text-yellow-400" />
+                                <span>লক করা (LOCKED)</span>
+                              </>
+                            )}
+                          </span>
+                        </div>
+
+                        <h4 className={`text-lg font-black ${getToolTitleClass(tool.name)}`}>
+                          {tool.name}
+                        </h4>
+
+                        <div className="grid grid-cols-2 gap-2 text-xs font-mono text-slate-300 pt-1">
+                          <div className="p-2 rounded-lg bg-black/60 border border-white/5 flex items-center gap-1.5">
+                            <HardDrive className="w-3.5 h-3.5 text-yellow-400" />
+                            <span>সাইজ: {tool.fileSize}</span>
+                          </div>
+                          <div className="p-2 rounded-lg bg-black/60 border border-white/5 flex items-center gap-1.5">
+                            <Cpu className="w-3.5 h-3.5 text-red-400" />
+                            <span>{tool.systemRequirements.os}</span>
+                          </div>
+                        </div>
+
+                        {/* License summary if purchased */}
+                        {isPurchased && activeLic && (
+                          <div className="p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-xs">
+                            <div className="flex items-center justify-between">
+                              <span className="text-emerald-400 font-bold text-[11px]">সক্রিয় লাইসেন্স:</span>
+                              <span className="text-[10px] text-slate-400 font-mono">{activeLic.durationDays} দিন মেয়াদ</span>
+                            </div>
+                            <span className="font-mono text-xs text-white font-bold block truncate mt-0.5">{activeLic.key}</span>
+                          </div>
+                        )}
                       </div>
 
-                      <h4 className={`text-lg font-black ${getToolTitleClass(tool.name)}`}>
-                        {tool.name}
-                      </h4>
-
-                      <div className="grid grid-cols-2 gap-2 text-xs font-mono text-slate-300 pt-1">
-                        <div className="p-2 rounded-lg bg-black/60 border border-white/5 flex items-center gap-1.5">
-                          <HardDrive className="w-3.5 h-3.5 text-yellow-400" />
-                          <span>সাইজ: {tool.fileSize}</span>
-                        </div>
-                        <div className="p-2 rounded-lg bg-black/60 border border-white/5 flex items-center gap-1.5">
-                          <Cpu className="w-3.5 h-3.5 text-red-400" />
-                          <span>{tool.systemRequirements.os}</span>
-                        </div>
+                      <div className="space-y-2 pt-2">
+                        {isPurchased ? (
+                          <>
+                            <a
+                              href={tool.downloadFilePath || "/releases/Toolsbd_Utility_v3.4.2_Setup.zip"}
+                              download
+                              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 hover:from-emerald-400 hover:to-green-400 text-black font-black text-xs flex items-center justify-center gap-2 shadow-lg transition-all"
+                            >
+                              <Download className="w-4 h-4 text-black" />
+                              <span>সফটওয়্যার সরাসরি ডাউনলোড করুন ({tool.fileSize})</span>
+                            </a>
+                            <p className="text-[10px] text-center text-slate-400 font-mono">
+                              SHA-256: {tool.checksumSha256?.substring(0, 24)}... (Verified)
+                            </p>
+                          </>
+                        ) : (
+                          <div className="space-y-2">
+                            <button
+                              type="button"
+                              onClick={() => setActiveTab("wallet")}
+                              className="w-full py-3.5 px-4 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs flex items-center justify-center gap-2 shadow-neon-yellow transition-all"
+                            >
+                              <Lock className="w-4 h-4 text-black" />
+                              <span>অফার কিনলে ডাউনলোড আনলক হবে</span>
+                            </button>
+                            <p className="text-[10px] text-center text-slate-400 leading-tight">
+                              {totalPendingCount > 0 
+                                ? "⏳ আপনার ডিপোজিট যাচাই চলছে। ব্যালেন্স যুক্ত হয়ে অফার কিনলেই ডাউনলোড করতে পারবেন।"
+                                : "টাকা ডিপোজিট করে অফার কিনলেই এই সফটওয়্যারটি ডাউনলোড করতে পারবেন।"}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
-
-                    <div className="space-y-2 pt-2">
-                      <a
-                        href={tool.downloadFilePath || "/releases/Toolsbd_Utility_v3.4.2_Setup.zip"}
-                        download
-                        className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 hover:from-emerald-400 hover:to-green-400 text-black font-black text-xs flex items-center justify-center gap-2 shadow-lg transition-all"
-                      >
-                        <Download className="w-4 h-4 text-black" />
-                        <span>সফটওয়্যার সরাসরি ডাউনলোড করুন ({tool.fileSize})</span>
-                      </a>
-                      <p className="text-[10px] text-center text-slate-400 font-mono">
-                        SHA-256: {tool.checksumSha256?.substring(0, 24)}... (Verified)
-                      </p>
-                    </div>
-                  </div>
-                </Card3D>
-              ))}
+                  </Card3D>
+                );
+              })}
             </div>
           </div>
 
@@ -1765,6 +1823,12 @@ export default function UserDashboardPage() {
                 const isComingSoon = t.status === "coming_soon";
                 const isWatchingVideo = viewingDownloadVideoId === t.id;
 
+                const isPurchased = allActiveLicenses.some(lic => 
+                  lic.toolId === t.id || 
+                  lic.toolName?.toLowerCase() === t.name?.toLowerCase() ||
+                  (t.id.includes("otp") && lic.toolId?.includes("otp"))
+                );
+
                 return (
                   <div
                     key={t.id}
@@ -1777,9 +1841,11 @@ export default function UserDashboardPage() {
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono ${
                             isComingSoon 
                               ? "bg-white/10 text-slate-300 border border-white/15" 
-                              : "text-black bg-yellow-400 font-black"
+                              : isPurchased
+                              ? "text-black bg-emerald-400 font-black"
+                              : "text-yellow-400 bg-yellow-400/10 border border-yellow-400/30"
                           }`}>
-                            {t.version}
+                            {isComingSoon ? t.version : isPurchased ? "✓ সক্রিয় আনলকড" : t.version}
                           </span>
                         </div>
                         <p className="text-xs text-slate-300">{t.tagline}</p>
@@ -1794,6 +1860,15 @@ export default function UserDashboardPage() {
                           <Lock className="w-4 h-4 text-yellow-400" />
                           <span>Coming Soon (শীঘ্রই আসছে)</span>
                         </div>
+                      ) : !isPurchased ? (
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab("wallet")}
+                          className="px-5 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center justify-center gap-2 shadow-neon-yellow transition-all shrink-0"
+                        >
+                          <Lock className="w-4 h-4 text-black" />
+                          <span>অফার কিনলে ডাউনলোড হবে</span>
+                        </button>
                       ) : (
                         <div className="flex flex-col sm:flex-row gap-2 shrink-0">
                           <a
