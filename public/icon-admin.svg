@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="adminBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f0a0a" />
+      <stop offset="100%" stop-color="#050505" />
+    </linearGradient>
+    <linearGradient id="adminBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444" />
+      <stop offset="50%" stop-color="#FACC15" />
+      <stop offset="100%" stop-color="#EF4444" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer Rounded Card -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#adminBg)" stroke="url(#adminBorder)" stroke-width="16"/>
+  
+  <!-- Shield Outline -->
+  <path d="M256 100 L380 150 C380 280 256 380 256 380 C256 380 132 280 132 150 Z" 
+        fill="#2a0808" stroke="#EF4444" stroke-width="24" stroke-linejoin="round"/>
+        
+  <!-- Admin Key / Star inside Shield -->
+  <circle cx="256" cy="210" r="32" fill="#FACC15"/>
+  <rect x="246" y="235" width="20" height="75" rx="6" fill="#FACC15"/>
+  <rect x="256" y="270" width="24" height="14" rx="4" fill="#FACC15"/>
+  <rect x="256" y="295" width="18" height="14" rx="4" fill="#FACC15"/>
+</svg>

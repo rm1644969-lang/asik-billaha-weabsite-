@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useNexusStore } from "@/lib/store";
 import { webDb } from "@/lib/firebase";
@@ -25,9 +25,12 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
-  HardDrive
+  HardDrive,
+  Bell,
+  DownloadCloud
 } from "lucide-react";
 import { normalizeYouTubeEmbedUrl } from "@/lib/youtube";
+import { playChimeSound, showBrowserNotification } from "@/lib/notifications";
 
 export default function UserDashboardPage() {
   const { 
@@ -74,9 +77,54 @@ export default function UserDashboardPage() {
   const [buyingPlanId, setBuyingPlanId] = useState<string | null>(null);
   const [openVideoModal, setOpenVideoModal] = useState<string | null>(null);
 
-  // Real-time Firestore sync
+  // Real-time Firestore sync & Notifications
   const [firestoreOrders, setFirestoreOrders] = useState<any[]>([]);
   const [firestoreDeposits, setFirestoreDeposits] = useState<any[]>([]);
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [hasNotifPermission, setHasNotifPermission] = useState<boolean>(true);
+
+  const prevOrdersStatus = useRef<Record<string, string>>({});
+  const prevDepositsStatus = useRef<Record<string, string>>({});
+  const initialLoadDone = useRef(false);
+
+  // Check notification & PWA install status
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      setHasNotifPermission(Notification.permission === "granted");
+    }
+    const handleInstallable = (e: any) => {
+      setInstallPrompt(e.detail || (window as any).deferredPrompt);
+    };
+    window.addEventListener("pwa-installable", handleInstallable);
+    if ((window as any).deferredPrompt) {
+      setInstallPrompt((window as any).deferredPrompt);
+    }
+    return () => window.removeEventListener("pwa-installable", handleInstallable);
+  }, []);
+
+  const handleInstallMemberPwa = async () => {
+    const prompt = installPrompt || (window as any).deferredPrompt;
+    if (prompt) {
+      prompt.prompt();
+      const choice = await prompt.userChoice;
+      if (choice.outcome === "accepted") setInstallPrompt(null);
+    } else {
+      alert("Toolsbd App: আপনার ফোনের ব্রাউজার থ্রি-ডট মেনু থেকে 'Install app' বা 'Add to Home Screen' ক্লিক করুন।");
+    }
+  };
+
+  const handleRequestNotification = async () => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      const perm = await Notification.requestPermission();
+      setHasNotifPermission(perm === "granted");
+      if (perm === "granted") {
+        playChimeSound("success");
+        showBrowserNotification("🔔 Toolsbd নোটিফিকেশন সক্রিয়!", {
+          body: "পেমেন্ট কনফার্ম বা ডিপোজিট অ্যাপ্রুভ হওয়ার সাথে সাথে নোটিফিকেশন পাবেন।"
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     if (!currentUser?.email) return;
@@ -87,6 +135,24 @@ export default function UserDashboardPage() {
       unsubOrders = onSnapshot(q, (snap) => {
         const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         setFirestoreOrders(list);
+
+        // Detect status transition from PENDING -> APPROVED
+        if (initialLoadDone.current) {
+          list.forEach((ord: any) => {
+            const prev = prevOrdersStatus.current[ord.id];
+            if (prev && prev !== "PAID" && prev !== "APPROVED" && (ord.status === "PAID" || ord.status === "APPROVED")) {
+              playChimeSound("success");
+              showBrowserNotification("🚀 আপনার টুল অর্ডার সফল হয়েছে!", {
+                body: `${ord.toolName || "Software Tool"} এর লাইসেন্স ও ডাউনলোড উন্মুক্ত হয়েছে!`,
+                data: { url: "/dashboard" }
+              });
+              triggerConfetti();
+            }
+            prevOrdersStatus.current[ord.id] = ord.status;
+          });
+        } else {
+          list.forEach((ord: any) => { prevOrdersStatus.current[ord.id] = ord.status; });
+        }
       });
     } catch (e) {
       console.warn("Orders listener notice:", e);
@@ -98,6 +164,25 @@ export default function UserDashboardPage() {
       unsubDeposits = onSnapshot(qDep, (snap) => {
         const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         setFirestoreDeposits(list);
+
+        // Detect status transition from PENDING -> APPROVED
+        if (initialLoadDone.current) {
+          list.forEach((dep: any) => {
+            const prev = prevDepositsStatus.current[dep.id];
+            if (prev && prev !== "APPROVED" && dep.status === "APPROVED") {
+              playChimeSound("coin");
+              showBrowserNotification("🎉 ডিপোজিট অ্যাপ্রুভ হয়েছে!", {
+                body: `৳${dep.amountBDT || Math.round(dep.amountUSD * 120)} ($${dep.amountUSD}) ওয়ালেটে যোগ করা হয়েছে।`,
+                data: { url: "/dashboard" }
+              });
+              triggerConfetti();
+            }
+            prevDepositsStatus.current[dep.id] = dep.status;
+          });
+        } else {
+          list.forEach((dep: any) => { prevDepositsStatus.current[dep.id] = dep.status; });
+          initialLoadDone.current = true;
+        }
       });
     } catch (e) {
       console.warn("Deposits listener notice:", e);
@@ -409,6 +494,28 @@ export default function UserDashboardPage() {
                 <PlusCircle className="w-4 h-4" />
                 <span>Add Money</span>
               </button>
+
+              {/* Install PWA App */}
+              <button
+                onClick={handleInstallMemberPwa}
+                className="px-3.5 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black shadow-neon-yellow transition-all flex items-center gap-1.5"
+                title="Install Toolsbd as App on Phone or PC"
+              >
+                <DownloadCloud className="w-4 h-4 text-black" />
+                <span>Install App</span>
+              </button>
+
+              {/* Notification Permission Button */}
+              {!hasNotifPermission && (
+                <button
+                  onClick={handleRequestNotification}
+                  className="px-3 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-yellow-400 text-xs font-bold transition-all flex items-center gap-1.5"
+                  title="Enable Push Notifications"
+                >
+                  <Bell className="w-4 h-4 text-yellow-400" />
+                  <span>Alerts</span>
+                </button>
+              )}
 
               <button
                 onClick={logoutUser}

@@ -48,6 +48,13 @@ class SmsReceiver : BroadcastReceiver() {
                     )
                     KeystoreHelper.addLogItem(context, logItem)
 
+                    // Post high-priority alert notification
+                    com.toolsbd.paysync.service.SmsForegroundService.postAlert(
+                        context,
+                        "💰 New ${parsed.provider} Payment Received!",
+                        "৳${parsed.amount} received (TrxID: ${parsed.trxId}). Syncing with Toolsbd..."
+                    )
+
                     // Notify UI if open
                     val updateIntent = Intent(ACTION_NEW_PAYMENT).apply {
                         putExtra("trxId", parsed.trxId)

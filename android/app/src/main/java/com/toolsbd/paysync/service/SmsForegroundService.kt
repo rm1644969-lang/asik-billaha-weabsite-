@@ -18,6 +18,7 @@ class SmsForegroundService : Service() {
 
     companion object {
         const val CHANNEL_ID = "toolsbd_paysync_channel"
+        const val ALERT_CHANNEL_ID = "toolsbd_alerts_channel"
         const val NOTIFICATION_ID = 2026
         const val ACTION_START = "ACTION_START"
         const val ACTION_STOP = "ACTION_STOP"
@@ -38,6 +39,30 @@ class SmsForegroundService : Service() {
                 action = ACTION_STOP
             }
             context.startService(intent)
+        }
+
+        fun postAlert(context: Context, title: String, message: String, notifId: Int = (System.currentTimeMillis() % 100000).toInt()) {
+            val openIntent = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            val pendingIntent = PendingIntent.getActivity(
+                context,
+                notifId,
+                openIntent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            val builder = NotificationCompat.Builder(context, ALERT_CHANNEL_ID)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setSmallIcon(android.R.drawable.stat_sys_upload_done)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+
+            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+            manager?.notify(notifId, builder.build())
         }
     }
 
@@ -74,7 +99,9 @@ class SmsForegroundService : Service() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
+            val manager = getSystemService(NotificationManager::class.java)
+
+            val serviceChannel = NotificationChannel(
                 CHANNEL_ID,
                 "Toolsbd Payment Gateway Listener",
                 NotificationManager.IMPORTANCE_LOW
@@ -82,8 +109,18 @@ class SmsForegroundService : Service() {
                 description = "Monitors incoming bKash & Rocket payments in real-time"
                 setShowBadge(false)
             }
-            val manager = getSystemService(NotificationManager::class.java)
-            manager?.createNotificationChannel(channel)
+            manager?.createNotificationChannel(serviceChannel)
+
+            val alertChannel = NotificationChannel(
+                ALERT_CHANNEL_ID,
+                "Toolsbd Instant Payment Alerts",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Notifies when payments are received and auto-approved on Toolsbd"
+                enableVibration(true)
+                setShowBadge(true)
+            }
+            manager?.createNotificationChannel(alertChannel)
         }
     }
 

@@ -26,6 +26,7 @@ import {
   Zap,
   HelpCircle
 } from "lucide-react";
+import { playChimeSound, showBrowserNotification } from "@/lib/notifications";
 
 export default function CheckoutPage() {
   return (
@@ -130,6 +131,10 @@ function CheckoutContent() {
             setGeneratedLicense(ord.licenseKey || null);
             setIsPending(false);
             setIsSuccess(true);
+            playChimeSound("success");
+            showBrowserNotification("🎉 পেমেন্ট সফল হয়েছে!", {
+              body: "আপনার লাইসেন্স কী ও ডাউনলোড লিঙ্ক প্রস্তুত!"
+            });
             triggerConfetti();
           }
         }
@@ -149,6 +154,10 @@ function CheckoutContent() {
             setGeneratedLicense(ord.licenseKey || null);
             setIsPending(false);
             setIsSuccess(true);
+            playChimeSound("success");
+            showBrowserNotification("🎉 পেমেন্ট সফল হয়েছে!", {
+              body: "আপনার লাইসেন্স কী ও ডাউনলোড লিঙ্ক প্রস্তুত!"
+            });
             triggerConfetti();
           }
         }

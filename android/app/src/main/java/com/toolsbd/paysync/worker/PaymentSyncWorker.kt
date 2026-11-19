@@ -75,6 +75,14 @@ class PaymentSyncWorker(
 
                 KeystoreHelper.updateLogStatus(context, trxId, "CONFIRMED", message)
                 notifyUiUpdate(trxId, "CONFIRMED", message)
+
+                // Post high-priority alert notification
+                com.toolsbd.paysync.service.SmsForegroundService.postAlert(
+                    context,
+                    "✅ Website Confirmed & Approved!",
+                    "TrxID: $trxId ($message)"
+                )
+
                 Result.success()
             } else if (response.code in 400..499) {
                 KeystoreHelper.updateLogStatus(context, trxId, "FAILED", "Rejected (HTTP ${response.code})")
