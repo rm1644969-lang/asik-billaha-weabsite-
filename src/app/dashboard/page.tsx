@@ -75,7 +75,7 @@ export default function UserDashboardPage() {
 
   // Add Money form state
   const [depositAmountUSD, setDepositAmountUSD] = useState<number>(2);
-  const [depositMethod, setDepositMethod] = useState<"bKash" | "Rocket">("bKash");
+  const [depositMethod, setDepositMethod] = useState<"bKash" | "Nagad" | "Rocket">("bKash");
   const [depositSender, setDepositSender] = useState("");
   const [depositTrxId, setDepositTrxId] = useState("");
   const [isDepositing, setIsDepositing] = useState(false);
@@ -828,6 +828,35 @@ export default function UserDashboardPage() {
             </div>
           </Card3D>
 
+          {/* 🟢 Live AutoPay Gateway Status Indicator */}
+          <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-[#0c1810] to-[#0c0c0c] border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="relative flex h-3.5 w-3.5 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs sm:text-sm font-black text-emerald-400 tracking-wide">
+                    অটো-পেমেন্ট গেটওয়ে সক্রিয় ও কানেক্টেড (AutoPay Gateway Online)
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                    24/7 ACTIVE
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-300 mt-0.5">
+                  বিকাশ (01609166109), নগদ (01609166109) ও রকেট (01731328169) এসএমএস গেটওয়ে স্বয়ংক্রিয়ভাবে পড়ে ৩০-৪৫ সেকেন্ডে ট্রানজেকশন অ্যাপ্রুভ করে।
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+              <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-900/40 px-2.5 py-1 rounded-lg border border-emerald-500/30 flex items-center gap-1">
+                <Zap className="w-3 h-3 text-yellow-400" />
+                <span>অটো এসএমএস ভেরিফিকেশন অন</span>
+              </span>
+            </div>
+          </div>
+
           {/* 2. REAL-TIME PENDING DEPOSITS & ORDERS TRACKER */}
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-2">
@@ -1348,6 +1377,35 @@ export default function UserDashboardPage() {
               </span>
             </div>
 
+            {/* 🟢 Live AutoPay Gateway Status Indicator */}
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-[#0c1810] to-[#0c0c0c] border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="relative flex h-3.5 w-3.5 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs sm:text-sm font-black text-emerald-400 tracking-wide flex items-center gap-1.5">
+                      <span>অটো-পেমেন্ট গেটওয়ে সক্রিয় ও কানেক্টেড</span>
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                      ONLINE 24/7
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-300 mt-0.5">
+                    বিকাশ, নগদ বা রকেটে টাকা পাঠালে গেটওয়ে স্বয়ংক্রিয়ভাবে এসএমএস ভেরিফাই করে ৩০-৪৫ সেকেন্ডে ওয়ালেটে ব্যালেন্স জমা করবে।
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-900/40 px-2.5 py-1 rounded-lg border border-emerald-500/30 flex items-center gap-1">
+                  <Zap className="w-3 h-3 text-yellow-400" />
+                  <span>লাইভ এসএমএস সিঙ্ক</span>
+                </span>
+              </div>
+            </div>
+
             {/* ৩-ধাপের ভিজ্যুয়াল মিনি পেমেন্ট গাইড (Visual 3-Step Guide) — পেমেন্ট বক্সের ঠিক ওপরে */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -1400,12 +1458,16 @@ export default function UserDashboardPage() {
             </div>
 
             {/* Official Payment Numbers */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              {/* bKash */}
               <div className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                depositMethod === "bKash" ? "bg-[#D12053]/20 border-[#D12053]" : "bg-black border-white/10"
+                depositMethod === "bKash" ? "bg-[#D12053]/20 border-[#D12053] shadow-lg ring-1 ring-[#D12053]" : "bg-black border-white/10"
               }`} onClick={() => setDepositMethod("bKash")}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-black text-white">বিকাশ পার্সোনাল</span>
+                  <span className="font-black text-white flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#D12053]" />
+                    <span>বিকাশ পার্সোনাল</span>
+                  </span>
                   <button
                     type="button"
                     onClick={(e) => {
@@ -1417,28 +1479,57 @@ export default function UserDashboardPage() {
                     {copiedNum === "bkash" ? "কপি হয়েছে" : "কপি"}
                   </button>
                 </div>
-                <span className="font-mono text-base font-black text-yellow-400">
+                <span className="font-mono text-sm sm:text-base font-black text-yellow-400">
                   {settings.bkashMerchantNumber}
                 </span>
               </div>
 
+              {/* Nagad */}
               <div className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                depositMethod === "Rocket" ? "bg-[#8C3494]/25 border-[#8C3494]" : "bg-black border-white/10"
+                depositMethod === "Nagad" ? "bg-[#F7941D]/25 border-[#F7941D] shadow-lg ring-1 ring-[#F7941D]" : "bg-black border-white/10"
+              }`} onClick={() => setDepositMethod("Nagad")}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-black text-white flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#F7941D]" />
+                    <span>নগদ পার্সোনাল</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopyPaymentNum(settings.nagadMerchantNumber || "01609166109", "nagad");
+                    }}
+                    className="text-[10px] px-2 py-0.5 rounded bg-orange-500 text-white font-black"
+                  >
+                    {copiedNum === "nagad" ? "কপি হয়েছে" : "কপি"}
+                  </button>
+                </div>
+                <span className="font-mono text-sm sm:text-base font-black text-orange-400">
+                  {settings.nagadMerchantNumber || "01609166109"}
+                </span>
+              </div>
+
+              {/* Rocket */}
+              <div className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                depositMethod === "Rocket" ? "bg-[#8C3494]/25 border-[#8C3494] shadow-lg ring-1 ring-[#8C3494]" : "bg-black border-white/10"
               }`} onClick={() => setDepositMethod("Rocket")}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-black text-white">রকেট পার্সোনাল</span>
+                  <span className="font-black text-white flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#8C3494]" />
+                    <span>রকেট পার্সোনাল</span>
+                  </span>
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleCopyPaymentNum(settings.rocketMerchantNumber, "rocket");
                     }}
-                    className="text-[10px] px-2 py-0.5 rounded bg-red-600 text-white font-black"
+                    className="text-[10px] px-2 py-0.5 rounded bg-purple-600 text-white font-black"
                   >
                     {copiedNum === "rocket" ? "কপি হয়েছে" : "কপি"}
                   </button>
                 </div>
-                <span className="font-mono text-base font-black text-yellow-400">
+                <span className="font-mono text-sm sm:text-base font-black text-yellow-400">
                   {settings.rocketMerchantNumber}
                 </span>
               </div>

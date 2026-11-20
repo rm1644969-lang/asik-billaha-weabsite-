@@ -400,7 +400,7 @@ export function useNexusStore() {
   // ==============================================================
   const submitWalletDeposit = async (
     amountUSD: number, 
-    method: "bKash" | "Rocket", 
+    method: "bKash" | "Nagad" | "Rocket", 
     senderNumber: string, 
     trxId: string, 
     autoApprove = false
@@ -600,7 +600,7 @@ export function useNexusStore() {
   };
 
   // Direct checkout order creation
-  const createOrder = (tool: Tool, plan: PricePlan, paymentMethod: "bKash" | "Rocket" | "Manual") => {
+  const createOrder = (tool: Tool, plan: PricePlan, paymentMethod: "bKash" | "Nagad" | "Rocket" | "Manual") => {
     const orderNumber = `TBD-${Math.floor(100000 + Math.random() * 900000)}`;
     const newOrder: Order = {
       id: `ord-${Date.now()}`,

@@ -71,7 +71,7 @@ function CheckoutContent() {
 
   const [selectedTool, setSelectedTool] = useState<Tool>(tools[0]);
   const [selectedPlan, setSelectedPlan] = useState<PricePlan | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<"bKash" | "Rocket" | "Wallet">("bKash");
+  const [paymentMethod, setPaymentMethod] = useState<"bKash" | "Nagad" | "Rocket" | "Wallet">("bKash");
   
   // Checkout view state: 'form', 'pending', or 'success'
   const [isSuccess, setIsSuccess] = useState(false);
@@ -313,7 +313,7 @@ function CheckoutContent() {
     setIsSubmitting(true);
 
     // 1. Create Order
-    const order = createOrder(selectedTool, selectedPlan, paymentMethod as "bKash" | "Rocket");
+    const order = createOrder(selectedTool, selectedPlan, paymentMethod as "bKash" | "Nagad" | "Rocket");
     setActiveOrder(order);
 
     // 2. Submit Payment TrxID
@@ -353,6 +353,8 @@ function CheckoutContent() {
 
   const currentPaymentNumber = paymentMethod === "bKash" 
     ? settings.bkashMerchantNumber 
+    : paymentMethod === "Nagad"
+    ? (settings.nagadMerchantNumber || "01609166109")
     : settings.rocketMerchantNumber;
 
   return (
@@ -437,13 +439,42 @@ function CheckoutContent() {
             </div>
           </div>
 
+          {/* 🟢 Live AutoPay Gateway Status Indicator */}
+          <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-[#0c1810] to-[#0c0c0c] border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="relative flex h-3.5 w-3.5 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs sm:text-sm font-black text-emerald-400 tracking-wide flex items-center gap-1.5">
+                    <span>অটো-পেমেন্ট গেটওয়ে সক্রিয় ও কানেক্টেড</span>
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                    ONLINE 24/7
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-300 mt-0.5">
+                  বিকাশ, নগদ বা রকেটে টাকা পাঠালে গেটওয়ে স্বয়ংক্রিয়ভাবে এসএমএস ভেরিফাই করে ৩০-৪৫ সেকেন্ডে লাইসেন্স আনলক করবে।
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+              <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-900/40 px-2.5 py-1 rounded-lg border border-emerald-500/30 flex items-center gap-1">
+                <Zap className="w-3 h-3 text-yellow-400" />
+                <span>লাইভ এসএমএস সিঙ্ক</span>
+              </span>
+            </div>
+          </div>
+
           {/* 2. PAYMENT METHOD SELECTION TABS */}
           <div className="space-y-3 pt-2 border-t border-white/10">
             <label className="text-xs font-black uppercase tracking-wider text-yellow-400 block">
               ২. পেমেন্ট মাধ্যম বেছে নিন:
             </label>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {/* bKash */}
               <button
                 type="button"
@@ -456,9 +487,26 @@ function CheckoutContent() {
               >
                 <div className="flex items-center gap-2">
                   <span className="w-3.5 h-3.5 rounded-full bg-[#D12053] shrink-0" />
-                  <span className="text-sm font-black text-white">বিকাশ পার্সোনাল</span>
+                  <span className="text-xs sm:text-sm font-black text-white">বিকাশ</span>
                 </div>
-                <span className="text-xs font-mono text-yellow-400 font-bold">{settings.bkashMerchantNumber}</span>
+                <span className="text-[11px] sm:text-xs font-mono text-yellow-400 font-bold">{settings.bkashMerchantNumber}</span>
+              </button>
+
+              {/* Nagad */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("Nagad")}
+                className={`p-3.5 rounded-2xl border font-black text-xs flex items-center justify-between sm:justify-center sm:flex-col gap-2 transition-all ${
+                  paymentMethod === "Nagad"
+                    ? "bg-[#F7941D]/25 border-[#F7941D] text-white shadow-lg ring-1 ring-[#F7941D]"
+                    : "bg-[#111111] border-white/10 text-slate-400 hover:text-white"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-3.5 h-3.5 rounded-full bg-[#F7941D] shrink-0" />
+                  <span className="text-xs sm:text-sm font-black text-white">নগদ</span>
+                </div>
+                <span className="text-[11px] sm:text-xs font-mono text-orange-400 font-bold">{settings.nagadMerchantNumber || "01609166109"}</span>
               </button>
 
               {/* Rocket */}
@@ -473,9 +521,9 @@ function CheckoutContent() {
               >
                 <div className="flex items-center gap-2">
                   <span className="w-3.5 h-3.5 rounded-full bg-[#8C3494] shrink-0" />
-                  <span className="text-sm font-black text-white">রকেট পার্সোনাল</span>
+                  <span className="text-xs sm:text-sm font-black text-white">রকেট</span>
                 </div>
-                <span className="text-xs font-mono text-yellow-400 font-bold">{settings.rocketMerchantNumber}</span>
+                <span className="text-[11px] sm:text-xs font-mono text-yellow-400 font-bold">{settings.rocketMerchantNumber}</span>
               </button>
 
               {/* Wallet */}
@@ -490,9 +538,9 @@ function CheckoutContent() {
               >
                 <div className="flex items-center gap-2">
                   <Wallet className="w-4 h-4 text-yellow-400 shrink-0" />
-                  <span className="text-sm font-black text-white">ওয়ালেট ব্যালেন্স</span>
+                  <span className="text-xs sm:text-sm font-black text-white">ওয়ালেট</span>
                 </div>
-                <span className="text-xs font-mono text-emerald-400 font-bold">${walletBalanceUSD.toFixed(2)} USD</span>
+                <span className="text-[11px] sm:text-xs font-mono text-emerald-400 font-bold">${walletBalanceUSD.toFixed(2)} USD</span>
               </button>
             </div>
           </div>
@@ -561,8 +609,8 @@ function CheckoutContent() {
             </div>
           )}
 
-          {/* 3B. BKASH / ROCKET DIRECT PAYMENT DETAILS (VISIBLE RIGHT HERE!) */}
-          {(paymentMethod === "bKash" || paymentMethod === "Rocket") && (
+          {/* 3B. BKASH / NAGAD / ROCKET DIRECT PAYMENT DETAILS (VISIBLE RIGHT HERE!) */}
+          {(paymentMethod === "bKash" || paymentMethod === "Nagad" || paymentMethod === "Rocket") && (
             <form onSubmit={handleExpressPaymentSubmit} className="space-y-5">
               
               {/* ৩-ধাপের ভিজ্যুয়াল মিনি পেমেন্ট গাইড (Visual 3-Step Guide) — পেমেন্ট বক্সের ঠিক ওপরে */}
@@ -764,7 +812,7 @@ function CheckoutContent() {
                 পেমেন্ট ভেরিফিকেশন অপেক্ষারত (Awaiting Verification)
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-lg mx-auto">
-                আপনার {paymentMethod} TrxID (<strong className="text-white font-mono">{trxId.trim().toUpperCase()}</strong>) সিস্টেমে যুক্ত হয়েছে। বিকাশ/রকেট মেসেজ ম্যাচিং অথবা অ্যাডমিন কনফার্মেশন হওয়ামাত্রই এই স্ক্রিনে স্বয়ংক্রিয়ভাবে লাইসেন্স ডেলিভারি হয়ে যাবে।
+                আপনার {paymentMethod} TrxID (<strong className="text-white font-mono">{trxId.trim().toUpperCase()}</strong>) সিস্টেমে যুক্ত হয়েছে। বিকাশ/নগদ/রকেট মেসেজ ম্যাচিং অথবা অ্যাডমিন কনফার্মেশন হওয়ামাত্রই এই স্ক্রিনে স্বয়ংক্রিয়ভাবে লাইসেন্স ডেলিভারি হয়ে যাবে।
               </p>
             </div>
 

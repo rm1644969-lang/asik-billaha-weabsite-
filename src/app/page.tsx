@@ -79,7 +79,7 @@ export default function HomePage() {
             <div className="pt-3 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-[11px] sm:text-xs text-slate-300 border-t border-white/10">
               <span className="flex items-center gap-1.5 font-semibold">
                 <CheckCircle2 className="w-3.5 h-3.5 text-yellow-400" />
-                <span>বিকাশ ও রকেট ইন্সট্যান্ট অটো ডেলিভারি</span>
+                <span>বিকাশ, নগদ ও রকেট ইন্সট্যান্ট অটো ডেলিভারি</span>
               </span>
               <span className="flex items-center gap-1.5 font-semibold">
                 <ShieldCheck className="w-3.5 h-3.5 text-red-500" />

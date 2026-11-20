@@ -189,7 +189,7 @@ export interface WalletDeposit {
   userName: string;
   amountUSD: number;
   amountBDT: number;
-  method: "bKash" | "Rocket";
+  method: "bKash" | "Nagad" | "Rocket";
   senderNumber: string;
   trxId: string;
   status: "PENDING" | "APPROVED" | "REJECTED";

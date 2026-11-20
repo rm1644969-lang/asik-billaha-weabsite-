@@ -32,16 +32,18 @@ function parseSmsText(text: string): { trxId?: string; amount?: number; provider
   let provider = "Unknown";
 
   if (/bKash/i.test(text)) provider = "bKash";
-  else if (/Rocket|DBBL/i.test(text)) provider = "Rocket";
+  else if (/Nagad|16167/i.test(text)) provider = "Nagad";
+  else if (/Rocket|DBBL|16216/i.test(text)) provider = "Rocket";
 
-  // Match TrxID or TxnId (e.g. TrxID BK992A81KC or TxnId: 82736192)
-  const trxMatch = text.match(/(?:TrxID|TxnID|TxnId|TrxId|transaction\s*id)[\s:]*([A-Za-z0-9]+)/i);
+  // Match TrxID or TxnID (e.g. TrxID BK992A81KC, TxnID: 71ABCDEF, Txn ID: 82736192, TrxID: 9A81BC)
+  const trxMatch = text.match(/(?:TrxID|TxnID|TxnId|Txn\s*ID|TrxId|Trx\s*ID|transaction\s*id)[\s:]*([A-Za-z0-9]+)/i);
   if (trxMatch) {
     trxId = trxMatch[1].trim().toUpperCase();
   }
 
-  // Match Amount (e.g. Tk 240.00, Tk. 240, Amount: Tk 480)
-  const amountMatch = text.match(/(?:Tk|Tk\.|BDT|Amount:?\s*Tk\.?)\s*([0-9,]+(?:\.[0-9]{1,2})?)/i);
+  // Match Amount (e.g. Tk 240.00, Tk. 240, Amount: Tk 480, Amount: Tk. 480.00, Received Tk 240)
+  const amountMatch = text.match(/(?:(?:Received|Amount:?|Tk\.?|BDT)\s*)?(?:Tk|Tk\.|BDT)\s*([0-9,]+(?:\.[0-9]{1,2})?)/i) ||
+                     text.match(/(?:Amount:?\s*Tk\.?)\s*([0-9,]+(?:\.[0-9]{1,2})?)/i);
   if (amountMatch) {
     amount = parseFloat(amountMatch[1].replace(/,/g, ""));
   }

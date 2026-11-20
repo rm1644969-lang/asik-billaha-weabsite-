@@ -344,13 +344,17 @@ export default function ToolDetailsPage() {
 
           {/* Minimalist Payment Bar */}
           <div className="p-5 rounded-2xl bg-[#0e0e0e] border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-300">
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-5">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4">
               <span>
-                বিকাশ পার্সোনাল: <strong className="text-yellow-400 font-bold select-all">{settings.bkashMerchantNumber}</strong>
+                বিকাশ: <strong className="text-yellow-400 font-bold select-all">{settings.bkashMerchantNumber}</strong>
               </span>
               <span className="text-slate-600 hidden sm:inline">&bull;</span>
               <span>
-                রকেট পার্সোনাল: <strong className="text-red-400 font-bold select-all">{settings.rocketMerchantNumber}</strong>
+                নগদ: <strong className="text-orange-400 font-bold select-all">{settings.nagadMerchantNumber || "01609166109"}</strong>
+              </span>
+              <span className="text-slate-600 hidden sm:inline">&bull;</span>
+              <span>
+                রকেট: <strong className="text-red-400 font-bold select-all">{settings.rocketMerchantNumber}</strong>
               </span>
             </div>
 

@@ -146,12 +146,15 @@ export default function ToolsMarketplacePage() {
               </div>
 
               <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-300 font-mono">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-4">
                   <span>
-                    বিকাশ পার্সোনাল: <strong className="text-yellow-400">{settings.bkashMerchantNumber}</strong>
+                    বিকাশ: <strong className="text-yellow-400">{settings.bkashMerchantNumber}</strong>
                   </span>
                   <span>
-                    রকেট পার্সোনাল: <strong className="text-red-400">{settings.rocketMerchantNumber}</strong>
+                    নগদ: <strong className="text-orange-400">{settings.nagadMerchantNumber || "01609166109"}</strong>
+                  </span>
+                  <span>
+                    রকেট: <strong className="text-red-400">{settings.rocketMerchantNumber}</strong>
                   </span>
                 </div>
                 <Link href="/dashboard" className="text-yellow-400 hover:underline font-sans font-bold">

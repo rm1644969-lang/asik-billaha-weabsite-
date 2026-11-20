@@ -129,5 +129,18 @@ def verify_tool_license(key, hwid):
 - **15 Days Access**: $4 USD (৳480 BDT) 🔥
 - **30 Days VIP Access**: $8 USD (৳960 BDT) 🔥
 - **bKash Personal**: `01609166109`
+- **Nagad Personal**: `01609166109`
 - **Rocket Personal**: `01731328169`
-- **Automated Verification Window**: 30 – 45 seconds via companion SMS gateway or Instant Wallet Purchase.
+- **Automated Verification Window**: 30 – 45 seconds via companion SMS gateway (bKash • Nagad • Rocket) or Instant Wallet Purchase.
+
+---
+
+## 6. Android Companion Gateway App Permissions (AutoPay Gateway)
+
+To ensure your Android phone forwards bKash, Nagad, and Rocket SMS 24/7 without being stopped by Android battery killers:
+
+1. **SMS Read & Receive**: `RECEIVE_SMS`, `READ_SMS` (Settings -> Apps -> Toolsbd PaySync -> Permissions -> SMS -> Allow)
+2. **Display Over Other Apps**: `SYSTEM_ALERT_WINDOW` (Settings -> Special App Access -> Display over other apps -> Enable)
+3. **Ignore Battery Optimization**: `Don't optimize` (Settings -> Battery -> Battery Optimization -> Toolsbd PaySync -> Don't optimize)
+4. **Auto-Start Permission**: Enable in Xiaomi, Oppo, Vivo, Realme, Samsung settings so the app survives phone restarts.
+5. **Notification Access**: Allow so push notifications from payment apps can also trigger fallback verification.
