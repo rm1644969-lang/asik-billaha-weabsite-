@@ -627,19 +627,19 @@ export default function UserDashboardPage() {
         </Card3D>
       )}
 
-      {/* Dashboard Tabs (Horizontally scrollable on mobile, wrapping on tablets & desktops) */}
-      <div className="flex items-center gap-2 border-b border-white/10 pb-3 overflow-x-auto scrollbar-none sm:flex-wrap">
+      {/* Dashboard Tabs (Streamlined, clean & modern for easy navigation) */}
+      <div className="flex items-center gap-2.5 border-b border-white/10 pb-3 overflow-x-auto scrollbar-none sm:flex-wrap">
         <button
           type="button"
           onClick={() => setActiveTab("membership")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
+          className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
             activeTab === "membership"
               ? "bg-yellow-400 text-black shadow-neon-yellow scale-[1.02]"
               : "text-slate-300 hover:text-white bg-surface-card hover:bg-white/10"
           }`}
         >
           <ShieldCheck className="w-4 h-4 text-red-500" />
-          <span>মেম্বারশিপ (Membership)</span>
+          <span>মেম্বারশিপ ও টুলস</span>
           {totalPendingCount > 0 ? (
             <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-400 border border-amber-500/40 animate-pulse flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
@@ -647,7 +647,7 @@ export default function UserDashboardPage() {
             </span>
           ) : (
             <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-yellow-400/20 text-yellow-400 border border-yellow-400/30">
-              VIP
+              {allActiveLicenses.length > 0 ? "PRO" : "FREE"}
             </span>
           )}
         </button>
@@ -655,53 +655,27 @@ export default function UserDashboardPage() {
         <button
           type="button"
           onClick={() => setActiveTab("wallet")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
+          className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
             activeTab === "wallet"
               ? "bg-yellow-400 text-black shadow-neon-yellow scale-[1.02]"
               : "text-slate-300 hover:text-white bg-surface-card hover:bg-white/10"
           }`}
         >
           <Wallet className="w-4 h-4" />
-          <span>ব্যালেন্স লোড ও অফার কিনুন</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab("licenses")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
-            activeTab === "licenses"
-              ? "bg-yellow-400 text-black shadow-neon-yellow scale-[1.02]"
-              : "text-slate-300 hover:text-white bg-surface-card hover:bg-white/10"
-          }`}
-        >
-          <Key className="w-4 h-4" />
-          <span>আমার লাইসেন্স ও HWID কি ({userLicenses.length})</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab("downloads")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
-            activeTab === "downloads"
-              ? "bg-yellow-400 text-black shadow-neon-yellow scale-[1.02]"
-              : "text-slate-300 hover:text-white bg-surface-card hover:bg-white/10"
-          }`}
-        >
-          <Download className="w-4 h-4" />
-          <span>টুলস ডাউনলোড</span>
+          <span>ব্যালেন্স রিচার্জ (Add Money)</span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab("orders")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
+          className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-black transition-all duration-200 shrink-0 whitespace-nowrap active:scale-95 ${
             activeTab === "orders"
               ? "bg-yellow-400 text-black shadow-neon-yellow scale-[1.02]"
               : "text-slate-300 hover:text-white bg-surface-card hover:bg-white/10"
           }`}
         >
           <CreditCard className="w-4 h-4" />
-          <span>পেমেন্ট ও অর্ডার হিস্টোরি ({userOrders.length + deposits.length})</span>
+          <span>অর্ডার ও ট্রানজেকশন ({userOrders.length + deposits.length})</span>
         </button>
       </div>
 
@@ -828,33 +802,17 @@ export default function UserDashboardPage() {
             </div>
           </Card3D>
 
-          {/* 🟢 Live AutoPay Gateway Status Indicator */}
-          <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-[#0c1810] to-[#0c0c0c] border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="relative flex h-3.5 w-3.5 shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs sm:text-sm font-black text-emerald-400 tracking-wide">
-                    অটো-পেমেন্ট গেটওয়ে সক্রিয় ও কানেক্টেড (AutoPay Gateway Online)
-                  </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
-                    24/7 ACTIVE
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-300 mt-0.5">
-                  বিকাশ (01609166109), নগদ (01609166109) ও রকেট (01731328169) এসএমএস গেটওয়ে স্বয়ংক্রিয়ভাবে পড়ে ৩০-৪৫ সেকেন্ডে ট্রানজেকশন অ্যাপ্রুভ করে।
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
-              <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-900/40 px-2.5 py-1 rounded-lg border border-emerald-500/30 flex items-center gap-1">
-                <Zap className="w-3 h-3 text-yellow-400" />
-                <span>অটো এসএমএস ভেরিফিকেশন অন</span>
+          {/* Quick Info Bar */}
+          <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span className="text-slate-300">
+                বিকাশ, নগদ বা রকেটে ডিপোজিট করলে TrxID স্বয়ংক্রিয়ভাবে বা অ্যাডমিন দ্বারা দ্রুত ভেরিফাই হয়ে একাউন্টে যোগ হবে।
               </span>
             </div>
+            <span className="text-[10px] font-mono text-yellow-400 font-bold bg-yellow-400/10 px-2.5 py-1 rounded-lg border border-yellow-400/30 shrink-0">
+              ⚡ দ্রুত অনুমোদন
+            </span>
           </div>
 
           {/* 2. REAL-TIME PENDING DEPOSITS & ORDERS TRACKER */}
@@ -1219,9 +1177,9 @@ export default function UserDashboardPage() {
                   <span className="w-6 h-6 rounded-full bg-yellow-400 text-black font-black flex items-center justify-center text-xs">
                     ৩
                   </span>
-                  <h5 className="font-bold text-white text-sm">Machine HWID লক</h5>
+                  <h5 className="font-bold text-white text-sm">স্বয়ংক্রিয় পিসি লক (Auto-Bind)</h5>
                   <p className="text-slate-400 text-[11px] leading-relaxed">
-                    সফটওয়্যার স্ক্রিনের HWID কপি করে আপনার মেম্বারশিপ বক্সে দিয়ে লক করুন।
+                    টুলটি ওপেন করে লাইসেন্স কী দিন — ১ম বার যে পিসিতে ব্যবহার করবেন সাথে সাথে অটো-বাইন্ড হয়ে যাবে।
                   </p>
                 </div>
 
@@ -1229,9 +1187,9 @@ export default function UserDashboardPage() {
                   <span className="w-6 h-6 rounded-full bg-emerald-500 text-black font-black flex items-center justify-center text-xs">
                     ৪
                   </span>
-                  <h5 className="font-bold text-white text-sm">টুল অ্যাক্টিভেশন</h5>
+                  <h5 className="font-bold text-white text-sm">আনলিমিটেড অ্যাক্সেস</h5>
                   <p className="text-slate-400 text-[11px] leading-relaxed">
-                    লাইসেন্স কী সফটওয়্যারে পেস্ট করে এক ক্লিকে টুল ওপেন ও আনলিমিটেড ব্যবহার করুন।
+                    অ্যাক্টিভেশন সম্পন্ন হলে মেয়াদ থাকা পর্যন্ত এক ক্লিকে টুল ওপেন ও আনলিমিটেড ব্যবহার করুন।
                   </p>
                 </div>
               </div>
@@ -1310,11 +1268,11 @@ export default function UserDashboardPage() {
                           </div>
                         </div>
 
-                        <div className="text-[11px] text-slate-400 pt-2 border-t border-white/10">
+                          <div className="text-[11px] text-slate-400 pt-2 border-t border-white/10">
                           {isBound ? (
                             <span className="text-emerald-400 font-bold">✓ লাইসেন্স এই পিসিতে আজীবন আনলক করা রয়েছে।</span>
                           ) : (
-                            <span>সফটওয়্যার চালু করে স্ক্রিনের HWID এখানে সাবমিট করলেই লাইসেন্স সক্রিয় হবে।</span>
+                            <span className="text-yellow-400/90 font-medium">⚡ অটো-লক: টুলটি ডাউনলোড করে ওপেন করুন এবং কী দিন — সাথে সাথে পিসিতে অটো-বাইন্ড হয়ে যাবে! (চাইলে উপরে ম্যানুয়ালি পেস্ট করতে পারেন)</span>
                           )}
                         </div>
                       </div>
@@ -1377,33 +1335,17 @@ export default function UserDashboardPage() {
               </span>
             </div>
 
-            {/* 🟢 Live AutoPay Gateway Status Indicator */}
-            <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-[#0c1810] to-[#0c0c0c] border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="relative flex h-3.5 w-3.5 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs sm:text-sm font-black text-emerald-400 tracking-wide flex items-center gap-1.5">
-                      <span>অটো-পেমেন্ট গেটওয়ে সক্রিয় ও কানেক্টেড</span>
-                    </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
-                      ONLINE 24/7
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-300 mt-0.5">
-                    বিকাশ, নগদ বা রকেটে টাকা পাঠালে গেটওয়ে স্বয়ংক্রিয়ভাবে এসএমএস ভেরিফাই করে ৩০-৪৫ সেকেন্ডে ওয়ালেটে ব্যালেন্স জমা করবে।
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
-                <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-900/40 px-2.5 py-1 rounded-lg border border-emerald-500/30 flex items-center gap-1">
-                  <Zap className="w-3 h-3 text-yellow-400" />
-                  <span>লাইভ এসএমএস সিঙ্ক</span>
+            {/* Quick Deposit Note */}
+            <div className="p-3 rounded-xl bg-black/60 border border-white/10 flex items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span className="text-slate-300">
+                  নিচের নাম্বারে টাকা পাঠিয়ে TrxID সাবমিট করলেই ব্যালেন্স স্বয়ংক্রিয়ভাবে যোগ হবে।
                 </span>
               </div>
+              <span className="text-[10px] font-mono text-yellow-400 font-bold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/30 shrink-0">
+                অটো রিচার্জ
+              </span>
             </div>
 
             {/* ৩-ধাপের ভিজ্যুয়াল মিনি পেমেন্ট গাইড (Visual 3-Step Guide) — পেমেন্ট বক্সের ঠিক ওপরে */}
@@ -1497,7 +1439,7 @@ export default function UserDashboardPage() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleCopyPaymentNum(settings.nagadMerchantNumber || "01609166109", "nagad");
+                      handleCopyPaymentNum(settings.nagadMerchantNumber || "01967922602", "nagad");
                     }}
                     className="text-[10px] px-2 py-0.5 rounded bg-orange-500 text-white font-black"
                   >
@@ -1505,7 +1447,7 @@ export default function UserDashboardPage() {
                   </button>
                 </div>
                 <span className="font-mono text-sm sm:text-base font-black text-orange-400">
-                  {settings.nagadMerchantNumber || "01609166109"}
+                  {settings.nagadMerchantNumber || "01967922602"}
                 </span>
               </div>
 

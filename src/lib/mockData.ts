@@ -8,13 +8,13 @@ export const initialSettings: SiteSettings = {
   telegramGroupUrl: "https://t.me/toolsbd_official",
   telegramChannelUrl: "https://t.me/toolsbd_channel",
   telegramSupportUsername: "@ToolsbdSupport",
-  bkashMerchantNumber: "01609166109",
+  bkashMerchantNumber: "01967922602",
   bkashType: "Personal",
   rocketMerchantNumber: "01731328169",
   rocketType: "Personal",
-  nagadMerchantNumber: "01609166109",
+  nagadMerchantNumber: "01967922602",
   nagadType: "Personal",
-  paymentNotice: "Send money via bKash (01609166109) or Rocket (01731328169) Personal and submit your exact TrxID below for instant auto-activation within 45 seconds.",
+  paymentNotice: "Send money via bKash (01967922602) or Rocket (01731328169) Personal and submit your exact TrxID below for instant auto-activation within 45 seconds.",
   contactEmail: "support@toolsbd.com",
   announcementNotice: "🔊 TOOLS OFFER PRICE: 7 DAYS — $2 🔥 | 15 DAYS — $4 🔥 | 30 DAYS — $8 🔥 — Instant bKash & Rocket Auto Delivery!",
   isAnnouncementActive: true,
@@ -226,7 +226,7 @@ export const sampleReviews: Review[] = [
     avatarUrl: "https://api.dicebear.com/7.x/bottts/svg?seed=Imran",
     rating: 5,
     toolName: "OTP Testing Utility",
-    comment: "7 Days only $2! Auto payment confirmed within 35 seconds on bKash (01609166109). HWID license key worked instantly on Windows 11.",
+    comment: "7 Days only $2! Auto payment confirmed within 35 seconds on bKash (01967922602). HWID license key worked instantly on Windows 11.",
     date: "2 days ago",
     isVerified: true
   },
@@ -277,7 +277,7 @@ export const sampleTutorials: Tutorial[] = [
     duration: "Quick Guide",
     description: "Learn how to add balance via bKash/Rocket, buy the 7/15/30-day offer, and use your 1-click HWID reset button when switching PCs.",
     steps: [
-      "Open My Dashboard -> Add Money via bKash (01609166109) or Rocket (01731328169).",
+      "Open My Dashboard -> Add Money via bKash (01967922602) or Rocket (01731328169).",
       "Buy your preferred offer (7 Days $2, 15 Days $4, or 30 Days $8).",
       "Go to My Licenses -> paste your PC HWID and activate.",
       "To change PCs later, click 'Reset HWID' with 1 click."
@@ -289,7 +289,7 @@ export const sampleFaqs: FaqItem[] = [
   {
     id: "faq-1",
     question: "How long does automated bKash/Rocket payment confirmation take?",
-    answer: "Our automated companion SMS gateway detects your transaction within 30 to 45 seconds after you send money to bKash (01609166109) or Rocket (01731328169) and submit your TrxID. Your license key is generated immediately.",
+    answer: "Our automated companion SMS gateway detects your transaction within 30 to 45 seconds after you send money to bKash (01967922602) or Rocket (01731328169) and submit your TrxID. Your license key is generated immediately.",
     category: "Payment"
   },
   {

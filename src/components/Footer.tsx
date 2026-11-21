@@ -50,7 +50,7 @@ export default function Footer() {
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-white font-bold">নগদ (সেন্ড মানি):</span>
                 <span className="text-orange-400 font-bold bg-black/60 px-2 py-0.5 rounded border border-white/10">
-                  {settings.nagadMerchantNumber || "01609166109"}
+                  {settings.nagadMerchantNumber || "01967922602"}
                 </span>
               </div>
               <div className="flex items-center justify-between text-xs font-mono">
@@ -158,7 +158,7 @@ export default function Footer() {
               </a>
 
               <p className="text-[11px] text-slate-400 pt-1">
-                সাপোর্টেড: বিকাশ ({settings.bkashMerchantNumber}) &bull; নগদ ({settings.nagadMerchantNumber || "01609166109"}) &bull; রকেট ({settings.rocketMerchantNumber})
+                সাপোর্টেড: বিকাশ ({settings.bkashMerchantNumber}) &bull; নগদ ({settings.nagadMerchantNumber || "01967922602"}) &bull; রকেট ({settings.rocketMerchantNumber})
               </p>
             </div>
           </div>

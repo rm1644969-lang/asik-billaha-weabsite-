@@ -15,7 +15,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "Toolsbd.com — Bangladesh's #1 Automated Software Tools & Licensing Hub",
-  description: "Enterprise software utilities, instant bKash (01609166109) & Rocket (01731328169) automated verification, and HWID licensing.",
+  description: "Enterprise software utilities, instant bKash (01967922602) & Rocket (01731328169) automated verification, and HWID licensing.",
   manifest: "/manifest.json",
   icons: {
     icon: "/icon-192.png",

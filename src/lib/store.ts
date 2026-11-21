@@ -118,12 +118,15 @@ export function useNexusStore() {
       if (storedLicenses) setLicenses(JSON.parse(storedLicenses));
       if (storedSettings) {
         const parsedSettings = JSON.parse(storedSettings);
-        if (parsedSettings.bkashMerchantNumber === "01967922602") {
-          parsedSettings.bkashMerchantNumber = "01609166109";
-          try {
-            localStorage.setItem("toolsbd_v4_settings", JSON.stringify(parsedSettings));
-          } catch (_) {}
+        if (parsedSettings.bkashMerchantNumber === "01609166109") {
+          parsedSettings.bkashMerchantNumber = "01967922602";
         }
+        if (parsedSettings.nagadMerchantNumber === "01609166109") {
+          parsedSettings.nagadMerchantNumber = "01967922602";
+        }
+        try {
+          localStorage.setItem("toolsbd_v4_settings", JSON.stringify(parsedSettings));
+        } catch (_) {}
         setSettings({ ...initialSettings, ...parsedSettings });
       }
       if (storedSmsRecords) setSmsRecords(JSON.parse(storedSmsRecords));
@@ -144,8 +147,11 @@ export function useNexusStore() {
       // Also try fetching live settings from Firestore in the background
       fetchSettingsFromFirestore().then((remoteSettings) => {
         if (remoteSettings) {
-          if (remoteSettings.bkashMerchantNumber === "01967922602") {
-            remoteSettings.bkashMerchantNumber = "01609166109";
+          if (remoteSettings.bkashMerchantNumber === "01609166109") {
+            remoteSettings.bkashMerchantNumber = "01967922602";
+          }
+          if (remoteSettings.nagadMerchantNumber === "01609166109") {
+            remoteSettings.nagadMerchantNumber = "01967922602";
           }
           setSettings(prev => ({ ...prev, ...remoteSettings }));
           if (typeof window !== "undefined") {

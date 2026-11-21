@@ -248,7 +248,7 @@ export default function AdminSmsDevicesPage() {
                 <strong className="text-amber-400">অ্যাপটি ডাউনলোড করুন:</strong> উপরের <span className="text-white font-semibold">Download Gateway APK</span> বাটনে ক্লিক করে <span className="font-mono text-amber-300">toolsbd-paysync.apk</span> আপনার ফোনে ডাউনলোড করে ইনস্টল করুন।
               </li>
               <li className="p-2.5 rounded-xl bg-white/5 border border-white/5">
-                <strong className="text-amber-400">সিম কার্ড নির্বাচন:</strong> যে ফোনে আপনার <span className="text-pink-400 font-bold">bKash (01609166109)</span>, <span className="text-orange-400 font-bold">Nagad (01609166109)</span> এবং <span className="text-purple-400 font-bold">Rocket (01731328169)</span> সিম চালু আছে, সেই ফোনে অ্যাপটি ওপেন করুন।
+                <strong className="text-amber-400">সিম কার্ড নির্বাচন:</strong> যে ফোনে আপনার <span className="text-pink-400 font-bold">বিকাশ</span>, <span className="text-orange-400 font-bold">নগদ</span> বা <span className="text-purple-400 font-bold">রকেট</span> সিম চালু আছে, সেই ফোনে অ্যাপটি ওপেন করুন।
               </li>
               <li className="p-2.5 rounded-xl bg-white/5 border border-white/5">
                 <strong className="text-amber-400">পারমিশন দিন:</strong> নিচের চেকলিস্ট অনুযায়ী <span className="text-white font-semibold">SMS Read</span>, <span className="text-white font-semibold">Display Over Other Apps</span> এবং <span className="text-white font-semibold">24/7 Battery</span> পারমিশন অন করুন।

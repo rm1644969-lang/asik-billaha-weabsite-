@@ -350,7 +350,7 @@ export default function ToolDetailsPage() {
               </span>
               <span className="text-slate-600 hidden sm:inline">&bull;</span>
               <span>
-                নগদ: <strong className="text-orange-400 font-bold select-all">{settings.nagadMerchantNumber || "01609166109"}</strong>
+                নগদ: <strong className="text-orange-400 font-bold select-all">{settings.nagadMerchantNumber || "01967922602"}</strong>
               </span>
               <span className="text-slate-600 hidden sm:inline">&bull;</span>
               <span>

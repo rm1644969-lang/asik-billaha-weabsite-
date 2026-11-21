@@ -354,7 +354,7 @@ function CheckoutContent() {
   const currentPaymentNumber = paymentMethod === "bKash" 
     ? settings.bkashMerchantNumber 
     : paymentMethod === "Nagad"
-    ? (settings.nagadMerchantNumber || "01609166109")
+    ? (settings.nagadMerchantNumber || "01967922602")
     : settings.rocketMerchantNumber;
 
   return (
@@ -439,33 +439,17 @@ function CheckoutContent() {
             </div>
           </div>
 
-          {/* 🟢 Live AutoPay Gateway Status Indicator */}
-          <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-[#0c1810] to-[#0c0c0c] border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.15)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="relative flex h-3.5 w-3.5 shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs sm:text-sm font-black text-emerald-400 tracking-wide flex items-center gap-1.5">
-                    <span>অটো-পেমেন্ট গেটওয়ে সক্রিয় ও কানেক্টেড</span>
-                  </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
-                    ONLINE 24/7
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-300 mt-0.5">
-                  বিকাশ, নগদ বা রকেটে টাকা পাঠালে গেটওয়ে স্বয়ংক্রিয়ভাবে এসএমএস ভেরিফাই করে ৩০-৪৫ সেকেন্ডে লাইসেন্স আনলক করবে।
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
-              <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-900/40 px-2.5 py-1 rounded-lg border border-emerald-500/30 flex items-center gap-1">
-                <Zap className="w-3 h-3 text-yellow-400" />
-                <span>লাইভ এসএমএস সিঙ্ক</span>
+          {/* Quick Payment Security Note */}
+          <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 flex items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span className="text-slate-300">
+                বিকাশ, নগদ বা রকেটে Send Money করে TrxID সাবমিট করলেই লাইসেন্স তাৎক্ষণিকভাবে আনলক হবে।
               </span>
             </div>
+            <span className="text-[10px] font-mono text-yellow-400 font-bold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/30 shrink-0">
+              ⚡ দ্রুত ডেলিভারি
+            </span>
           </div>
 
           {/* 2. PAYMENT METHOD SELECTION TABS */}
@@ -506,7 +490,7 @@ function CheckoutContent() {
                   <span className="w-3.5 h-3.5 rounded-full bg-[#F7941D] shrink-0" />
                   <span className="text-xs sm:text-sm font-black text-white">নগদ</span>
                 </div>
-                <span className="text-[11px] sm:text-xs font-mono text-orange-400 font-bold">{settings.nagadMerchantNumber || "01609166109"}</span>
+                <span className="text-[11px] sm:text-xs font-mono text-orange-400 font-bold">{settings.nagadMerchantNumber || "01967922602"}</span>
               </button>
 
               {/* Rocket */}
@@ -941,11 +925,11 @@ function CheckoutContent() {
       )}
 
       {/* ============================================================== */}
-      {/* VIEW 2: INSTANT SUCCESS, DIRECT DOWNLOAD & HWID BINDING        */}
+      {/* VIEW 2: INSTANT SUCCESS, DIRECT DOWNLOAD & AUTO-BIND LICENSE   */}
       {/* ============================================================== */}
       {isSuccess && (
         <Card3D maxTilt={4} depth={1.01} glare={true}>
-          <div className="glass-panel rounded-3xl p-6 sm:p-10 space-y-7 border-2 border-yellow-400 shadow-neon-yellow text-center relative overflow-hidden">
+          <div className="glass-panel rounded-3xl p-6 sm:p-10 space-y-6 border-2 border-yellow-400 shadow-neon-yellow text-center relative overflow-hidden">
           
           <div className="w-16 h-16 rounded-full bg-yellow-400 text-black flex items-center justify-center mx-auto shadow-neon-yellow">
             <CheckCircle2 className="w-10 h-10" />
@@ -953,22 +937,59 @@ function CheckoutContent() {
 
           <div>
             <span className="text-xs font-black uppercase tracking-wider text-yellow-400">
-              পেমেন্ট কনফার্মেশন সম্পন্ন!
+              পেমেন্ট সফলভাবে যাচাই হয়েছে!
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-gradient-shimmer mt-1">
+            <h2 className="text-2xl sm:text-4xl font-black text-white mt-1">
               আপনার লাইসেন্স প্রস্তুত
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-lg mx-auto">
-              <strong className={getToolTitleClass(selectedTool.name)}>{selectedTool.name}</strong> ({selectedPlan?.durationDays || 7} Days Access) এর অফিশিয়াল লাইসেন্স সফলভাবে জেনারেট হয়েছে।
+              <strong className={getToolTitleClass(selectedTool.name)}>{selectedTool.name}</strong> ({selectedPlan?.durationDays || 7} Days Access) এর অফিশিয়াল লাইসেন্স কী ও ডাউনলোড ফাইল আনলক করা হয়েছে।
             </p>
           </div>
 
-          {/* 1. STEP 1: DOWNLOAD TOOL ZIP ARCHIVE */}
+          {/* 1. LICENSE ACTIVATION KEY (REVEALED IMMEDIATELY WITH AUTO-BIND) */}
+          <div className="p-5 rounded-2xl bg-black border-2 border-yellow-400 shadow-neon-yellow text-left space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
+                <Key className="w-4 h-4 text-red-500" />
+                <span>আপনার অফিশিয়াল লাইসেন্স কী (License Key)</span>
+              </span>
+              <span className="text-[10px] bg-emerald-500 text-black font-black px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-black" />
+                <span>প্রথম ব্যবহারে পিসিতে অটো-লক হবে</span>
+              </span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#111111] border border-yellow-400/50">
+              <span className="font-mono text-base sm:text-2xl font-black text-yellow-400 break-all select-all">
+                {generatedLicense || activeOrder?.licenseKey || "AT-82K1-99FA-310B-7CE9"}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(generatedLicense || activeOrder?.licenseKey || "");
+                  setCopiedKey(true);
+                  triggerConfetti();
+                  setTimeout(() => setCopiedKey(false), 2000);
+                }}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center justify-center gap-1.5 shrink-0 transition-all shadow-neon-yellow"
+              >
+                {copiedKey ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                <span>{copiedKey ? "কপি হয়েছে!" : "কপি করুন"}</span>
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed">
+              💡 <strong>সহজ নিয়ম:</strong> সফটওয়্যারটি নামিয়ে আপনার কম্পিউটারে ওপেন করে এই লাইসেন্স কী পেস্ট করলেই এটি সরাসরি আপনার পিসির সাথে স্বয়ংক্রিয়ভাবে লক হয়ে চালু হয়ে যাবে। কোনো জটিল সেটিংসের প্রয়োজন নেই।
+            </p>
+          </div>
+
+          {/* 2. DIRECT SOFTWARE PACKAGE DOWNLOAD */}
           <div className="p-5 rounded-2xl bg-[#0c180e] border border-emerald-500/50 text-left space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
                 <Download className="w-4 h-4" />
-                <span>ধাপ ১: টুলস ডাউনলোড ফাইল (Software Setup Package)</span>
+                <span>টুলস ডাউনলোড ফাইল (Official Setup Package)</span>
               </span>
               <span className="text-xs font-mono text-slate-300 bg-black/60 px-2 py-0.5 rounded border border-white/10">
                 {selectedTool.fileSize || "28.4 MB"}
@@ -981,33 +1002,29 @@ function CheckoutContent() {
               className="w-full py-4 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-black font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg transition-all"
             >
               <Download className="w-5 h-5 text-black" />
-              <span>টুল ডাউনলোড করুন ({selectedTool.downloadFileName || "Fast_OTP_v3.0_Pro_Setup.zip"})</span>
+              <span>সফটওয়্যার ডাউনলোড করুন ({selectedTool.downloadFileName || "Fast_OTP_v3.0_Pro_Setup.zip"})</span>
             </a>
 
             <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300 pt-1">
-              <span>ডাউনলোড শেষে জিপ ফাইলটি আনজিপ করে <strong>Run as Administrator</strong> হিসেবে রান করুন।</span>
+              <span>ডাউনলোড করে জিপ ফাইলটি এক্সট্র্যাক্ট করুন এবং <strong>Run as Administrator</strong> হিসেবে ওপেন করুন।</span>
               <span className="text-emerald-400 font-mono font-bold">● 100% Virus-Free &bull; Tested</span>
             </div>
           </div>
 
-          {/* 2. STEP 2: FULL SETUP VIDEO TUTORIAL */}
+          {/* 3. SETUP VIDEO TUTORIAL */}
           {selectedTool.setupVideoUrl && (
-            <div className="p-5 rounded-2xl bg-[#0e0e0e] border border-yellow-400/50 text-left space-y-3 shadow-lg">
+            <div className="p-5 rounded-2xl bg-[#0e0e0e] border border-white/10 text-left space-y-3 shadow-lg">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
                   <Play className="w-4 h-4 text-red-500" />
-                  <span>ধাপ ২: ফুল সেটআপ ভিডিও গাইড (Watch Setup Video)</span>
+                  <span>ফুল সেটআপ ভিডিও গাইড (Watch Setup Video)</span>
                 </span>
-                <span className="text-[10px] font-mono text-yellow-400 bg-yellow-400/10 px-2.5 py-0.5 rounded-full border border-yellow-400/30 font-bold">
+                <span className="text-[10px] font-mono text-slate-400">
                   ভিডিও দেখে সহজে সেটআপ করুন
                 </span>
               </div>
 
-              <p className="text-xs text-slate-300 leading-relaxed">
-                সফটওয়্যার কীভাবে ওপেন করবেন, Machine HWID কোথায় পাবেন এবং লাইসেন্স কী পেস্ট করে চালু করবেন — সম্পূর্ণ ভিডিওটি দেখে নিন:
-              </p>
-
-              <div className="relative aspect-video rounded-xl overflow-hidden border border-yellow-400/40 bg-black shadow-2xl">
+              <div className="relative aspect-video rounded-xl overflow-hidden border border-white/10 bg-black shadow-2xl">
                 <iframe
                   width="100%"
                   height="100%"
@@ -1018,112 +1035,8 @@ function CheckoutContent() {
                   allowFullScreen
                 />
               </div>
-
-              <div className="text-[11px] text-slate-400 flex flex-wrap items-center justify-between gap-2 pt-1 font-mono">
-                <span>&bull; ভিডিও অনুযায়ী সফটওয়্যার ওপেন করে Machine HWID কপি করুন</span>
-                <span className="text-yellow-400 font-bold">নিচের ৩য় ধাপে HWID পেস্ট করুন &darr;</span>
-              </div>
             </div>
           )}
-
-          {/* 3. STEP 3: HWID FIRST — USER ENTERS HWID BEFORE GETTING LICENSE */}
-          <div className="p-5 rounded-2xl bg-[#121212] border border-yellow-400/60 text-left space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
-                <Cpu className="w-4 h-4 text-red-500" />
-                <span>ধাপ ৩: সফটওয়্যার ওপেন করে আপনার Machine HWID দিন</span>
-              </span>
-              <span className="text-[10px] text-yellow-300 font-mono font-bold">
-                আগে HWID দিন &rarr; তারপর লাইসেন্স পাবেন
-              </span>
-            </div>
-
-            {hwidBoundStatus?.bound ? (
-              <div className="p-3.5 rounded-xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-xs font-bold flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
-                <span>{hwidBoundStatus.message}</span>
-              </div>
-            ) : (
-              <form onSubmit={handleBindHwid} className="space-y-2.5">
-                <label className="text-xs text-slate-300 block font-semibold">
-                  টুলস ডাউনলোড করে ওপেন করার পর সফটওয়্যারে দেখানো Machine HWID টি এখানে দিন:
-                </label>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <input
-                    type="text"
-                    required
-                    placeholder="যেমন: AGY-E42D-475A-B6D8-A901"
-                    value={hwidInput}
-                    onChange={(e) => setHwidInput(e.target.value)}
-                    className="flex-1 p-3 rounded-xl glass-input font-mono text-xs text-white font-black uppercase"
-                  />
-                  <button
-                    type="submit"
-                    disabled={isBindingHwid}
-                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 text-black font-black text-xs shadow-neon-yellow shrink-0 transition-all flex items-center justify-center gap-1.5"
-                  >
-                    <Zap className="w-4 h-4" />
-                    <span>{isBindingHwid ? "ভেরিফাই হচ্ছে..." : "HWID সাবমিট করে লাইসেন্স কী নিন 🔒"}</span>
-                  </button>
-                </div>
-                <p className="text-[11px] text-slate-400">
-                  ⚠️ নোট: HWID দেওয়ার সাথে সাথেই লাইসেন্স কী আপনার কম্পিউটারের হার্ডওয়্যারের সাথে আজীবনের জন্য লক হয়ে যাবে।
-                </p>
-              </form>
-            )}
-          </div>
-
-          {/* 4. STEP 4: REVEALED LICENSE ACTIVATION KEY (SHOWN AFTER HWID IS SUBMITTED) */}
-          <div className={`p-5 rounded-2xl text-left space-y-3 transition-all ${
-            hwidBoundStatus?.bound 
-              ? "bg-black border-2 border-yellow-400 shadow-neon-yellow" 
-              : "bg-[#0a0a0a] border border-white/10 opacity-70"
-          }`}>
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
-                <Key className="w-4 h-4 text-red-500" />
-                <span>ধাপ ৪: আপনার অ্যাক্টিভেটেড লাইসেন্স কী (License Key)</span>
-              </span>
-              <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-black">
-                {hwidBoundStatus?.bound ? "● Locked to your PC" : "Locked until HWID"}
-              </span>
-            </div>
-
-            {hwidBoundStatus?.bound ? (
-              <div className="space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-[#111111] border border-yellow-400/50">
-                  <span className="font-mono text-sm sm:text-xl font-black text-yellow-400 break-all select-all">
-                    {generatedLicense || activeOrder?.licenseKey || "TBD-OTP-30D-88AF-901B-4E11"}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigator.clipboard.writeText(generatedLicense || activeOrder?.licenseKey || "");
-                      setCopiedKey(true);
-                      triggerConfetti();
-                      setTimeout(() => setCopiedKey(false), 2000);
-                    }}
-                    className="w-full sm:w-auto px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black flex items-center justify-center gap-1.5 shrink-0 transition-all shadow-neon-yellow"
-                  >
-                    {copiedKey ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    <span>{copiedKey ? "কপি হয়েছে!" : "কপি করুন"}</span>
-                  </button>
-                </div>
-                <p className="text-[11px] text-emerald-400 font-medium">
-                  ✓ সফটওয়্যারে গিয়ে এই লাইসেন্স কী পেস্ট করে <strong>&quot;LOGIN &amp; ACTIVATE AUTO TOOL&quot;</strong> বাটনে চাপলেই টুল ফুল ওপেন হয়ে যাবে।
-                </p>
-              </div>
-            ) : (
-              <div className="p-4 rounded-xl bg-black/40 border border-white/10 text-slate-400 text-xs flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-yellow-400/10 flex items-center justify-center text-yellow-400 shrink-0">
-                  <Key className="w-4 h-4" />
-                </div>
-                <span>
-                  লাইসেন্স কী দেখতে প্রথমে ওপরের <strong>ধাপ ৩</strong>-এ আপনার টুলের Machine HWID দিন। HWID সাবমিট করার সাথে সাথেই আপনার এক্সক্লুসিভ লাইসেন্স কী এখানে আনলক হবে।
-                </span>
-              </div>
-            )}
-          </div>
 
           {/* Quick Action Navigation */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
@@ -1131,7 +1044,7 @@ function CheckoutContent() {
               href="/dashboard"
               className="py-3.5 px-4 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-sm flex items-center justify-center gap-2 shadow-neon-yellow transition-all"
             >
-              <span>আমার ড্যাশবোর্ডে যান (My Account)</span>
+              <span>আমার মেম্বারশিপ হাব ও লাইসেন্স দেখুন</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
 

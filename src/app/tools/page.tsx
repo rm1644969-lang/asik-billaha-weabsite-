@@ -151,7 +151,7 @@ export default function ToolsMarketplacePage() {
                     বিকাশ: <strong className="text-yellow-400">{settings.bkashMerchantNumber}</strong>
                   </span>
                   <span>
-                    নগদ: <strong className="text-orange-400">{settings.nagadMerchantNumber || "01609166109"}</strong>
+                    নগদ: <strong className="text-orange-400">{settings.nagadMerchantNumber || "01967922602"}</strong>
                   </span>
                   <span>
                     রকেট: <strong className="text-red-400">{settings.rocketMerchantNumber}</strong>
