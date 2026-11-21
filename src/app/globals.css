@@ -44,8 +44,8 @@ body {
 }
 .glass-panel-hover:hover {
   background: rgba(22, 22, 22, 0.95);
-  border-color: rgba(250, 204, 21, 0.45);
-  box-shadow: 0 10px 30px -10px rgba(250, 204, 21, 0.25);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
 }
 
 .glass-input {
@@ -56,38 +56,32 @@ body {
 }
 .glass-input:focus {
   border-color: #facc15;
-  box-shadow: 0 0 15px rgba(250, 204, 21, 0.35);
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.2);
   outline: none;
 }
 
 /* Yellow, White, Red text gradients */
 .text-gradient-yellow {
-  background: linear-gradient(135deg, #ffffff 0%, #facc15 50%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ffffff;
 }
 
 .text-gradient-red {
-  background: linear-gradient(135deg, #ffffff 0%, #ef4444 60%, #dc2626 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ef4444;
 }
 
 .text-gradient-gold {
-  background: linear-gradient(135deg, #fef08a 0%, #facc15 50%, #ca8a04 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #facc15;
 }
 
 /* Glow lines and rings */
 .glow-border-yellow {
-  box-shadow: 0 0 20px -3px rgba(250, 204, 21, 0.45);
-  border-color: rgba(250, 204, 21, 0.6);
+  box-shadow: 0 2px 10px -2px rgba(250, 204, 21, 0.2);
+  border-color: rgba(250, 204, 21, 0.4);
 }
 
 .glow-border-red {
-  box-shadow: 0 0 20px -3px rgba(239, 68, 68, 0.45);
-  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: 0 2px 10px -2px rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 /* Grid background pattern */
@@ -113,14 +107,6 @@ body {
   }
 }
 
-@keyframes neonGlowPulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.6)) drop-shadow(0 0 20px rgba(239, 68, 68, 0.4));
-  }
-  50% {
-    filter: drop-shadow(0 0 18px rgba(250, 204, 21, 0.85)) drop-shadow(0 0 35px rgba(239, 68, 68, 0.6));
-  }
-}
 
 @keyframes cyberLightSweep {
   0% {

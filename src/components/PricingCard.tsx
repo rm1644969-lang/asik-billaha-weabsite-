@@ -41,22 +41,22 @@ export default function PricingCard({ plan, toolSlug }: PricingCardProps) {
           {/* Price */}
           <div className="mb-6 pb-6 border-b border-white/10">
             <div className="flex items-baseline gap-2">
-              <span className="text-5xl font-black text-yellow-400 tracking-tight drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]">
+              <span className="text-4xl font-bold text-yellow-400 tracking-tight">
                 ${plan.priceUSD}
               </span>
-              <span className="text-white text-sm font-black uppercase">USD 🔥</span>
+              <span className="text-slate-300 text-xs font-semibold uppercase">USD</span>
               {plan.originalPriceUSD && (
-                <span className="text-sm text-slate-500 line-through ml-1">
+                <span className="text-xs text-slate-500 line-through ml-1">
                   ${plan.originalPriceUSD}
                 </span>
               )}
             </div>
             <p className="text-xs font-mono text-slate-300 mt-1.5">
-              বিকাশ / রকেট সমপরিমাণ: <strong className="text-white">৳{plan.priceBDT} BDT</strong>
+              বিকাশ / নগদ / রকেট: <strong className="text-white">৳{plan.priceBDT} BDT</strong>
             </p>
             {discountPercent > 0 && (
-              <span className="inline-block mt-2 text-[11px] font-black text-white bg-red-600/90 border border-red-500 px-2.5 py-0.5 rounded">
-                সাশ্রয় {discountPercent}% স্পেশাল অফার
+              <span className="inline-block mt-2 text-[10px] font-bold text-white bg-red-600/90 border border-red-500 px-2 py-0.5 rounded">
+                সাশ্রয় {discountPercent}% অফার
               </span>
             )}
           </div>
@@ -83,14 +83,13 @@ export default function PricingCard({ plan, toolSlug }: PricingCardProps) {
         <div>
           <Link
             href={checkoutUrl}
-            className="w-full py-3.5 px-4 rounded-xl text-sm font-black flex items-center justify-center gap-2 transition-all text-center shadow-lg bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black shadow-neon-yellow hover:opacity-95"
+            className="w-full py-3.5 px-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all text-center bg-yellow-400 hover:bg-yellow-300 text-black shadow-sm"
           >
-            <Zap className="w-4 h-4 text-black" />
-            <span>প্ল্যান সিলেক্ট করে কিনুন</span>
+            <span>প্ল্যান নির্বাচন করে কিনুন</span>
           </Link>
-          <p className="text-center text-[10px] text-slate-400 mt-2.5 flex items-center justify-center gap-1 font-semibold">
-            <ShieldCheck className="w-3 h-3 text-red-500" />
-            <span>বিকাশ ও রকেটে তাৎক্ষণিক অটো ডেলিভারি</span>
+          <p className="text-center text-[11px] text-slate-400 mt-2.5 flex items-center justify-center gap-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>বিকাশ, নগদ ও রকেটে দ্রুত ডেলিভারি</span>
           </p>
         </div>
       </div>

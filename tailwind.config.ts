@@ -58,9 +58,9 @@ const config: Config = {
         },
       },
       boxShadow: {
-        "neon-yellow": "0 0 25px -4px rgba(250, 204, 21, 0.55)",
-        "neon-red": "0 0 25px -4px rgba(239, 68, 68, 0.55)",
-        "neon-white": "0 0 20px -4px rgba(255, 255, 255, 0.35)",
+        "neon-yellow": "0 4px 14px 0 rgba(250, 204, 21, 0.18)",
+        "neon-red": "0 4px 14px 0 rgba(239, 68, 68, 0.18)",
+        "neon-white": "0 4px 14px 0 rgba(255, 255, 255, 0.08)",
         "glass": "0 8px 32px 0 rgba(0, 0, 0, 0.7)",
       },
       backdropBlur: {

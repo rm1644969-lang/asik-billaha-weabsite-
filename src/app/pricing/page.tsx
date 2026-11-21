@@ -24,11 +24,11 @@ export default function PricingPage() {
           <Sparkles className="w-3.5 h-3.5" />
           <span>সীমিত সময়ের স্পেশাল অফার</span>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-gradient-shimmer">
-          টুলস স্পেশাল অফার প্রাইস 🔊
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white">
+          টুলস স্পেশাল অফার প্যাকেজ
         </h1>
-        <p className="text-slate-300 text-base sm:text-lg font-semibold leading-relaxed">
-          ৭ দিন — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$২ 🔥</span> &nbsp;|&nbsp; ১৫ দিন — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$৪ 🔥</span> &nbsp;|&nbsp; ৩০ দিন — <span className="text-yellow-400 font-black drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]">$৮ 🔥</span>
+        <p className="text-slate-300 text-base sm:text-lg font-medium leading-relaxed">
+          ৭ দিন — <span className="text-yellow-400 font-bold">$২ (৳২৪০)</span> &nbsp;|&nbsp; ১৫ দিন — <span className="text-yellow-400 font-bold">$৪ (৳৪৮০)</span> &nbsp;|&nbsp; ৩০ দিন — <span className="text-yellow-400 font-bold">$৮ (৳৯৬০)</span>
         </p>
         <p className="text-slate-400 text-sm">
           বিকাশ (<span className="text-yellow-400 font-mono font-bold">01967922602</span>) ও রকেট (<span className="text-red-400 font-mono font-bold">01731328169</span>)-এ স্বয়ংক্রিয় তাৎক্ষণিক লাইসেন্স ডেলিভারি।

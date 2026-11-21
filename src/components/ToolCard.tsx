@@ -134,10 +134,10 @@ export default function ToolCard({ tool }: ToolCardProps) {
                 <div>
                   <span className="text-[11px] text-slate-400 font-medium">অফার মূল্য শুরু মাত্র</span>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-3xl font-black text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.5)]">
+                    <span className="text-3xl font-bold text-yellow-400">
                       ${lowestPriceUSD}
                     </span>
-                    <span className="text-xs text-white font-bold">/ ৭ দিন 🔥</span>
+                    <span className="text-xs text-slate-300 font-medium">/ ৭ দিন</span>
                     <span className="text-[11px] text-slate-400 font-mono">
                       (৳{lowestPriceBDT})
                     </span>
@@ -162,7 +162,7 @@ export default function ToolCard({ tool }: ToolCardProps) {
 
                 <Link
                   href={`/tools/${tool.slug}#plans`}
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-black text-black bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-300 hover:to-yellow-400 shadow-md hover:shadow-neon-yellow transition-all text-center hover:-translate-y-0.5 active:translate-y-0"
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-black bg-yellow-400 hover:bg-yellow-300 transition-all text-center"
                 >
                   <span>লাইসেন্স নিন</span>
                   <ArrowRight className="w-3.5 h-3.5" />

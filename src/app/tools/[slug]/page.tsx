@@ -329,7 +329,7 @@ export default function ToolDetailsPage() {
               স্পেশাল সীমিত সময়ের অফার
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-gradient-shimmer">
-              টুলস স্পেশাল অফার প্রাইস 🔊
+              টুলস স্পেশাল অফার প্যাকেজ
             </h2>
             <p className="text-slate-300 text-sm font-semibold">
               ৭ দিন — <span className="text-yellow-400 font-black">$২ 🔥</span> &bull; ১৫ দিন — <span className="text-yellow-400 font-black">$৪ 🔥</span> &bull; ৩০ দিন — <span className="text-yellow-400 font-black">$৮ 🔥</span>

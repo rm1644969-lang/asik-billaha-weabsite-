@@ -80,7 +80,7 @@ export default function ToolsMarketplacePage() {
                     <span>স্পেশাল অফার</span>
                   </span>
                   <h2 className="text-2xl sm:text-3xl font-black text-gradient-shimmer">
-                    টুলস স্পেশাল অফার প্রাইস 🔊
+                    টুলস স্পেশাল অফার প্যাকেজ
                   </h2>
                 </div>
                 <div className="text-left sm:text-right text-xs font-mono text-slate-300">

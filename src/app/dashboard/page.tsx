@@ -485,49 +485,42 @@ export default function UserDashboardPage() {
         </div>
       ) : (
         /* Welcome & Wallet Balance Banner */
-        <div className="relative rounded-3xl p-[1px] bg-gradient-to-r from-yellow-400 via-red-500 to-yellow-600 shadow-neon-yellow overflow-hidden">
-          <div className="rounded-3xl bg-[#0c0c0c]/95 p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6 backdrop-blur-xl border border-white/10">
+        <div className="rounded-2xl bg-[#0f1219] border border-slate-800 p-5 sm:p-7 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
             
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-red-600 p-[2px] shadow-neon-yellow shrink-0">
-                <div className="w-full h-full bg-[#111] rounded-[14px] flex items-center justify-center">
-                  <User className="w-8 h-8 text-yellow-400" />
-                </div>
+              <div className="w-14 h-14 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center shrink-0">
+                <User className="w-7 h-7 text-yellow-400" />
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-2xl font-black text-gradient-shimmer">
+                  <h1 className="text-xl sm:text-2xl font-bold text-white">
                     স্বাগতম, {currentUser.name}
                   </h1>
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-yellow-400 text-black shadow-neon-yellow">
-                    Toolsbd.com
-                  </span>
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-500/40 flex items-center gap-1">
-                    <Database className="w-3 h-3" />
-                    <span>Firebase: {firebaseProjectId}</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-yellow-400/15 text-yellow-400 border border-yellow-400/30">
+                    Toolsbd
                   </span>
                 </div>
-                <p className="text-xs text-slate-300 mt-1 font-medium">
-                  {currentUser.email} &bull; ব্যালেন্স যোগ &rarr; অফার কিনুন &rarr; টুল ডাউনলোড &rarr; HWID বসিয়ে কি চালু করুন
+                <p className="text-xs text-slate-400 mt-1">
+                  {currentUser.email}
                 </p>
               </div>
             </div>
 
             {/* Wallet Balance Box */}
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="px-5 py-3 rounded-2xl bg-black border border-yellow-400/50 shadow-neon-yellow flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-yellow-400/15 text-yellow-400">
-                  <Wallet className="w-5 h-5" />
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="px-4 py-2.5 rounded-xl bg-black border border-slate-800 flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-yellow-400/10 text-yellow-400">
+                  <Wallet className="w-4 h-4" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                  <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400 block">
                     প্রোফাইল ব্যালেন্স
                   </span>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-black text-yellow-400">
+                    <span className="text-xl font-bold text-yellow-400">
                       ${walletBalanceUSD.toFixed(2)}
                     </span>
-                    <span className="text-xs font-mono text-slate-300">
+                    <span className="text-xs font-mono text-slate-400">
                       (৳{(walletBalanceUSD * 120).toLocaleString()})
                     </span>
                   </div>
@@ -536,44 +529,21 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("wallet")}
-                className="px-4 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-black shadow-neon-red transition-all flex items-center gap-1.5"
+                className="px-4 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold transition-all flex items-center gap-1.5"
               >
                 <PlusCircle className="w-4 h-4" />
-                <span>ব্যালেন্স যোগ করুন</span>
+                <span>ব্যালেন্স রিচার্জ</span>
               </button>
-
-              {/* Install PWA App */}
-              <button
-                onClick={handleInstallMemberPwa}
-                className="px-3.5 py-3 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black shadow-neon-yellow transition-all flex items-center gap-1.5"
-                title="Install Toolsbd as App on Phone or PC"
-              >
-                <DownloadCloud className="w-4 h-4 text-black" />
-                <span>অ্যাপ ইনস্টল</span>
-              </button>
-
-              {/* Notification Permission Button */}
-              {!hasNotifPermission && (
-                <button
-                  onClick={handleRequestNotification}
-                  className="px-3 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-yellow-400 text-xs font-bold transition-all flex items-center gap-1.5"
-                  title="Enable Push Notifications"
-                >
-                  <Bell className="w-4 h-4 text-yellow-400" />
-                  <span>নোটিফিকেশন</span>
-                </button>
-              )}
 
               <button
                 onClick={logoutUser}
-                className="px-3 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white text-xs font-bold transition-all"
-                title="Sign Out"
+                className="px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white text-xs font-semibold transition-all"
+                title="লগআউট"
               >
                 লগআউট
               </button>
             </div>
 
-          </div>
         </div>
       )}
 
@@ -1317,332 +1287,272 @@ export default function UserDashboardPage() {
         <div key="tab-wallet" className="animate-tab-fade grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Left: Add Money via bKash / Rocket */}
+          {/* Left: Add Money (ব্যালেন্স রিচার্জ) */}
           <div className="lg:col-span-6">
-            <Card3D maxTilt={5} depth={1.02} glare={true} className="h-full">
-              <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-white/10 h-full">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <div>
-                <h2 className="text-xl font-black text-gradient-shimmer flex items-center gap-2">
-                  <PlusCircle className="w-5 h-5 text-yellow-400" />
-                  <span>ধাপ ১: ওয়ালেটে ব্যালেন্স লোড করুন</span>
-                </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  বিকাশ অথবা রকেট পার্সোনালে টাকা পাঠিয়ে TrxID সাবমিট করুন।
-                </p>
-              </div>
-              <span className="text-[10px] font-mono font-bold px-2 py-1 rounded bg-yellow-400/15 text-yellow-400 border border-yellow-400/30">
-                $১ = ৳১২০ BDT
-              </span>
-            </div>
-
-            {/* Quick Deposit Note */}
-            <div className="p-3 rounded-xl bg-black/60 border border-white/10 flex items-center justify-between gap-3 text-xs">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="text-slate-300">
-                  নিচের নাম্বারে টাকা পাঠিয়ে TrxID সাবমিট করলেই ব্যালেন্স স্বয়ংক্রিয়ভাবে যোগ হবে।
-                </span>
-              </div>
-              <span className="text-[10px] font-mono text-yellow-400 font-bold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/30 shrink-0">
-                অটো রিচার্জ
-              </span>
-            </div>
-
-            {/* ৩-ধাপের ভিজ্যুয়াল মিনি পেমেন্ট গাইড (Visual 3-Step Guide) — পেমেন্ট বক্সের ঠিক ওপরে */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-red-500" />
-                  <span>সহজ ৩-ধাপে ডিপোজিট সম্পন্ন করুন:</span>
-                </span>
-                <span className="text-[11px] font-mono text-emerald-400 font-bold">
-                  ⚡ অটো ব্যালেন্স রিচার্জ
+            <div className="rounded-2xl bg-[#0f1219] border border-slate-800 p-5 sm:p-7 space-y-5 h-full">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div>
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <PlusCircle className="w-5 h-5 text-yellow-400" />
+                    <span>ব্যালেন্স রিচার্জ (Add Money)</span>
+                  </h2>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    বিকাশ, নগদ বা রকেটে টাকা পাঠিয়ে ওয়ালেটে ব্যালেন্স যোগ করুন
+                  </p>
+                </div>
+                <span className="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-lg bg-yellow-400/10 text-yellow-400 border border-yellow-400/20">
+                  $১ = ৳১২০ BDT
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <div className="p-3 rounded-xl bg-black border border-white/10 hover:border-yellow-400/40 transition-all flex items-start gap-2.5">
-                  <div className="w-6 h-6 rounded-lg bg-yellow-400 text-black font-black flex items-center justify-center text-xs shrink-0 shadow-neon-yellow">
-                    ১
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-white text-xs">Send Money দিন</h5>
-                    <p className="text-[10px] text-slate-400 leading-tight">
-                      {depositMethod} অ্যাপে Send Money-তে যান।
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-xl bg-black border border-white/10 hover:border-yellow-400/40 transition-all flex items-start gap-2.5">
-                  <div className="w-6 h-6 rounded-lg bg-red-600 text-white font-black flex items-center justify-center text-xs shrink-0 shadow-neon-red">
-                    ২
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-white text-xs">টাকা পাঠান</h5>
-                    <p className="text-[10px] text-slate-400 leading-tight">
-                      নাম্বারে <strong>৳{depositAmountUSD * 120}</strong> পাঠান।
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-xl bg-black border border-white/10 hover:border-yellow-400/40 transition-all flex items-start gap-2.5">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-500 text-black font-black flex items-center justify-center text-xs shrink-0 shadow-md">
-                    ৩
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-white text-xs">TrxID পেস্ট করুন</h5>
-                    <p className="text-[10px] text-slate-400 leading-tight">
-                      SMS-এর TrxID নিচে পেস্ট করুন।
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Official Payment Numbers */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              {/* bKash */}
-              <div className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                depositMethod === "bKash" ? "bg-[#D12053]/20 border-[#D12053] shadow-lg ring-1 ring-[#D12053]" : "bg-black border-white/10"
-              }`} onClick={() => setDepositMethod("bKash")}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-black text-white flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#D12053]" />
-                    <span>বিকাশ পার্সোনাল</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCopyPaymentNum(settings.bkashMerchantNumber, "bkash");
-                    }}
-                    className="text-[10px] px-2 py-0.5 rounded bg-yellow-400 text-black font-black"
-                  >
-                    {copiedNum === "bkash" ? "কপি হয়েছে" : "কপি"}
-                  </button>
-                </div>
-                <span className="font-mono text-sm sm:text-base font-black text-yellow-400">
-                  {settings.bkashMerchantNumber}
-                </span>
-              </div>
-
-              {/* Nagad */}
-              <div className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                depositMethod === "Nagad" ? "bg-[#F7941D]/25 border-[#F7941D] shadow-lg ring-1 ring-[#F7941D]" : "bg-black border-white/10"
-              }`} onClick={() => setDepositMethod("Nagad")}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-black text-white flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#F7941D]" />
-                    <span>নগদ পার্সোনাল</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCopyPaymentNum(settings.nagadMerchantNumber || "01967922602", "nagad");
-                    }}
-                    className="text-[10px] px-2 py-0.5 rounded bg-orange-500 text-white font-black"
-                  >
-                    {copiedNum === "nagad" ? "কপি হয়েছে" : "কপি"}
-                  </button>
-                </div>
-                <span className="font-mono text-sm sm:text-base font-black text-orange-400">
-                  {settings.nagadMerchantNumber || "01967922602"}
-                </span>
-              </div>
-
-              {/* Rocket */}
-              <div className={`p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                depositMethod === "Rocket" ? "bg-[#8C3494]/25 border-[#8C3494] shadow-lg ring-1 ring-[#8C3494]" : "bg-black border-white/10"
-              }`} onClick={() => setDepositMethod("Rocket")}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-black text-white flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#8C3494]" />
-                    <span>রকেট পার্সোনাল</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCopyPaymentNum(settings.rocketMerchantNumber, "rocket");
-                    }}
-                    className="text-[10px] px-2 py-0.5 rounded bg-purple-600 text-white font-black"
-                  >
-                    {copiedNum === "rocket" ? "কপি হয়েছে" : "কপি"}
-                  </button>
-                </div>
-                <span className="font-mono text-sm sm:text-base font-black text-yellow-400">
-                  {settings.rocketMerchantNumber}
-                </span>
-              </div>
-            </div>
-
-            {/* Quick Amount Pills */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-black uppercase text-slate-300 block">
-                  টাকার পরিমাণ নির্বাচন করুন (USD / BDT)
+              {/* 1. Quick Amount Pills */}
+              <div className="space-y-2">
+                <label className="text-xs font-semibold text-slate-300 block">
+                  ১. টাকার পরিমাণ নির্বাচন করুন:
                 </label>
-                <span className="text-[10px] font-mono font-bold text-yellow-400">
-                  {depositAmountUSD === 2 ? "🔥 ৭ দিনের অফার" : depositAmountUSD === 4 ? "🔥 ১৫ দিনের অফার" : depositAmountUSD === 8 ? "🔥 ৩০ দিনের VIP অফার" : "কাস্টম অ্যামাউন্ট"}
-                </span>
+                <div className="grid grid-cols-4 gap-2">
+                  {[
+                    { usd: 2, label: "৭ দিন" },
+                    { usd: 4, label: "১৫ দিন" },
+                    { usd: 8, label: "৩০ দিন" },
+                    { usd: 15, label: "ভিআইপি" }
+                  ].map(({ usd, label }) => (
+                    <button
+                      key={usd}
+                      type="button"
+                      onClick={() => setDepositAmountUSD(usd)}
+                      className={`py-2.5 px-1.5 rounded-xl text-xs font-semibold transition-all border text-center ${
+                        depositAmountUSD === usd
+                          ? "bg-yellow-400 text-black border-yellow-400 font-bold shadow-sm"
+                          : "bg-[#141824] text-white border-slate-800 hover:border-slate-700"
+                      }`}
+                    >
+                      <span className="block font-bold text-sm">${usd}</span>
+                      <span className={`block text-[11px] font-mono ${depositAmountUSD === usd ? "text-black/80 font-semibold" : "text-slate-400"}`}>
+                        ৳{usd * 120}
+                      </span>
+                      <span className={`block text-[10px] mt-0.5 ${depositAmountUSD === usd ? "text-slate-900 font-bold" : "text-yellow-400/80"}`}>
+                        {label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-4 gap-2">
-                {[
-                  { usd: 2, label: "৭ দিন" },
-                  { usd: 4, label: "১৫ দিন" },
-                  { usd: 8, label: "৩০ দিন" },
-                  { usd: 15, label: "VIP" }
-                ].map(({ usd, label }) => (
+
+              {/* 2. Payment Method Selector */}
+              <div className="space-y-2">
+                <label className="text-xs font-semibold text-slate-300 block">
+                  ২. পেমেন্ট মাধ্যম বেছে নিন:
+                </label>
+                <div className="grid grid-cols-3 gap-2.5">
+                  {/* bKash */}
                   <button
-                    key={usd}
                     type="button"
-                    onClick={() => setDepositAmountUSD(usd)}
-                    className={`py-2 px-1 rounded-xl text-xs font-black transition-all border text-center ${
-                      depositAmountUSD === usd
-                        ? "bg-yellow-400 text-black border-yellow-400 shadow-neon-yellow scale-[1.03]"
-                        : "bg-black text-white border-white/10 hover:border-white/30"
+                    onClick={() => setDepositMethod("bKash")}
+                    className={`p-3 rounded-xl border text-center transition-all ${
+                      depositMethod === "bKash"
+                        ? "bg-[#E2136E]/20 border-[#E2136E] text-white ring-1 ring-[#E2136E]"
+                        : "bg-[#141824] border-slate-800 hover:border-slate-700 text-slate-300"
                     }`}
                   >
-                    <span className="block font-black">${usd}</span>
-                    <span className={`block text-[10px] font-mono ${depositAmountUSD === usd ? "text-black/90 font-bold" : "text-slate-400"}`}>
-                      ৳{usd * 120}
-                    </span>
-                    <span className={`block text-[9px] ${depositAmountUSD === usd ? "text-red-900 font-black" : "text-yellow-400/80"}`}>
-                      {label}
-                    </span>
+                    <span className="font-bold text-xs sm:text-sm block text-[#E2136E]">বিকাশ</span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">Send Money</span>
                   </button>
-                ))}
-              </div>
-            </div>
 
-            <form onSubmit={handleDepositSubmit} className="space-y-3 text-xs">
-              <div>
-                <label className="font-bold text-slate-300 block mb-1">প্রেরক মোবাইল নম্বর (Sender Number)</label>
-                <input
-                  type="text"
-                  placeholder="017XXXXXXXX"
-                  value={depositSender}
-                  onChange={(e) => setDepositSender(e.target.value)}
-                  className="w-full p-3 rounded-xl glass-input font-mono text-white"
-                  required
-                />
-              </div>
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="font-bold text-slate-300">{depositMethod} ট্রানজেকশন আইডি (TrxID)</label>
+                  {/* Nagad */}
                   <button
                     type="button"
-                    onClick={() => handlePasteTrxId(setDepositTrxId)}
-                    className="text-[10px] text-yellow-400 hover:text-yellow-300 flex items-center gap-1 font-bold bg-yellow-400/10 px-2 py-0.5 rounded border border-yellow-400/30 transition-all active:scale-95"
-                    title="ক্লিপবোর্ড থেকে অটো পেস্ট করুন"
+                    onClick={() => setDepositMethod("Nagad")}
+                    className={`p-3 rounded-xl border text-center transition-all ${
+                      depositMethod === "Nagad"
+                        ? "bg-[#F7941D]/20 border-[#F7941D] text-white ring-1 ring-[#F7941D]"
+                        : "bg-[#141824] border-slate-800 hover:border-slate-700 text-slate-300"
+                    }`}
                   >
-                    <Copy className="w-3 h-3" />
-                    <span>ক্লিপবোর্ড থেকে পেস্ট</span>
+                    <span className="font-bold text-xs sm:text-sm block text-[#F7941D]">নগদ</span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">Send Money</span>
+                  </button>
+
+                  {/* Rocket */}
+                  <button
+                    type="button"
+                    onClick={() => setDepositMethod("Rocket")}
+                    className={`p-3 rounded-xl border text-center transition-all ${
+                      depositMethod === "Rocket"
+                        ? "bg-[#8C3494]/25 border-[#8C3494] text-white ring-1 ring-[#8C3494]"
+                        : "bg-[#141824] border-slate-800 hover:border-slate-700 text-slate-300"
+                    }`}
+                  >
+                    <span className="font-bold text-xs sm:text-sm block text-purple-400">রকেট</span>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">Send Money</span>
                   </button>
                 </div>
-                <div className="relative">
+              </div>
+
+              {/* Number Card */}
+              <div className="p-3.5 rounded-xl bg-[#141824] border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-300 font-medium">
+                    {depositMethod} নাম্বারে <strong>৳{depositAmountUSD * 120}</strong> Send Money করুন:
+                  </span>
+                </div>
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-black border border-slate-700">
+                  <span className="font-mono text-base font-bold text-white select-all">
+                    {depositMethod === "bKash" 
+                      ? settings.bkashMerchantNumber 
+                      : depositMethod === "Nagad" 
+                      ? (settings.nagadMerchantNumber || "01967922602") 
+                      : settings.rocketMerchantNumber}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyPaymentNum(
+                      depositMethod === "bKash" 
+                        ? settings.bkashMerchantNumber 
+                        : depositMethod === "Nagad" 
+                        ? (settings.nagadMerchantNumber || "01967922602") 
+                        : settings.rocketMerchantNumber, 
+                      depositMethod.toLowerCase()
+                    )}
+                    className="px-3 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white text-xs font-semibold flex items-center gap-1 transition-all"
+                  >
+                    {copiedNum === depositMethod.toLowerCase() ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedNum === depositMethod.toLowerCase() ? "কপি হয়েছে" : "কপি"}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Form Inputs */}
+              <form onSubmit={handleDepositSubmit} className="space-y-3 text-xs">
+                <div>
+                  <label className="font-semibold text-slate-300 block mb-1">
+                    ৩. প্রেরক মোবাইল নম্বর:
+                  </label>
                   <input
                     type="text"
-                    placeholder="যেমন: BK992A81KC বা RK82736"
-                    value={depositTrxId}
-                    onChange={(e) => setDepositTrxId(e.target.value)}
-                    className="w-full p-3 pr-14 rounded-xl glass-input font-mono uppercase text-yellow-400 font-bold"
+                    placeholder="017XXXXXXXX"
+                    value={depositSender}
+                    onChange={(e) => setDepositSender(e.target.value)}
+                    className="w-full p-3 rounded-xl bg-black border border-slate-700 font-mono text-white placeholder:text-slate-500 focus:border-yellow-400 focus:outline-none"
                     required
                   />
-                  {depositTrxId && (
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="font-semibold text-slate-300">
+                      ৪. {depositMethod} ট্রানজেকশন আইডি (TrxID):
+                    </label>
                     <button
                       type="button"
-                      onClick={() => setDepositTrxId("")}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
+                      onClick={() => handlePasteTrxId(setDepositTrxId)}
+                      className="text-[11px] text-yellow-400 hover:underline flex items-center gap-1 font-semibold"
                     >
-                      ✕
+                      <Copy className="w-3 h-3" />
+                      <span>ক্লিপবোর্ড থেকে পেস্ট</span>
                     </button>
-                  )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="যেমন: BK992A81KC"
+                      value={depositTrxId}
+                      onChange={(e) => setDepositTrxId(e.target.value)}
+                      className="w-full p-3 pr-10 rounded-xl bg-black border border-slate-700 font-mono uppercase text-yellow-400 font-bold placeholder:text-slate-500 focus:border-yellow-400 focus:outline-none"
+                      required
+                    />
+                    {depositTrxId && (
+                      <button
+                        type="button"
+                        onClick={() => setDepositTrxId("")}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={isDepositing}
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 hover:opacity-95 text-black font-black text-sm shadow-neon-yellow transition-all"
-                >
-                  {isDepositing ? "যাচাই হচ্ছে..." : `টাকা জমা দিন — ব্যালেন্স যোগ করুন (৳${depositAmountUSD * 120})`}
-                </button>
-              </div>
-            </form>
-              </div>
-            </Card3D>
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={isDepositing}
+                    className="w-full py-3.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {isDepositing ? "যাচাই করা হচ্ছে..." : `ব্যালেন্স যোগ করুন (৳${depositAmountUSD * 120} BDT)`}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
 
-          {/* Right: Buy TOOLS OFFER PRICE Using Wallet Balance */}
+          {/* Right: Buy Tools With Balance */}
           <div className="lg:col-span-6">
-            <Card3D maxTilt={5} depth={1.02} glare={true} className="h-full">
-              <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 border border-yellow-400/30 h-full">
-            <div className="pb-3 border-b border-white/10">
-              <span className="text-[11px] font-black uppercase tracking-widest text-red-500">
-                তাৎক্ষণিক লাইসেন্স ক্রয়
-              </span>
-              <h2 className="text-2xl font-black text-gradient-shimmer mt-0.5">
-                ধাপ ২: টুলস স্পেশাল অফার কিনুন 🔊
-              </h2>
-              <p className="text-xs text-slate-300 mt-1">
-                ওয়ালেট ব্যালেন্স দিয়ে ১-ক্লিকে কিনুন &rarr; টুলস ডাউনলোড করুন &rarr; HWID বসিয়ে লাইসেন্স সক্রিয় করুন।
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {activePlans.map((plan) => (
-                <div
-                  key={plan.id}
-                  className="p-5 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-black/80 border-white/15 hover:border-yellow-400/40"
-                >
+            <div className="rounded-2xl bg-[#0f1219] border border-slate-800 p-5 sm:p-7 space-y-5 h-full flex flex-col justify-between">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                   <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-base font-black text-white">
-                        {plan.durationDays} দিনের অফার 🔥
-                      </span>
-                    </div>
+                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                      <Zap className="w-5 h-5 text-yellow-400" />
+                      <span>টুল কিনুন (Buy Tools)</span>
+                    </h2>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      {flagshipTool?.name} &bull; সিঙ্গেল HWID লক &bull; ১০০% সুরক্ষিত
+                      আপনার ওয়ালেট ব্যালেন্স দিয়ে পছন্দের প্যাকেজ কিনুন
                     </p>
                   </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <span className="text-2xl font-black text-yellow-400 block leading-none">
-                        ${plan.priceUSD}
-                      </span>
-                      <span className="text-[11px] font-mono text-slate-400">
-                        ৳{plan.priceBDT} BDT
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      disabled={buyingPlanId === plan.id}
-                      onClick={() => handleBuyWithWallet(plan.id)}
-                      className="px-4 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black shadow-neon-yellow transition-all shrink-0"
-                    >
-                      {buyingPlanId === plan.id ? "প্রসেসিং..." : `কিনুন ($${plan.priceUSD})`}
-                    </button>
+                  <div className="text-right">
+                    <span className="text-[10px] text-slate-400 block">বর্তমান ব্যালেন্স:</span>
+                    <span className="text-sm font-bold text-emerald-400 font-mono">
+                      ${walletBalanceUSD.toFixed(2)} USD
+                    </span>
                   </div>
                 </div>
-              ))}
-            </div>
 
-            <div className="p-4 rounded-2xl bg-[#111] border border-white/10 text-xs text-slate-300 space-y-1.5">
-              <p className="font-black text-yellow-400 flex items-center gap-1.5">
-                <Cpu className="w-4 h-4 text-red-500" />
-                <span>HWID লাইসেন্স কি যেভাবে কাজ করে:</span>
-              </p>
-              <p>১. বিকাশ/রকেটে ব্যালেন্স যোগ করে ৭, ১৫, অথবা ৩০ দিনের অফার কিনুন।</p>
-              <p>২. টুল ডাউনলোড করে কম্পিউটারে ওপেন করলে আপনার পিসির HWID দেখতে পাবেন।</p>
-              <p>৩. 'আমার লাইসেন্স ও HWID কি' অপশনে গিয়ে HWID পেস্ট করে <strong>HWID লক করুন</strong>-এ ক্লিক করলেই আপনার লাইসেন্স স্বয়ংক্রিয়ভাবে সক্রিয় হবে!</p>
-            </div>
+                <div className="space-y-3">
+                  {activePlans.map((plan) => (
+                    <div
+                      key={plan.id}
+                      className="p-4 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#141824] border-slate-800 hover:border-slate-700"
+                    >
+                      <div>
+                        <span className="text-sm font-bold text-white block">
+                          {plan.durationDays} দিনের লাইসেন্স
+                        </span>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {flagshipTool?.name} &bull; ইনস্ট্যান্ট অটো-বাইন্ড
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <span className="text-base font-bold text-yellow-400 block leading-tight">
+                            ${plan.priceUSD}
+                          </span>
+                          <span className="text-[11px] font-mono text-slate-400">
+                            ৳{plan.priceBDT} BDT
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          disabled={buyingPlanId === plan.id}
+                          onClick={() => handleBuyWithWallet(plan.id)}
+                          className="px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-bold transition-all shrink-0 disabled:opacity-50"
+                        >
+                          {buyingPlanId === plan.id ? "প্রসেসিং..." : `কিনুন ($${plan.priceUSD})`}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </Card3D>
+
+              <div className="p-3.5 rounded-xl bg-[#141824] border border-slate-800 text-xs text-slate-400 space-y-1">
+                <span className="font-semibold text-white block">
+                  💡 কেনার পরের নিয়ম:
+                </span>
+                <p>টুল কেনার সাথে সাথে 'মেম্বারশিপ ও টুলস' ট্যাবে লাইসেন্স কী এবং ডাউনলোড ফাইল পেয়ে যাবেন। সফটওয়্যার ওপেন করে কী-টি পেস্ট করলেই এটি চালু হয়ে যাবে।</p>
+              </div>
+            </div>
           </div>
 
         </div>

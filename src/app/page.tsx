@@ -58,7 +58,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-1">
               <Link
                 href="/tools"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-xs sm:text-sm font-black text-black bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 hover:opacity-95 shadow-neon-yellow flex items-center justify-center gap-2 group transition-all"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-xs sm:text-sm font-bold text-black bg-yellow-400 hover:bg-yellow-300 flex items-center justify-center gap-2 group transition-all"
               >
                 <span>সবগুলো টুল দেখুন</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -68,10 +68,10 @@ export default function HomePage() {
                 href={settings.telegramGroupUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-xs sm:text-sm font-black text-white bg-red-950/80 hover:bg-red-900 border border-red-500 hover:border-red-400 flex items-center justify-center gap-2 transition-all shadow-neon-red"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/15 flex items-center justify-center gap-2 transition-all"
               >
-                <Send className="w-4 h-4 text-red-400" />
-                <span>অফিশিয়াল টেলিগ্রামে যুক্ত হোন</span>
+                <Send className="w-4 h-4 text-white" />
+                <span>টেলিগ্রামে যুক্ত হোন</span>
               </a>
             </div>
 
@@ -148,46 +148,42 @@ export default function HomePage() {
       <StatsSection />
 
       {/* ============================================================== */}
-      {/* SECTION 4: TELEGRAM VIP CTA                                     */}
+      {/* SECTION 4: TELEGRAM COMMUNITY CTA                               */}
       {/* ============================================================== */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <Card3D maxTilt={5} depth={1.01} glare={true}>
-          <div className="relative rounded-3xl p-[2px] bg-gradient-to-r from-yellow-400 via-red-600 to-yellow-500 shadow-neon-yellow overflow-hidden">
-            <div className="relative rounded-3xl bg-[#090909] px-6 py-10 sm:px-12 sm:py-12 text-center space-y-4">
-              
-              <div className="w-14 h-14 rounded-2xl bg-red-600/20 border border-red-500 flex items-center justify-center mx-auto shadow-neon-red">
-                <Send className="w-7 h-7 text-yellow-400" />
-              </div>
-
-              <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-gradient-shimmer">
-                Toolsbd.com অফিশিয়াল টেলিগ্রাম কমিউনিটি
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
-                সরাসরি সফটওয়্যার আপডেট, নতুন ভার্সন রিলিজ, সেটআপ সহায়তা এবং ২৪/৭ লাইভ সাপোর্টের জন্য আমাদের অফিশিয়াল গ্রুপে যুক্ত হোন।
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-                <a
-                  href={settings.telegramGroupUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-7 py-3 rounded-xl text-xs sm:text-sm font-black text-white bg-gradient-to-r from-red-600 to-red-700 hover:opacity-95 shadow-neon-red flex items-center justify-center gap-2 transition-all"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>টেলিগ্রামে জয়েন করুন</span>
-                </a>
-
-                <Link
-                  href="/tools"
-                  className="w-full sm:w-auto px-7 py-3 rounded-xl text-xs sm:text-sm font-black text-black bg-yellow-400 hover:bg-yellow-300 shadow-neon-yellow transition-all text-center"
-                >
-                  <span>টুলস মার্কেটপ্লেস দেখুন</span>
-                </Link>
-              </div>
-
-            </div>
+        <div className="rounded-3xl border border-white/10 bg-[#0f1219] p-8 sm:p-12 text-center space-y-4">
+          
+          <div className="w-12 h-12 rounded-xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center mx-auto text-yellow-400">
+            <Send className="w-6 h-6" />
           </div>
-        </Card3D>
+
+          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            Toolsbd অফিসিয়াল টেলিগ্রাম কমিউনিটি
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
+            সরাসরি সফটওয়্যার আপডেট, নতুন ভার্সন রিলিজ, সেটআপ সহায়তা এবং ২৪/৭ লাইভ সাপোর্টের জন্য আমাদের অফিশিয়াল গ্রুপে যুক্ত হোন।
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <a
+              href={settings.telegramGroupUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl text-xs sm:text-sm font-bold text-black bg-yellow-400 hover:bg-yellow-300 flex items-center justify-center gap-2 transition-all"
+            >
+              <Send className="w-4 h-4" />
+              <span>টেলিগ্রামে জয়েন করুন</span>
+            </a>
+
+            <Link
+              href="/tools"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl text-xs sm:text-sm font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/10 transition-all text-center"
+            >
+              <span>টুলস মার্কেটপ্লেস</span>
+            </Link>
+          </div>
+
+        </div>
       </section>
 
     </div>
